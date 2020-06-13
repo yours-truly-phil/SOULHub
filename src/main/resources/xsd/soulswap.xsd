@@ -1,0 +1,41 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:sswp="http://soulswap.horrorshow.io/soulswap"
+  targetNamespace="http://soulswap.horrorshow.io/soulswap" elementFormDefault="qualified"
+  attributeFormDefault="qualified" version="0.0.1-SNAPSHOT"
+  xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" vc:minVersion="1.1">
+
+  <xs:element name="soulswapRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="soulpatchId" type="xs:ID"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="soulswapResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="soulpatchfile" type="sswp:SOULPatchFileType" maxOccurs="unbounded"
+          minOccurs="0"/>
+        <xs:element name="soulfile" type="sswp:SOULFileType" maxOccurs="unbounded" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="soulpatchId" type="xs:ID"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="SOULPatchFileType">
+    <xs:sequence>
+      <xs:element name="content" type="xs:string" maxOccurs="1" minOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="filename" type="xs:string" use="required"/>
+    <xs:attribute name="id" type="xs:ID"/>
+  </xs:complexType>
+
+  <xs:complexType name="SOULFileType">
+    <xs:sequence>
+      <xs:element name="filecontent" type="xs:string" maxOccurs="1" minOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="filename" type="xs:string" use="required"/>
+    <xs:attribute name="id" type="xs:ID"/>
+  </xs:complexType>
+</xs:schema>

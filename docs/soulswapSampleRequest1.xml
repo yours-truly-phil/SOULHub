@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sswp:soulswapRequest xmlns:sswp="http://soulswap.horrorshow.io/soulswap"
+ xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://soulswap.horrorshow.io/soulswap file:/D:/D_Workspace/git/SOULSwap/src/main/resources/xsd/soulswap.xsd">
+    <sswp:soulpatchId>ID000</sswp:soulpatchId>
+</sswp:soulswapRequest>

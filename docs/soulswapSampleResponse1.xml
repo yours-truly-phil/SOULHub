@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sswp:soulswapResponse xmlns:sswp="http://soulswap.horrorshow.io/soulswap"
+ xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://soulswap.horrorshow.io/soulswap file:/D:/D_Workspace/git/SOULSwap/src/main/resources/xsd/soulswap.xsd" sswp:soulpatchId="ID000">
+    <sswp:soulpatchfile sswp:filename="filename0" sswp:id="ID001">
+        <sswp:content>content0</sswp:content>
+    </sswp:soulpatchfile>
+    <sswp:soulpatchfile sswp:filename="filename1" sswp:id="ID002">
+        <sswp:content>content1</sswp:content>
+    </sswp:soulpatchfile>
+    <sswp:soulfile sswp:filename="filename2" sswp:id="ID003">
+        <sswp:filecontent>filecontent0</sswp:filecontent>
+    </sswp:soulfile>
+    <sswp:soulfile sswp:filename="filename3" sswp:id="ID004">
+        <sswp:filecontent>filecontent1</sswp:filecontent>
+    </sswp:soulfile>
+</sswp:soulswapResponse>
