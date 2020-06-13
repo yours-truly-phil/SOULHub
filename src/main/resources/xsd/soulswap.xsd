@@ -15,14 +15,7 @@
   <xs:element name="soulswapResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="soulpatch" maxOccurs="unbounded" minOccurs="0">
-          <xs:complexType>
-            <xs:complexContent>
-              <xs:extension base="sswp:SOULPatch">
-                <xs:attribute name="id" type="xs:ID" use="required"/>
-              </xs:extension>
-            </xs:complexContent>
-          </xs:complexType>
+        <xs:element name="soulpatch" maxOccurs="unbounded" minOccurs="0" type="sswp:SOULPatch">
         </xs:element>
       </xs:sequence>
     </xs:complexType>
@@ -30,21 +23,21 @@
 
   <xs:complexType name="SOULPatch">
     <xs:sequence>
-      <xs:element name="soulpatchfile" type="sswp:SOULPatchFileType" maxOccurs="unbounded"
-        minOccurs="0"/>
-      <xs:element name="soulfile" type="sswp:SOULFileType" maxOccurs="unbounded" minOccurs="0"/>
+      <xs:element name="soulpatchfile" type="sswp:SOULPatchFile" maxOccurs="unbounded" minOccurs="0"/>
+      <xs:element name="soulfile" type="sswp:SOULFile" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
+    <xs:attribute name="id" type="xs:ID" use="required"/>
   </xs:complexType>
 
-  <xs:complexType name="SOULPatchFileType">
+  <xs:complexType name="SOULPatchFile">
     <xs:sequence>
-      <xs:element name="content" type="xs:string" maxOccurs="1" minOccurs="1"/>
+      <xs:element name="filecontent" type="xs:string" maxOccurs="1" minOccurs="1"/>
     </xs:sequence>
     <xs:attribute name="filename" type="xs:string" use="required"/>
     <xs:attribute name="id" type="xs:ID" use="required"/>
   </xs:complexType>
 
-  <xs:complexType name="SOULFileType">
+  <xs:complexType name="SOULFile">
     <xs:sequence>
       <xs:element name="filecontent" type="xs:string" maxOccurs="1" minOccurs="1"/>
     </xs:sequence>

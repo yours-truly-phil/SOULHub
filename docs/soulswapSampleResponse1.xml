@@ -5,10 +5,10 @@
  xsi:schemaLocation="http://soulswap.horrorshow.io/soulswap file:/D:/D_Workspace/git/SOULSwap/src/main/resources/xsd/soulswap.xsd">
     <sswp:soulpatch sswp:id="ID000">
         <sswp:soulpatchfile sswp:filename="filename0" sswp:id="ID001">
-            <sswp:content>content0</sswp:content>
+            <sswp:filecontent>filecontent0</sswp:filecontent>
         </sswp:soulpatchfile>
         <sswp:soulfile sswp:filename="filename1" sswp:id="ID002">
-            <sswp:filecontent>filecontent0</sswp:filecontent>
+            <sswp:filecontent>filecontent1</sswp:filecontent>
         </sswp:soulfile>
     </sswp:soulpatch>
 </sswp:soulswapResponse>
