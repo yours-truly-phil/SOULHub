@@ -12,7 +12,7 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 public class SOULPatchEndpoint {
     private static final String NAMESPACE_URI = "http://soulswap.horrorshow.io/soulswap";
 
-    private SOULSwapRepository soulSwapRepository;
+    private final SOULSwapRepository soulSwapRepository;
 
     @Autowired
     public SOULPatchEndpoint(SOULSwapRepository soulSwapRepository) {
