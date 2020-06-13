@@ -1,0 +1,10 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+	xmlns:sswp="http://soulswap.horrorshow.io/soulswap">
+	<soapenv:Header/>
+	<soapenv:Body>
+		<sswp:soulswapRequest>
+			<sswp:soulpatchId>ClassicRingtone</sswp:soulpatchId>
+		</sswp:soulswapRequest>
+	</soapenv:Body>
+</soapenv:Envelope>
+

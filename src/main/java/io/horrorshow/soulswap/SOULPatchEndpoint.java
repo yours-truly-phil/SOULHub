@@ -24,8 +24,7 @@ public class SOULPatchEndpoint {
     public SoulswapResponse getSoulswapResponse(@RequestPayload SoulswapRequest request) {
         SoulswapResponse response = new SoulswapResponse();
         response.getSoulpatch().add(
-                soulSwapRepository.findSOULPatch(
-                        request.getSoulpatchId().stream().toString()));
+                soulSwapRepository.findSOULPatch(request.getSoulpatchId()));
         return response;
     }
 }
