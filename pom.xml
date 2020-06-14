@@ -19,7 +19,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>14</java.version>
     <validation-api.version>2.0.1.Final</validation-api.version>
-    <hibernate-validator.version>6.0.17.Final</hibernate-validator.version>
+    <hibernate-validator.version>6.1.0.Final</hibernate-validator.version>
     <jaxb-impl.version>2.3.3</jaxb-impl.version>
     <jaxb-maven-plugin.version>2.5.0</jaxb-maven-plugin.version>
   </properties>
