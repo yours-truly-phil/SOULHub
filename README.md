@@ -7,4 +7,8 @@ to test
 
 `$ ./run_docker_debug_dev.sh`
 
-`$ curl --header "content-type: text/xml" -d @docs/request.xml http://localhost:8080/ws`
+wsdl gets generated at: `http://<server>:<port>/ws/SOULSwapWsdl.wsdl`
+
+test request:
+
+`$ curl --header "content-type: text/xml" -d @docs/request.xml http://<server>:<port>/ws`
