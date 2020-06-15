@@ -1,17 +1,14 @@
 package io.horrorshow.soulswap.model;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "soulpatches")
 @Data
-public class SOULPatch extends AuditModel {
+public class SOULPatch {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,6 +25,5 @@ public class SOULPatch extends AuditModel {
     private String soulpatchFileContent;
     @NotBlank
     private String author;
-    @NotEmpty
     private Long noServings;
 }

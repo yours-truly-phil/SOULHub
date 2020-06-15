@@ -1,13 +1,15 @@
 package io.horrorshow.soulswap;
 
+import io.horrorshow.soulswap.dao.SOULSwapRepository;
+import io.horrorshow.soulswap.model.SOULPatch;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @SpringBootApplication
-@EnableJpaAuditing
 public class SOULSwapApplication {
 
     @RequestMapping("/")
@@ -23,6 +25,24 @@ public class SOULSwapApplication {
         ApplicationContext context = SpringApplication.run(SOULSwapApplication.class, args);
 
         System.out.println(context.getApplicationName() + "SOULSwap Application started!");
+    }
+
+    @Bean
+    ApplicationRunner init(SOULSwapRepository repository) {
+
+        return args -> {
+            SOULPatch patch = new SOULPatch();
+            patch.setName("name1");
+            patch.setDescription("description1");
+            patch.setSoulFileName("soulfile name.soul");
+            patch.setSoulFileContent("soulfile content");
+            patch.setSoulpatchFileName("soulpatchfile name.soulpatch");
+            patch.setSoulpatchFileContent("soulpatch file content");
+            patch.setAuthor("author");
+            patch.setNoServings(10L);
+            repository.save(patch);
+            repository.findAll().forEach(System.out::println);
+        };
     }
 
 }
