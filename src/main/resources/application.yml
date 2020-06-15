@@ -1,0 +1,22 @@
+server:
+  port: 8080
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 5
+      pool-name: HikariPoolzzz
+logging:
+  level:
+    org.springframework: INFO
+    io.horrorshow: INFO
+    com.zaxxer: DEBUG
+    root: ERROR
+
