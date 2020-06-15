@@ -1,7 +1,7 @@
 INSERT INTO soulpatches(name, description,
-                        soulFileName, soulFileContent,
-                        soulpatchFileName, soulpatchFileContent,
-                        offsetDateTime, author, noServings)
+                        soul_file_name, soul_file_content,
+                        soulpatch_file_name, soulpatch_file_content,
+                        offset_date_time, author, no_servings)
     VALUES('soulpatch1 name',
            'soulpatch1 description',
            'soulpatch1 soulFileName',
@@ -13,9 +13,9 @@ INSERT INTO soulpatches(name, description,
            4711);
 
 INSERT INTO soulpatches(name, description,
-                        soulFileName, soulFileContent,
-                        soulpatchFileName, soulpatchFileContent,
-                        offsetDateTime, author, noServings)
+                        soul_file_name, soul_file_content,
+                        soulpatch_file_name, soulpatch_file_content,
+                        offset_date_time, author, no_servings)
 VALUES('soulpatch2 name',
        'soulpatch2 description',
        'soulpatch2 soulFileName',

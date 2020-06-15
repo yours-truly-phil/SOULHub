@@ -1,8 +1,8 @@
 package io.horrorshow.soulswap;
 
-import io.horrorshow.soulswap.soulswap.SOULFile;
-import io.horrorshow.soulswap.soulswap.SOULPatch;
-import io.horrorshow.soulswap.soulswap.SOULPatchFile;
+import io.horrorshow.soulswap.xml.SOULFileXMLType;
+import io.horrorshow.soulswap.xml.SOULPatchFileXMLType;
+import io.horrorshow.soulswap.xml.SOULPatchXMLType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -12,13 +12,13 @@ import java.util.Map;
 
 @Component
 public class SOULSwapStaticRepository {
-    private static final Map<String, SOULPatch> soulPatches = new HashMap<>();
+    private static final Map<String, SOULPatchXMLType> soulPatches = new HashMap<>();
 
     @PostConstruct
     public void initData() {
-        SOULPatch classicRingtone = new SOULPatch();
+        SOULPatchXMLType classicRingtone = new SOULPatchXMLType();
         classicRingtone.setId("ClassicRingtone");
-        SOULPatchFile classicRingtoneSoulPatchFile = new SOULPatchFile();
+        SOULPatchFileXMLType classicRingtoneSoulPatchFile = new SOULPatchFileXMLType();
         classicRingtoneSoulPatchFile.setId("ClassicRingtoneSoulPatch");
         classicRingtoneSoulPatchFile.setFilename("ClassicRingtone.soulpatch");
         classicRingtoneSoulPatchFile.setFilecontent("{\n" +
@@ -36,7 +36,7 @@ public class SOULSwapStaticRepository {
                 "    }\n" +
                 "}");
         classicRingtone.getSoulpatchfile().add(classicRingtoneSoulPatchFile);
-        SOULFile classicRingtoneSoulFile = new SOULFile();
+        SOULFileXMLType classicRingtoneSoulFile = new SOULFileXMLType();
         classicRingtoneSoulFile.setId("ClassicRingtonSoulFile");
         classicRingtoneSoulFile.setFilename("ClassicRingtone.soul");
         classicRingtoneSoulFile.setFilecontent("/*\n" +
@@ -80,9 +80,9 @@ public class SOULSwapStaticRepository {
         classicRingtone.getSoulfile().add(classicRingtoneSoulFile);
         soulPatches.put(classicRingtone.getId(), classicRingtone);
 
-        SOULPatch delay = new SOULPatch();
+        SOULPatchXMLType delay = new SOULPatchXMLType();
         delay.setId("DelaySoulPatch");
-        SOULPatchFile delaySoulPatchFile = new SOULPatchFile();
+        SOULPatchFileXMLType delaySoulPatchFile = new SOULPatchFileXMLType();
         delaySoulPatchFile.setId("DelaySoulPatch");
         delaySoulPatchFile.setFilename("Delay.soulpatch");
         delaySoulPatchFile.setFilecontent("{\n" +
@@ -98,7 +98,7 @@ public class SOULSwapStaticRepository {
                 "  }\n" +
                 "}");
         delay.getSoulpatchfile().add(delaySoulPatchFile);
-        SOULFile delaySoulFile = new SOULFile();
+        SOULFileXMLType delaySoulFile = new SOULFileXMLType();
         delaySoulFile.setId("DelaySoulFile");
         delaySoulFile.setFilename("Delay.soul");
         delaySoulFile.setFilecontent("/*\n" +
@@ -155,7 +155,7 @@ public class SOULSwapStaticRepository {
         soulPatches.put(delay.getId(), delay);
     }
 
-    public SOULPatch findSOULPatch(String id) {
+    public SOULPatchXMLType findSOULPatch(String id) {
         Assert.notNull(id, "missing mandatory soul patch id");
         return soulPatches.get(id);
     }

@@ -33,12 +33,12 @@ public class SOULSwapController {
         return repository.findAll(pageable);
     }
 
-    @PostMapping("soulpatches")
+    @PostMapping("/soulpatches")
     public SOULPatchEntity createSOULPatch(@Valid @RequestBody SOULPatchEntity soulPatchEntity) {
         return repository.save(soulPatchEntity);
     }
 
-    @PutMapping("soulpatches/{soulpatchId}")
+    @PutMapping("/soulpatches/{soulpatchId}")
     public SOULPatchEntity updateSOULPatch(@PathVariable Long soulpatchId,
                                            @Valid @RequestBody SOULPatchEntity soulPatchEntity) {
         return repository.findById(soulpatchId)
@@ -56,7 +56,7 @@ public class SOULSwapController {
                 }).orElseThrow(() -> new ResourceNotFoundException("SOULPatch not found in repository, soulpatchId " + soulpatchId));
     }
 
-    @DeleteMapping("soulpatches/{soulpatchId}")
+    @DeleteMapping("/soulpatches/{soulpatchId}")
     public ResponseEntity<?> deleteSOULPatch(@PathVariable Long soulpatchId) {
         return repository.findById(soulpatchId)
                 .map(soulPatch -> {

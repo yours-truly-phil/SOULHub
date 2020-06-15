@@ -1,7 +1,7 @@
 package io.horrorshow.soulswap.service;
 
 import io.horrorshow.soulswap.SOULSwapRepository;
-import io.horrorshow.soulswap.soulswap.SOULPatch;
+import io.horrorshow.soulswap.xml.SOULPatchXMLType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +17,10 @@ public class SOULSwapService {
         this.repository = repository;
     }
 
-    public List<SOULPatch> findAll() {
-        List<SOULPatch> soulPatches = new ArrayList<>();
+    public List<SOULPatchXMLType> findAll() {
+        List<SOULPatchXMLType> soulPatches = new ArrayList<>();
         repository.findAll().forEach(soulPatchEntity -> {
-            SOULPatch soulPatch = new SOULPatch();
+            SOULPatchXMLType soulPatch = new SOULPatchXMLType();
             soulPatch.setId(soulPatchEntity.getId().toString());
         });
         return soulPatches;

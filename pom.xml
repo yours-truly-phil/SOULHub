@@ -108,6 +108,7 @@
           </execution>
         </executions>
         <configuration>
+          <packageName>io.horrorshow.soulswap.xml</packageName>
           <sources>
             <source>${project.basedir}/src/main/resources/xsd/soulswap.xsd</source>
           </sources>

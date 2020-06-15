@@ -15,21 +15,21 @@
   <xs:element name="soulswapResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="soulpatch" maxOccurs="unbounded" minOccurs="0" type="sswp:SOULPatch">
+        <xs:element name="soulpatch" maxOccurs="unbounded" minOccurs="0" type="sswp:SOULPatchXMLType">
         </xs:element>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
 
-  <xs:complexType name="SOULPatch">
+  <xs:complexType name="SOULPatchXMLType">
     <xs:sequence>
-      <xs:element name="soulpatchfile" type="sswp:SOULPatchFile" maxOccurs="unbounded" minOccurs="0"/>
-      <xs:element name="soulfile" type="sswp:SOULFile" maxOccurs="unbounded" minOccurs="0"/>
+      <xs:element name="soulpatchfile" type="sswp:SOULPatchFileXMLType" maxOccurs="unbounded" minOccurs="0"/>
+      <xs:element name="soulfile" type="sswp:SOULFileXMLType" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:string" use="required"/>
   </xs:complexType>
 
-  <xs:complexType name="SOULPatchFile">
+  <xs:complexType name="SOULPatchFileXMLType">
     <xs:sequence>
       <xs:element name="filecontent" type="xs:string" maxOccurs="1" minOccurs="1"/>
     </xs:sequence>
@@ -37,7 +37,7 @@
     <xs:attribute name="id" type="xs:string" use="required"/>
   </xs:complexType>
 
-  <xs:complexType name="SOULFile">
+  <xs:complexType name="SOULFileXMLType">
     <xs:sequence>
       <xs:element name="filecontent" type="xs:string" maxOccurs="1" minOccurs="1"/>
     </xs:sequence>

@@ -1,8 +1,8 @@
 package io.horrorshow.soulswap;
 
-import io.horrorshow.soulswap.soulswap.SOULPatch;
-import io.horrorshow.soulswap.soulswap.SoulswapRequest;
-import io.horrorshow.soulswap.soulswap.SoulswapResponse;
+import io.horrorshow.soulswap.xml.SOULPatchXMLType;
+import io.horrorshow.soulswap.xml.SoulswapRequest;
+import io.horrorshow.soulswap.xml.SoulswapResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -30,12 +30,12 @@ public class SOULSwapEndpoint {
                         .orElseThrow();
 
 
-        SOULPatch soulPatch = new SOULPatch();
-        soulPatch.setId(soulPatchEntity.getId().toString());
-        soulPatch.setId("SUCCESS: found soulpatch with id: " + request.getSoulpatchId() + " in repository");
+        SOULPatchXMLType soulPatchXMLType = new SOULPatchXMLType();
+        soulPatchXMLType.setId(soulPatchEntity.getId().toString());
+        soulPatchXMLType.setId("SUCCESS: found soulpatch with id: " + request.getSoulpatchId() + " in repository");
         SoulswapResponse response = new SoulswapResponse();
 
-        response.getSoulpatch().add(soulPatch);
+        response.getSoulpatch().add(soulPatchXMLType);
 
         return response;
     }

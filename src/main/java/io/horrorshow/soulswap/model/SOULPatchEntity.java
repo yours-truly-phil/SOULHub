@@ -15,11 +15,6 @@ public class SOULPatchEntity extends AuditModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @SequenceGenerator(
-            name = "soulpatchentity_generator",
-            sequenceName = "soulpatchentity_sequence",
-            initialValue = 1000
-    )
     private Long id;
     @NotBlank
     private String name;
