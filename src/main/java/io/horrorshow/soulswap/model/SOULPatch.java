@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.time.OffsetDateTime;
+import javax.validation.constraints.NotEmpty;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -20,15 +20,14 @@ public class SOULPatch extends AuditModel {
     private String name;
     @Column(columnDefinition = "TEXT")
     private String description;
-    @NotBlank
     private String soulFileName;
     @Column(columnDefinition = "TEXT")
     private String soulFileContent;
     private String soulpatchFileName;
     @Column(columnDefinition = "TEXT")
     private String soulpatchFileContent;
-    private OffsetDateTime offsetDateTime; // mapped to timestamp
     @NotBlank
     private String author;
+    @NotEmpty
     private Long noServings;
 }

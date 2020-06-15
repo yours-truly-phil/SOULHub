@@ -12,6 +12,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.OffsetDateTime;
 
 @RestController
 public class SOULPatchController {
@@ -50,11 +51,14 @@ public class SOULPatchController {
                     patch.setSoulFileContent(soulPatch.getSoulFileContent());
                     patch.setSoulpatchFileName(soulPatch.getSoulpatchFileName());
                     patch.setSoulpatchFileContent(soulPatch.getSoulpatchFileContent());
-                    patch.setOffsetDateTime(soulPatch.getOffsetDateTime());
+                    patch.setUpdatedAt(OffsetDateTime.now());
                     patch.setAuthor(soulPatch.getAuthor());
                     patch.setNoServings(soulPatch.getNoServings());
                     return repository.save(patch);
-                }).orElseThrow(() -> new ResourceNotFound("SOULPatch not found in repository, soulpatchId " + soulpatchId));
+                })
+                .orElseThrow(() ->
+                        new ResourceNotFound(
+                                SOULPatch.class.getName() + " not found in repository, soulpatchId " + soulpatchId));
     }
 
     @DeleteMapping("/soulpatches/{soulpatchId}")
@@ -63,6 +67,9 @@ public class SOULPatchController {
                 .map(soulPatch -> {
                     repository.delete(soulPatch);
                     return ResponseEntity.ok().build();
-                }).orElseThrow(() -> new ResourceNotFound("SOULPatch not found in repository, soulpatchId " + soulpatchId));
+                })
+                .orElseThrow(() ->
+                        new ResourceNotFound(
+                                SOULPatch.class.getName() + " not found in repository, soulpatchId " + soulpatchId));
     }
 }
