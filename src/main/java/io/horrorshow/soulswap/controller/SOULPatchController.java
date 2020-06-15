@@ -4,6 +4,7 @@ package io.horrorshow.soulswap.controller;
 import io.horrorshow.soulswap.dao.SOULSwapRepository;
 import io.horrorshow.soulswap.exception.ResourceNotFound;
 import io.horrorshow.soulswap.model.SOULPatch;
+import io.horrorshow.soulswap.service.SOULPatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,15 +13,18 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.OffsetDateTime;
 
 @RestController
 public class SOULPatchController {
 
+    private final SOULPatchService soulPatchService;
+    @Deprecated
     private final SOULSwapRepository repository;
 
     @Autowired
-    public SOULPatchController(SOULSwapRepository repository) {
+    public SOULPatchController(SOULPatchService soulPatchService, SOULSwapRepository repository) {
+        Assert.notNull(soulPatchService, SOULPatchService.class.getName() + " must not be null.");
+        this.soulPatchService = soulPatchService;
         Assert.notNull(repository, SOULSwapRepository.class.getName() + " must not be null.");
         this.repository = repository;
     }
