@@ -2,7 +2,7 @@ package io.horrorshow.soulswap;
 
 
 import io.horrorshow.soulswap.exception.ResourceNotFoundException;
-import io.horrorshow.soulswap.model.SOULPatchEntity;
+import io.horrorshow.soulswap.model.SOULPatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,18 +29,18 @@ public class SOULSwapController {
     }
 
     @GetMapping("/soulspatches")
-    public Page<SOULPatchEntity> getSOULPatches(Pageable pageable) {
+    public Page<SOULPatch> getSOULPatches(Pageable pageable) {
         return repository.findAll(pageable);
     }
 
     @PostMapping("/soulpatches")
-    public SOULPatchEntity createSOULPatch(@Valid @RequestBody SOULPatchEntity soulPatchEntity) {
-        return repository.save(soulPatchEntity);
+    public SOULPatch createSOULPatch(@Valid @RequestBody SOULPatch soulPatch) {
+        return repository.save(soulPatch);
     }
 
     @PutMapping("/soulpatches/{soulpatchId}")
-    public SOULPatchEntity updateSOULPatch(@PathVariable Long soulpatchId,
-                                           @Valid @RequestBody SOULPatchEntity soulPatchEntity) {
+    public SOULPatch updateSOULPatch(@PathVariable Long soulpatchId,
+                                     @Valid @RequestBody SOULPatch soulPatchEntity) {
         return repository.findById(soulpatchId)
                 .map(soulPatch -> {
                     soulPatch.setAuthor(soulPatchEntity.getAuthor());
