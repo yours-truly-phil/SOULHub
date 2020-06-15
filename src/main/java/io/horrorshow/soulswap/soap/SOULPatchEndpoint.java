@@ -1,5 +1,6 @@
-package io.horrorshow.soulswap;
+package io.horrorshow.soulswap.soap;
 
+import io.horrorshow.soulswap.dao.SOULSwapRepository;
 import io.horrorshow.soulswap.xml.SOULPatchXMLType;
 import io.horrorshow.soulswap.xml.SoulswapRequest;
 import io.horrorshow.soulswap.xml.SoulswapResponse;
@@ -10,13 +11,13 @@ import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 @Endpoint
-public class SOULSwapEndpoint {
+public class SOULPatchEndpoint {
     private static final String NAMESPACE_URI = "http://soulswap.horrorshow.io/soulswap";
 
     private final SOULSwapRepository soulSwapRepository;
 
     @Autowired
-    public SOULSwapEndpoint(SOULSwapRepository soulSwapRepository) {
+    public SOULPatchEndpoint(SOULSwapRepository soulSwapRepository) {
 
         this.soulSwapRepository = soulSwapRepository;
     }

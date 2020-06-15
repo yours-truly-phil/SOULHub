@@ -1,4 +1,4 @@
-package io.horrorshow.soulswap;
+package io.horrorshow.soulswap.soap;
 
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
