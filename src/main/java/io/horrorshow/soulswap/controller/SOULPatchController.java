@@ -51,7 +51,6 @@ public class SOULPatchController {
                     patch.setSoulFileContent(soulPatch.getSoulFileContent());
                     patch.setSoulpatchFileName(soulPatch.getSoulpatchFileName());
                     patch.setSoulpatchFileContent(soulPatch.getSoulpatchFileContent());
-                    patch.setUpdatedAt(OffsetDateTime.now());
                     patch.setAuthor(soulPatch.getAuthor());
                     patch.setNoServings(soulPatch.getNoServings());
                     return repository.save(patch);
