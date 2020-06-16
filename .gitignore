@@ -56,3 +56,6 @@ build/
 
 ### Oxygen XML Project ###
 *.xpr
+/webpack.config.js
+/webpack.generated.js
+/node_modules/

@@ -13,8 +13,12 @@ spring:
       connection-timeout: 20000
       maximum-pool-size: 5
       pool-name: HikariPoolzzz
+# Ensure application is run in Vaadin 14/npm mode
+vaadin:
+  compatibilityMode: false
 logging:
   level:
+    org.atmosphere: WARN
     org.springframework: INFO
     io.horrorshow: INFO
     com.zaxxer: DEBUG
