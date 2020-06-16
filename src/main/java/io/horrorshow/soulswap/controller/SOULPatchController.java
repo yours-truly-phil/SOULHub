@@ -21,7 +21,7 @@ public class SOULPatchController {
         this.service = service;
     }
 
-    @RequestMapping("/")
+    @RequestMapping("/rest/")
     public String index() {
         return "This is SOULSwap!";
     }

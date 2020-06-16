@@ -1,6 +1,5 @@
 package io.horrorshow.soulswap.soap;
 
-import io.horrorshow.soulswap.data.SOULSwapRepository;
 import io.horrorshow.soulswap.service.SOULPatchService;
 import io.horrorshow.soulswap.xml.SOULPatchXMLType;
 import io.horrorshow.soulswap.xml.SoulswapRequest;
