@@ -1,7 +1,6 @@
 package io.horrorshow.soulswap.controller;
 
 import io.horrorshow.soulswap.data.SOULPatch;
-import io.horrorshow.soulswap.data.SOULSwapRepository;
 import io.horrorshow.soulswap.service.SOULPatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,7 @@ public class SOULPatchController {
     private final SOULPatchService service;
 
     @Autowired
-    public SOULPatchController(SOULPatchService service, SOULSwapRepository repository) {
+    public SOULPatchController(SOULPatchService service) {
         Assert.notNull(service, SOULPatchService.class.getName() + " must not be null.");
         this.service = service;
     }
