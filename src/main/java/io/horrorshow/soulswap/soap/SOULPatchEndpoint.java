@@ -1,6 +1,7 @@
 package io.horrorshow.soulswap.soap;
 
 import io.horrorshow.soulswap.data.SOULSwapRepository;
+import io.horrorshow.soulswap.service.SOULPatchService;
 import io.horrorshow.soulswap.xml.SOULPatchXMLType;
 import io.horrorshow.soulswap.xml.SoulswapRequest;
 import io.horrorshow.soulswap.xml.SoulswapResponse;
@@ -10,33 +11,31 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
+import java.util.List;
+
 @Endpoint
 public class SOULPatchEndpoint {
+
     private static final String NAMESPACE_URI = "http://soulswap.horrorshow.io/soulswap";
 
-    private final SOULSwapRepository soulSwapRepository;
+    private final SOULPatchService soulPatchService;
 
     @Autowired
-    public SOULPatchEndpoint(SOULSwapRepository soulSwapRepository) {
+    public SOULPatchEndpoint(SOULPatchService soulPatchService) {
 
-        this.soulSwapRepository = soulSwapRepository;
+        this.soulPatchService = soulPatchService;
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "soulswapRequest")
     @ResponsePayload
     public SoulswapResponse getSoulswapResponse(@RequestPayload SoulswapRequest request) {
 
-        var soulPatchEntity =
-                soulSwapRepository.findById(Long.parseLong(request.getSoulpatchId()))
-                        .orElseThrow();
-
-
-        SOULPatchXMLType soulPatchXMLType = new SOULPatchXMLType();
-        soulPatchXMLType.setId(soulPatchEntity.getId().toString());
-        soulPatchXMLType.setId("SUCCESS: found soulpatch with id: " + request.getSoulpatchId() + " in repository");
         SoulswapResponse response = new SoulswapResponse();
+        List<SOULPatchXMLType> xmlSoulPatches = soulPatchService.findAllXML();
 
-        response.getSoulpatch().add(soulPatchXMLType);
+        xmlSoulPatches.forEach(sp -> {
+            response.getSoulpatch().add(sp);
+        });
 
         return response;
     }

@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureEmbeddedDatabase(provider = DOCKER)
 @DisplayName("SOULSwapRepository Tests")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class PersistDataAccessTest {
+class SOULSwapRepositoryTest {
 
     @Autowired
     private SOULSwapRepository repository;
