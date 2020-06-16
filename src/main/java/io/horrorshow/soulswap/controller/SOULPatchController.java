@@ -1,8 +1,6 @@
 package io.horrorshow.soulswap.controller;
 
-
 import io.horrorshow.soulswap.data.SOULSwapRepository;
-import io.horrorshow.soulswap.exception.ResourceNotFound;
 import io.horrorshow.soulswap.data.SOULPatch;
 import io.horrorshow.soulswap.service.SOULPatchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +14,12 @@ import java.util.List;
 @RestController
 public class SOULPatchController {
 
-    private final SOULPatchService soulPatchService;
-    @Deprecated
-    private final SOULSwapRepository repository;
+    private final SOULPatchService service;
 
     @Autowired
-    public SOULPatchController(SOULPatchService soulPatchService, SOULSwapRepository repository) {
-        Assert.notNull(soulPatchService, SOULPatchService.class.getName() + " must not be null.");
-        this.soulPatchService = soulPatchService;
-        Assert.notNull(repository, SOULSwapRepository.class.getName() + " must not be null.");
-        this.repository = repository;
+    public SOULPatchController(SOULPatchService service, SOULSwapRepository repository) {
+        Assert.notNull(service, SOULPatchService.class.getName() + " must not be null.");
+        this.service = service;
     }
 
     @RequestMapping("/")
@@ -35,43 +29,28 @@ public class SOULPatchController {
 
     @GetMapping("/rest/soulpatches")
     public List<SOULPatch> getSOULPatches() {
-        return repository.findAll();
+        return service.findAll();
     }
 
-    @PostMapping("/resst/soulpatches")
+    @GetMapping("/rest/soulpatches/{soulpatchId}")
+    public SOULPatch getSOULPatch(@PathVariable Long soulpatchId) {
+        return service.findById(soulpatchId);
+    }
+
+    @PostMapping("/rest/soulpatches")
     public SOULPatch createSOULPatch(@Valid @RequestBody SOULPatch soulPatch) {
-        return repository.save(soulPatch);
+        return service.save(soulPatch);
     }
 
     @PutMapping("/rest/soulpatches/{soulpatchId}")
     public SOULPatch updateSOULPatch(@PathVariable Long soulpatchId,
                                      @Valid @RequestBody SOULPatch soulPatch) {
-        return repository.findById(soulpatchId)
-                .map(patch -> {
-                    patch.setAuthor(soulPatch.getAuthor());
-                    patch.setDescription(soulPatch.getDescription());
-                    patch.setSoulFileName(soulPatch.getSoulFileName());
-                    patch.setSoulFileContent(soulPatch.getSoulFileContent());
-                    patch.setSoulpatchFileName(soulPatch.getSoulpatchFileName());
-                    patch.setSoulpatchFileContent(soulPatch.getSoulpatchFileContent());
-                    patch.setAuthor(soulPatch.getAuthor());
-                    patch.setNoServings(soulPatch.getNoServings());
-                    return repository.save(patch);
-                })
-                .orElseThrow(() ->
-                        new ResourceNotFound(
-                                SOULPatch.class.getName() + " not found in repository, soulpatchId " + soulpatchId));
+        return service.update(soulpatchId, soulPatch);
     }
 
     @DeleteMapping("/rest/soulpatches/{soulpatchId}")
     public ResponseEntity<?> deleteSOULPatch(@PathVariable Long soulpatchId) {
-        return repository.findById(soulpatchId)
-                .map(soulPatch -> {
-                    repository.delete(soulPatch);
-                    return ResponseEntity.ok().build();
-                })
-                .orElseThrow(() ->
-                        new ResourceNotFound(
-                                SOULPatch.class.getName() + " not found in repository, soulpatchId " + soulpatchId));
+        service.deleteById(soulpatchId);
+        return ResponseEntity.ok().build();
     }
 }

@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -29,7 +28,7 @@ public class SOULPatchServiceTest {
     @Mock
     SOULSwapRepository mockedRepository;
 
-//    @InjectMocks
+    //    @InjectMocks
     SOULPatchService soulPatchService;
 
     @BeforeAll
@@ -51,7 +50,6 @@ public class SOULPatchServiceTest {
             testSoulPatches.add(createTestSoulPatch(Long.MAX_VALUE - (long) i));
         }
         Mockito.doReturn(testSoulPatches).when(mockedRepository).findAll();
-//        Mockito.when(mockedRepository.findAll()).thenReturn(testSoulPatches);
 
         List<SOULPatchXMLType> xmlSPs = soulPatchService.findAllXML();
         Mockito.verify(mockedRepository).findAll();

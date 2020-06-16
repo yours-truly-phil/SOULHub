@@ -2,6 +2,7 @@ package io.horrorshow.soulswap.service;
 
 import io.horrorshow.soulswap.data.SOULPatch;
 import io.horrorshow.soulswap.data.SOULSwapRepository;
+import io.horrorshow.soulswap.exception.ResourceNotFound;
 import io.horrorshow.soulswap.xml.SOULFileXMLType;
 import io.horrorshow.soulswap.xml.SOULPatchFileXMLType;
 import io.horrorshow.soulswap.xml.SOULPatchXMLType;
@@ -19,6 +20,10 @@ public class SOULPatchService {
     @Autowired
     public SOULPatchService(SOULSwapRepository repository) {
         this.repository = repository;
+    }
+
+    public List<SOULPatch> findAll() {
+        return repository.findAll();
     }
 
     public List<SOULPatchXMLType> findAllXML() {
@@ -42,5 +47,35 @@ public class SOULPatchService {
                     xmlPatches.add(soulPatchXML);
                 });
         return xmlPatches;
+    }
+
+    public SOULPatch update(Long id, SOULPatch soulPatch) {
+        SOULPatch p = findById(id);
+        p.setName(soulPatch.getName());
+        p.setDescription(soulPatch.getDescription());
+        p.setSoulFileName(soulPatch.getSoulFileName());
+        p.setSoulFileContent(soulPatch.getSoulFileContent());
+        p.setSoulpatchFileName(soulPatch.getSoulpatchFileName());
+        p.setSoulpatchFileContent(soulPatch.getSoulpatchFileContent());
+        p.setAuthor(soulPatch.getAuthor());
+        p.setNoServings(soulPatch.getNoServings());
+        return save(p);
+    }
+
+    public SOULPatch save(SOULPatch soulPatch) {
+        return repository.save(soulPatch);
+    }
+
+    public SOULPatch findById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFound(String.format("SOULPatch Id: %d", id)));
+    }
+
+    public void deleteById(Long id) {
+        SOULPatch p = repository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFound(String.format("SOULPatch Id: %d", id)));
+        repository.delete(p);
     }
 }
