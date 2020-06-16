@@ -78,4 +78,17 @@ public class SOULPatchService {
                         new ResourceNotFound(String.format("SOULPatch Id: %d", id)));
         repository.delete(p);
     }
+
+    public boolean isMatch(SOULPatch patch, SOULPatchXMLType xmlType) {
+        try {
+            boolean isMatch = xmlType.getId().equals(String.valueOf(patch.getId()));
+            isMatch &= xmlType.getSoulfile().get(0).getFilename().equals(patch.getSoulFileName());
+            isMatch &= xmlType.getSoulfile().get(0).getFilecontent().equals(patch.getSoulFileContent());
+            isMatch &= xmlType.getSoulpatchfile().get(0).getFilename().equals(patch.getSoulpatchFileName());
+            isMatch &= xmlType.getSoulpatchfile().get(0).getFilecontent().equals(patch.getSoulpatchFileContent());
+            return isMatch;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
