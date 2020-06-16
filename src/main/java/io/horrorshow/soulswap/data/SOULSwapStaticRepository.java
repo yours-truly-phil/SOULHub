@@ -1,4 +1,4 @@
-package io.horrorshow.soulswap.dao;
+package io.horrorshow.soulswap.data;
 
 import io.horrorshow.soulswap.xml.SOULFileXMLType;
 import io.horrorshow.soulswap.xml.SOULPatchFileXMLType;

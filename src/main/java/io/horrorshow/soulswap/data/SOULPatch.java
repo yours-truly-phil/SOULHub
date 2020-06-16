@@ -1,6 +1,8 @@
-package io.horrorshow.soulswap.model;
+package io.horrorshow.soulswap.data;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -8,6 +10,8 @@ import javax.validation.constraints.NotBlank;
 @Entity
 @Table(name = "soulpatches")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class SOULPatch {
 
     @Id

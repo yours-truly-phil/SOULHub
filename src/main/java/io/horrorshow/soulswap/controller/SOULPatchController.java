@@ -1,18 +1,17 @@
 package io.horrorshow.soulswap.controller;
 
 
-import io.horrorshow.soulswap.dao.SOULSwapRepository;
+import io.horrorshow.soulswap.data.SOULSwapRepository;
 import io.horrorshow.soulswap.exception.ResourceNotFound;
-import io.horrorshow.soulswap.model.SOULPatch;
+import io.horrorshow.soulswap.data.SOULPatch;
 import io.horrorshow.soulswap.service.SOULPatchService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 public class SOULPatchController {
@@ -34,17 +33,17 @@ public class SOULPatchController {
         return "This is SOULSwap!";
     }
 
-    @GetMapping("/soulspatches")
-    public Page<SOULPatch> getSOULPatches(Pageable pageable) {
-        return repository.findAll(pageable);
+    @GetMapping("/rest/soulpatches")
+    public List<SOULPatch> getSOULPatches() {
+        return repository.findAll();
     }
 
-    @PostMapping("/soulpatches")
+    @PostMapping("/resst/soulpatches")
     public SOULPatch createSOULPatch(@Valid @RequestBody SOULPatch soulPatch) {
         return repository.save(soulPatch);
     }
 
-    @PutMapping("/soulpatches/{soulpatchId}")
+    @PutMapping("/rest/soulpatches/{soulpatchId}")
     public SOULPatch updateSOULPatch(@PathVariable Long soulpatchId,
                                      @Valid @RequestBody SOULPatch soulPatch) {
         return repository.findById(soulpatchId)
@@ -64,7 +63,7 @@ public class SOULPatchController {
                                 SOULPatch.class.getName() + " not found in repository, soulpatchId " + soulpatchId));
     }
 
-    @DeleteMapping("/soulpatches/{soulpatchId}")
+    @DeleteMapping("/rest/soulpatches/{soulpatchId}")
     public ResponseEntity<?> deleteSOULPatch(@PathVariable Long soulpatchId) {
         return repository.findById(soulpatchId)
                 .map(soulPatch -> {

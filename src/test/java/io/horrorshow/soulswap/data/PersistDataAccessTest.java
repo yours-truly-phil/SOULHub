@@ -1,6 +1,6 @@
-package io.horrorshow.soulswap.dao;
+package io.horrorshow.soulswap.data;
 
-import io.horrorshow.soulswap.model.SOULPatch;
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -8,22 +8,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.*;
 
+import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.DatabaseProvider.DOCKER;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
+@AutoConfigureEmbeddedDatabase(provider = DOCKER)
 @DisplayName("SOULSwapRepository Tests")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class SOULSwapRepositoryTest {
-
-    @Autowired
-    private TestEntityManager entityManager;
+class PersistDataAccessTest {
 
     @Autowired
     private SOULSwapRepository repository;
@@ -46,6 +44,11 @@ class SOULSwapRepositoryTest {
     @BeforeEach
     void init() {
         repository.deleteAll();
+    }
+
+    @Test
+    void generates_unique_id() {
+        repository.save(soulPatches.get("Valid1"));
     }
 
     @Test

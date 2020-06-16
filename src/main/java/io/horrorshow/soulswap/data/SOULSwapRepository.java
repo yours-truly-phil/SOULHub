@@ -1,6 +1,5 @@
-package io.horrorshow.soulswap.dao;
+package io.horrorshow.soulswap.data;
 
-import io.horrorshow.soulswap.model.SOULPatch;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

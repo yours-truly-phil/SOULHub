@@ -1,6 +1,6 @@
 package io.horrorshow.soulswap.service;
 
-import io.horrorshow.soulswap.dao.SOULSwapRepository;
+import io.horrorshow.soulswap.data.SOULSwapRepository;
 import io.horrorshow.soulswap.xml.SOULPatchXMLType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package io.horrorshow.soulswap;
 
-import io.horrorshow.soulswap.dao.SOULSwapRepository;
-import io.horrorshow.soulswap.model.SOULPatch;
+import io.horrorshow.soulswap.data.SOULSwapRepository;
+import io.horrorshow.soulswap.data.SOULPatch;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -27,22 +27,22 @@ public class SOULSwapApplication {
         System.out.println(context.getApplicationName() + "SOULSwap Application started!");
     }
 
-    @Bean
-    ApplicationRunner init(SOULSwapRepository repository) {
-
-        return args -> {
-            SOULPatch patch = new SOULPatch();
-            patch.setName("name1");
-            patch.setDescription("description1");
-            patch.setSoulFileName("soulfile name.soul");
-            patch.setSoulFileContent("soulfile content");
-            patch.setSoulpatchFileName("soulpatchfile name.soulpatch");
-            patch.setSoulpatchFileContent("soulpatch file content");
-            patch.setAuthor("author");
-            patch.setNoServings(10L);
-            repository.save(patch);
-            repository.findAll().forEach(System.out::println);
-        };
-    }
+//    @Bean
+//    ApplicationRunner init(SOULSwapRepository repository) {
+//
+//        return args -> {
+//            SOULPatch patch = new SOULPatch();
+//            patch.setName("name1");
+//            patch.setDescription("description1");
+//            patch.setSoulFileName("soulfile name.soul");
+//            patch.setSoulFileContent("soulfile content");
+//            patch.setSoulpatchFileName("soulpatchfile name.soulpatch");
+//            patch.setSoulpatchFileContent("soulpatch file content");
+//            patch.setAuthor("author");
+//            patch.setNoServings(10L);
+//            repository.save(patch);
+//            repository.findAll().forEach(System.out::println);
+//        };
+//    }
 
 }

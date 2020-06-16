@@ -1,0 +1,16 @@
+spring:
+  flyway:
+    enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+zonky:
+  test:
+    database:
+      postgres:
+        docker:
+          image: postgres:12-alpine
+          tmpfs:
+            enabled: false
+            options: rw,noexec,nosuid
