@@ -30,12 +30,11 @@ public class SOULPatchService {
     public List<SOULPatch> findAll(String searchTerm) {
         return repository.findAll().stream()
                 .filter(e -> {
-                    String concat = e.getName()
-                            .concat(e.getDescription())
-                            .concat(e.getSoulFileName())
-                            .concat(e.getSoulpatchFileName());
                     String regex = String.format("^(?i).*%s.*$", searchTerm);
-                    return concat.matches(regex);
+                    return e.getName().matches(regex) ||
+                            e.getDescription().matches(regex) ||
+                            e.getSoulFileName().matches(regex) ||
+                            e.getSoulpatchFileName().matches(regex);
                 })
                 .collect(Collectors.toList());
     }

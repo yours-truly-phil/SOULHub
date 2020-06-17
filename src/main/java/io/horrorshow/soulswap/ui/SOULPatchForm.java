@@ -1,17 +1,13 @@
 package io.horrorshow.soulswap.ui;
 
-import com.sun.xml.bind.v2.runtime.property.Property;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import io.horrorshow.soulswap.data.SOULPatch;
-import io.horrorshow.soulswap.service.SOULPatchService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class SOULPatchForm extends FormLayout {
 

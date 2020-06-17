@@ -1,6 +1,5 @@
 package io.horrorshow.soulswap.service;
 
-import com.vaadin.flow.component.grid.Grid;
 import io.horrorshow.soulswap.data.SOULPatch;
 import io.horrorshow.soulswap.data.SOULSwapRepository;
 import io.horrorshow.soulswap.xml.SOULPatchXMLType;
@@ -19,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
@@ -78,5 +78,23 @@ public class SOULPatchServiceTest {
                     SOULPatchXMLType xmlPatch = xmlSPMap.get(soulPatch.getId().toString());
                     assertTrue(service.isMatch(soulPatch, xmlPatch));
                 });
+    }
+
+    @Test
+    void find_by_pattern_match_in_name_desc_and_filepath() {
+        List<SOULPatch> testSoulPatches = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            testSoulPatches.add(createTestSoulPatch((long) i));
+            testSoulPatches.add(createTestSoulPatch((long) i));
+        }
+        Mockito.doReturn(testSoulPatches).when(mockedRepository).findAll();
+
+        assertEquals(24, service.findAll("").size());
+        assertEquals(24, service.findAll("ption ").size());
+        assertEquals(24, service.findAll("PTION ").size());
+        assertEquals(6, service.findAll("1").size());
+        assertEquals(6, service.findAll("name 1").size());
+        assertEquals(24, service.findAll("name \\d").size());
+        assertEquals(2, service.findAll("name 1$").size());
     }
 }

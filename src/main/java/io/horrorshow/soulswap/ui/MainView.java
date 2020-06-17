@@ -1,6 +1,5 @@
 package io.horrorshow.soulswap.ui;
 
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -29,7 +28,7 @@ public class MainView extends VerticalLayout {
 
     private final SOULPatchGrid grid = new SOULPatchGrid();
 
-    private final TextField filterText = new TextField();
+    private final TextField filterText = new TextField("filter by (regex)");
 
     private final SOULPatchForm form = new SOULPatchForm(this);
 
@@ -38,7 +37,8 @@ public class MainView extends VerticalLayout {
      * <p>
      * Build the initial UI state for the user accessing the application.
      *
-     * @param service The message service. Automatically injected Spring managed bean.
+     * @param service
+     *         The message service. Automatically injected Spring managed bean.
      */
     public MainView(@Autowired SOULPatchService service) {
 
