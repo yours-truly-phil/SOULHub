@@ -1,5 +1,6 @@
 package io.horrorshow.soulswap.service;
 
+import com.vaadin.flow.component.grid.Grid;
 import io.horrorshow.soulswap.data.SOULPatch;
 import io.horrorshow.soulswap.data.SOULSwapRepository;
 import io.horrorshow.soulswap.xml.SOULPatchXMLType;
@@ -26,7 +27,6 @@ public class SOULPatchServiceTest {
     @Mock
     SOULSwapRepository mockedRepository;
 
-    //    @InjectMocks
     SOULPatchService service;
 
     @BeforeAll

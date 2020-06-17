@@ -3,7 +3,7 @@ server:
 spring:
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
@@ -13,6 +13,10 @@ spring:
       connection-timeout: 20000
       maximum-pool-size: 5
       pool-name: HikariPoolzzz
+  devtools:
+    restart:
+      poll-interval: 2s
+      quiet-period: 1s
 # Ensure application is run in Vaadin 14/npm mode
 vaadin:
   compatibilityMode: false
@@ -21,6 +25,6 @@ logging:
     org.atmosphere: WARN
     org.springframework: INFO
     io.horrorshow: INFO
-    com.zaxxer: DEBUG
+    com.zaxxer: INFO
     root: ERROR
 

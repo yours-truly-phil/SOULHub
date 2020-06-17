@@ -4,16 +4,16 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.PWA;
 import io.horrorshow.soulswap.data.SOULPatch;
 import io.horrorshow.soulswap.service.SOULPatchService;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 @Route
 @PWA(name = "SOULSwap - SOUL-Patch Web UI",
@@ -25,6 +25,14 @@ import java.util.List;
         themeFor = "vaadin-text-field")
 public class MainView extends VerticalLayout {
 
+    public final SOULPatchService service;
+
+    private final SOULPatchGrid grid = new SOULPatchGrid();
+
+    private final TextField filterText = new TextField();
+
+    private final SOULPatchForm form = new SOULPatchForm(this);
+
     /**
      * Construct a new Vaadin view.
      * <p>
@@ -33,23 +41,17 @@ public class MainView extends VerticalLayout {
      * @param service The message service. Automatically injected Spring managed bean.
      */
     public MainView(@Autowired SOULPatchService service) {
-        List<SOULPatch> patches = service.findAll();
 
-        Grid<SOULPatch> grid = new Grid<>();
+        this.service = service;
+
+        filterText.setPlaceholder("Filter by name...");
+        filterText.setClearButtonVisible(true);
+        filterText.setValueChangeMode(ValueChangeMode.EAGER);
+
+        filterText.addValueChangeListener(e -> updateList());
 
         grid.addThemeName("bordered");
-
-        grid.setItems(patches);
-
-        grid.addColumn(SOULPatch::getId).setHeader("Id");
-        grid.addColumn(SOULPatch::getName).setHeader("name");
-        grid.addColumn(SOULPatch::getDescription).setHeader("description");
-        grid.addColumn(SOULPatch::getSoulFileName).setHeader("soulFileName");
-        grid.addColumn(SOULPatch::getSoulFileContent).setHeader("soulFileContent");
-        grid.addColumn(SOULPatch::getSoulpatchFileName).setHeader("soulpatchFileName");
-        grid.addColumn(SOULPatch::getSoulpatchFileContent).setHeader("soulpatchFileContent");
-        grid.addColumn(SOULPatch::getAuthor).setHeader("author");
-        grid.addColumn(SOULPatch::getNoServings).setHeader("noServings");
+        grid.addSOULPatchColumns();
 
         Button addPatchBtn = new Button("add SOULPatch",
                 e -> Notification.show("not yet implemented"));
@@ -57,14 +59,31 @@ public class MainView extends VerticalLayout {
         // Theme variants give you predefined extra styles for components.
         // Example: Primary button has a more prominent look.
         addPatchBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
-        // You can specify keyboard shortcuts for buttons.
-        // Example: Pressing enter in this view clicks the Button.
-        addPatchBtn.addClickShortcut(Key.ENTER);
+        addPatchBtn.addClickListener(e -> {
+            grid.asSingleSelect().clear();
+            form.setSOULPatch(new SOULPatch());
+        });
+        HorizontalLayout toolbar = new HorizontalLayout(filterText, addPatchBtn);
 
         // Use custom CSS classes to apply styling. This is defined in shared-styles.css.
         addClassName("centered-content");
+        HorizontalLayout mainContent = new HorizontalLayout(grid, form);
+        mainContent.setSizeFull();
+        grid.setSizeFull();
 
-        add(addPatchBtn, grid, addPatchBtn);
+        add(toolbar, mainContent);
+
+        setSizeFull();
+
+        form.setSOULPatch(null);
+        updateList();
+
+        grid.asSingleSelect().addValueChangeListener(
+                e -> form.setSOULPatch(grid.asSingleSelect().getValue())
+        );
+    }
+
+    public void updateList() {
+        grid.setItems(service.findAll(filterText.getValue()));
     }
 }

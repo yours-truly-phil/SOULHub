@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SOULPatchService {
@@ -22,11 +23,24 @@ public class SOULPatchService {
         this.repository = repository;
     }
 
-    public List<SOULPatch> findAll() {
+    public synchronized List<SOULPatch> findAll() {
         return repository.findAll();
     }
 
-    public List<SOULPatchXMLType> findAllXML() {
+    public List<SOULPatch> findAll(String searchTerm) {
+        return repository.findAll().stream()
+                .filter(e -> {
+                    String concat = e.getName()
+                            .concat(e.getDescription())
+                            .concat(e.getSoulFileName())
+                            .concat(e.getSoulpatchFileName());
+                    String regex = String.format("^(?i).*%s.*$", searchTerm);
+                    return concat.matches(regex);
+                })
+                .collect(Collectors.toList());
+    }
+
+    public synchronized List<SOULPatchXMLType> findAllXML() {
         List<SOULPatchXMLType> xmlPatches = new ArrayList<>();
         List<SOULPatch> soulPatches = repository.findAll();
         soulPatches.forEach(
@@ -64,6 +78,10 @@ public class SOULPatchService {
 
     public SOULPatch save(SOULPatch soulPatch) {
         return repository.save(soulPatch);
+    }
+
+    public void delete(SOULPatch soulPatch) {
+        repository.delete(soulPatch);
     }
 
     public SOULPatch findById(Long id) {
