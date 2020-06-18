@@ -25,6 +25,7 @@
     <postgres-testcontainer.version>1.14.3</postgres-testcontainer.version>
     <vaadin.version>14.2.1</vaadin.version>
     <webdrivermanager.version>3.8.1</webdrivermanager.version>
+    <hibernate-search.version>5.11.5.Final</hibernate-search.version>
   </properties>
 
   <repositories>
@@ -106,6 +107,7 @@
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <scope>runtime</scope>
+<!--      <scope>test</scope>-->
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -121,6 +123,11 @@
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
       <version>${hibernate-validator.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-search-orm</artifactId>
+      <version>${hibernate-search.version}</version>
     </dependency>
 
     <!-- copied from Vaadin start project -->

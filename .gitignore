@@ -56,6 +56,11 @@ build/
 
 ### Oxygen XML Project ###
 *.xpr
+
+### node dependencies from vaadin
 /webpack.config.js
 /webpack.generated.js
 /node_modules/
+
+### hibernate search index
+/io.horrorshow.soulswap.data.SOULPatch/
