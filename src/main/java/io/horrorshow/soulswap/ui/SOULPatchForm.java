@@ -25,8 +25,8 @@ public class SOULPatchForm extends FormLayout {
     private final TextField author = new TextField("Author");
     private final TextField noServings = new TextField("no Servings");
 
-    private Button save = new Button("Save");
-    private Button delete = new Button("Delete");
+    private final Button save = new Button("Save");
+    private final Button delete = new Button("Delete");
 
     public SOULPatchForm(MainView mainView) {
         this.mainView = mainView;

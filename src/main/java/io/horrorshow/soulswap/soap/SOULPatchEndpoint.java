@@ -32,9 +32,7 @@ public class SOULPatchEndpoint {
         SoulswapResponse response = new SoulswapResponse();
         List<SOULPatchXMLType> xmlSoulPatches = soulPatchService.findAllXML();
 
-        xmlSoulPatches.forEach(sp -> {
-            response.getSoulpatch().add(sp);
-        });
+        xmlSoulPatches.forEach(sp -> response.getSoulpatch().add(sp));
 
         return response;
     }
