@@ -6,9 +6,14 @@ import io.horrorshow.soulswap.exception.ResourceNotFound;
 import io.horrorshow.soulswap.xml.SOULFileXMLType;
 import io.horrorshow.soulswap.xml.SOULPatchFileXMLType;
 import io.horrorshow.soulswap.xml.SOULPatchXMLType;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +22,8 @@ import java.util.stream.Collectors;
 public class SOULPatchService {
 
     private final SOULSwapRepository repository;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     public SOULPatchService(SOULSwapRepository repository) {
@@ -106,6 +113,17 @@ public class SOULPatchService {
             return isMatch;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    @Transactional
+    public void createDatabaseIndex() {
+        FullTextEntityManager fullTextEntityManager =
+                Search.getFullTextEntityManager(entityManager);
+        try {
+            fullTextEntityManager.createIndexer().startAndWait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

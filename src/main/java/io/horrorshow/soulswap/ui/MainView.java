@@ -55,7 +55,6 @@ public class MainView extends VerticalLayout {
 
         Button addPatchBtn = new Button("add SOULPatch",
                 e -> Notification.show("not yet implemented"));
-
         // Theme variants give you predefined extra styles for components.
         // Example: Primary button has a more prominent look.
         addPatchBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -63,16 +62,23 @@ public class MainView extends VerticalLayout {
             grid.asSingleSelect().clear();
             form.setSOULPatch(new SOULPatch());
         });
-        HorizontalLayout toolbar = new HorizontalLayout(filterText, addPatchBtn);
+
+        Button createIndexBtn = new Button("create Database Index");
+        createIndexBtn.addClickListener(
+                e -> service.createDatabaseIndex()
+        );
+
+
+        HorizontalLayout toolbar = new HorizontalLayout(filterText, addPatchBtn, createIndexBtn);
 
         // Use custom CSS classes to apply styling. This is defined in shared-styles.css.
         addClassName("centered-content");
+
         HorizontalLayout mainContent = new HorizontalLayout(grid, form);
         mainContent.setSizeFull();
         grid.setSizeFull();
 
         add(toolbar, mainContent);
-
         setSizeFull();
 
         form.setSOULPatch(null);
