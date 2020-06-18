@@ -103,7 +103,7 @@ public class SOULPatchService {
         repository.delete(p);
     }
 
-    public boolean isMatch(SOULPatch patch, SOULPatchXMLType xmlType) {
+    public boolean isSPXmlMatchSPData(SOULPatch patch, SOULPatchXMLType xmlType) {
         try {
             boolean isMatch = xmlType.getId().equals(String.valueOf(patch.getId()));
             isMatch &= xmlType.getSoulfile().get(0).getFilename().equals(patch.getSoulFileName());
@@ -115,6 +115,8 @@ public class SOULPatchService {
             return false;
         }
     }
+
+
 
     @Transactional
     public void createDatabaseIndex() {

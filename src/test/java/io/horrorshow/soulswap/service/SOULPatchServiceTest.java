@@ -76,7 +76,7 @@ public class SOULPatchServiceTest {
         testSoulPatches.forEach(
                 soulPatch -> {
                     SOULPatchXMLType xmlPatch = xmlSPMap.get(soulPatch.getId().toString());
-                    assertTrue(service.isMatch(soulPatch, xmlPatch));
+                    assertTrue(service.isSPXmlMatchSPData(soulPatch, xmlPatch));
                 });
     }
 
