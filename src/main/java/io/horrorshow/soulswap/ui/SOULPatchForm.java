@@ -38,10 +38,9 @@ public class SOULPatchForm extends FormLayout {
         add(id, name, description,
                 soulFileName, soulFileContent,
                 soulpatchFileName, soulpatchFileContent,
-                author, noServings);
+                author, noServings, buttons);
 
-        binder.bind(id,
-                id -> String.valueOf(getId()),
+        binder.bind(id, soulPatch -> String.valueOf(soulPatch.getId()),
                 (soulPatch, s) -> soulPatch.setId(Long.valueOf(s)));
         binder.bind(name, SOULPatch::getName, SOULPatch::setName);
         binder.bind(description, SOULPatch::getDescription, SOULPatch::setDescription);
@@ -50,8 +49,7 @@ public class SOULPatchForm extends FormLayout {
         binder.bind(soulpatchFileName, SOULPatch::getSoulpatchFileName, SOULPatch::setSoulpatchFileName);
         binder.bind(soulpatchFileContent, SOULPatch::getSoulpatchFileContent, SOULPatch::setSoulpatchFileContent);
         binder.bind(author, SOULPatch::getAuthor, SOULPatch::setAuthor);
-        binder.bind(noServings,
-                no -> String.valueOf(getId()),
+        binder.bind(noServings, soulPatch -> String.valueOf(soulPatch.getNoServings()),
                 (soulPatch, s) -> soulPatch.setNoServings(Long.valueOf(s)));
 
         save.addClickListener(e -> save());

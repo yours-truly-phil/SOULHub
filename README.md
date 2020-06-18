@@ -35,6 +35,7 @@ app_1  | 2020-06-18 16:53:02.817  INFO 1 --- [           main] i.h.soulswap.SOUL
 app_1  | SOULSwap Application started!
 ````
 
+to input some testdata connect to postgresql and run the sqls in input_testdata.sql
 
 wsdl gets generated at: `http://<server>:<port>/ws/SOULSwapWsdl.wsdl`
 

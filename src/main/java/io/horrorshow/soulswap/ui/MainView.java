@@ -3,6 +3,7 @@ package io.horrorshow.soulswap.ui;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -26,7 +27,7 @@ public class MainView extends VerticalLayout {
 
     public final SOULPatchService service;
 
-    private final SOULPatchGrid grid = new SOULPatchGrid();
+    private final Grid<SOULPatch> grid = new Grid<>();
 
     private final TextField filterText = new TextField("filter by (regex)");
 
@@ -51,7 +52,16 @@ public class MainView extends VerticalLayout {
         filterText.addValueChangeListener(e -> updateList());
 
         grid.addThemeName("bordered");
-        grid.addSOULPatchColumns();
+
+        grid.addColumn(soulPatch -> String.valueOf(soulPatch.getId())).setHeader("Id");
+        grid.addColumn(SOULPatch::getName).setHeader("name");
+        grid.addColumn(SOULPatch::getDescription).setHeader("description");
+        grid.addColumn(SOULPatch::getSoulFileName).setHeader("soulFileName");
+        grid.addColumn(SOULPatch::getSoulFileContent).setHeader("soulFileContent");
+        grid.addColumn(SOULPatch::getSoulpatchFileName).setHeader("soulpatchFileName");
+        grid.addColumn(SOULPatch::getSoulpatchFileContent).setHeader("soulpatchFileContent");
+        grid.addColumn(SOULPatch::getAuthor).setHeader("author");
+        grid.addColumn(soulPatch -> String.valueOf(soulPatch.getNoServings())).setHeader("noServings");
 
         Button addPatchBtn = new Button("add SOULPatch",
                 e -> Notification.show("not yet implemented"));
