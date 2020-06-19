@@ -1,7 +1,7 @@
 package io.horrorshow.soulswap.service;
 
 import io.horrorshow.soulswap.data.SOULPatch;
-import io.horrorshow.soulswap.data.SOULSwapRepository;
+import io.horrorshow.soulswap.data.SOULPatchRepository;
 import io.horrorshow.soulswap.xml.SOULPatchXMLType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,14 +18,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class SOULPatchServiceTest {
 
     @Mock
-    SOULSwapRepository mockedRepository;
+    SOULPatchRepository mockedRepository;
 
     SOULPatchService service;
 
@@ -38,10 +37,12 @@ public class SOULPatchServiceTest {
         p.setId(no);
         p.setName(String.format("name %s", no));
         p.setDescription(String.format("description %s", no));
-        p.setSoulFileName(String.format("soulfile name %s", no));
-        p.setSoulFileContent(String.format("soulfile content %s", no));
-        p.setSoulpatchFileName(String.format("soulpatchfile name %s", no));
-        p.setSoulpatchFileContent(String.format("soulpatchfile content %s", no));
+
+        fail();// TODO: soulfiles schema change
+//        p.setSoulFileName(String.format("soulfile name %s", no));
+//        p.setSoulFileContent(String.format("soulfile content %s", no));
+//        p.setSoulpatchFileName(String.format("soulpatchfile name %s", no));
+//        p.setSoulpatchFileContent(String.format("soulpatchfile content %s", no));
         p.setAuthor(String.format("author %s", no));
         p.setNoServings(no);
         return p;

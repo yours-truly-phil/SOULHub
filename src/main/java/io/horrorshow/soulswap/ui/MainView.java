@@ -56,10 +56,11 @@ public class MainView extends VerticalLayout {
         grid.addColumn(soulPatch -> String.valueOf(soulPatch.getId())).setHeader("Id");
         grid.addColumn(SOULPatch::getName).setHeader("name");
         grid.addColumn(SOULPatch::getDescription).setHeader("description");
-        grid.addColumn(SOULPatch::getSoulFileName).setHeader("soulFileName");
-        grid.addColumn(SOULPatch::getSoulFileContent).setHeader("soulFileContent");
-        grid.addColumn(SOULPatch::getSoulpatchFileName).setHeader("soulpatchFileName");
-        grid.addColumn(SOULPatch::getSoulpatchFileContent).setHeader("soulpatchFileContent");
+        // TODO: Schema change, one to many soulpatch -> soul/soulpatch files
+//        grid.addColumn(SOULPatch::getSoulFileName).setHeader("soulFileName");
+//        grid.addColumn(SOULPatch::getSoulFileContent).setHeader("soulFileContent");
+//        grid.addColumn(SOULPatch::getSoulpatchFileName).setHeader("soulpatchFileName");
+//        grid.addColumn(SOULPatch::getSoulpatchFileContent).setHeader("soulpatchFileContent");
         grid.addColumn(SOULPatch::getAuthor).setHeader("author");
         grid.addColumn(soulPatch -> String.valueOf(soulPatch.getNoServings())).setHeader("noServings");
 

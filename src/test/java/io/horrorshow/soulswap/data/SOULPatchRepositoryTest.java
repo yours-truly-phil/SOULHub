@@ -21,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureEmbeddedDatabase(provider = DOCKER)
 @DisplayName("SOULSwapRepository Tests")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class SOULSwapRepositoryTest {
+class SOULPatchRepositoryTest {
 
     @Autowired
-    private SOULSwapRepository repository;
+    private SOULPatchRepository repository;
 
     private static final HashMap<String, SOULPatch> soulPatches = new HashMap<>();
 

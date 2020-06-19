@@ -64,10 +64,11 @@ public class SOULPatchForm extends FormLayout {
                 (soulPatch, s) -> soulPatch.setId(Long.valueOf(s)));
         binder.bind(name, SOULPatch::getName, SOULPatch::setName);
         binder.bind(description, SOULPatch::getDescription, SOULPatch::setDescription);
-        binder.bind(soulFileName, SOULPatch::getSoulFileName, SOULPatch::setSoulFileName);
-        binder.bind(soulFileContent, SOULPatch::getSoulFileContent, SOULPatch::setSoulFileContent);
-        binder.bind(soulpatchFileName, SOULPatch::getSoulpatchFileName, SOULPatch::setSoulpatchFileName);
-        binder.bind(soulpatchFileContent, SOULPatch::getSoulpatchFileContent, SOULPatch::setSoulpatchFileContent);
+        // TODO: Schema change, one to many soulpatch -> soul/soulpatch files
+//        binder.bind(soulFileName, SOULPatch::getSoulFileName, SOULPatch::setSoulFileName);
+//        binder.bind(soulFileContent, SOULPatch::getSoulFileContent, SOULPatch::setSoulFileContent);
+//        binder.bind(soulpatchFileName, SOULPatch::getSoulpatchFileName, SOULPatch::setSoulpatchFileName);
+//        binder.bind(soulpatchFileContent, SOULPatch::getSoulpatchFileContent, SOULPatch::setSoulpatchFileContent);
         binder.bind(author, SOULPatch::getAuthor, SOULPatch::setAuthor);
         binder.bind(noServings, soulPatch -> String.valueOf(soulPatch.getNoServings()),
                 (soulPatch, s) -> soulPatch.setNoServings(Long.valueOf(s)));
