@@ -26,7 +26,8 @@ public class SOULPatchHibernateSearchInit implements ApplicationListener<Context
         try {
             fullTextEntityManager.createIndexer().startAndWait();
         } catch (InterruptedException e) {
-            System.out.println("Error occured trying to build Hibernate Search indices "
+            System.out.println("Error occurred trying to " +
+                    "build Hibernate Search indices "
                     + e.toString());
         }
     }
