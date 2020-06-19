@@ -13,7 +13,6 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.internal.MessageDigestUtil;
-import com.vaadin.flow.server.Constants;
 import com.vaadin.flow.server.StreamResource;
 import io.horrorshow.soulswap.data.SOULPatch;
 import org.apache.commons.io.IOUtils;

@@ -1,5 +1,23 @@
 # SOULSwap
-Serves SOUL (Sound Language) Patches
+
+Serves SOUL (Sound Language) Patches to SOUL IDE Plugins that
+allow the developer to quickly find, switch and try out patches from the community
+in their SOUL graph without having to leave the IDE and all sorts of awesome stuff TBD. 
+
+#### how to build (reminder to myself)
+
+docker-compose.yml and docker_run_postgres.sh still contain hardcoded paths 
+that need to fit the given environment.
+
+##### dev
+
+postgres has to be running (any recent postgres docker image).
+It can be run by ./docker_run_postgres.sh (careful -> paths)
+
+And then like any spring-boot project with the IDE (or without) 
+the maven profile spring-boot:run.
+
+##### production
 
 to run postgresql and soulswap in docker container
 
