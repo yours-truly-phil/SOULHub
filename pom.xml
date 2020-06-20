@@ -21,11 +21,12 @@
     <hibernate-validator.version>6.1.0.Final</hibernate-validator.version>
     <jaxb-impl.version>2.3.3</jaxb-impl.version>
     <jaxb-maven-plugin.version>2.5.0</jaxb-maven-plugin.version>
-    <zonky-test.version>1.5.4</zonky-test.version>
-    <postgres-testcontainer.version>1.14.3</postgres-testcontainer.version>
+<!--    <zonky-test.version>1.5.4</zonky-test.version>-->
+<!--    <postgres-testcontainer.version>1.14.3</postgres-testcontainer.version>-->
     <vaadin.version>14.2.1</vaadin.version>
     <webdrivermanager.version>3.8.1</webdrivermanager.version>
     <hibernate-search.version>5.11.5.Final</hibernate-search.version>
+<!--    <zonky-postgres.version>12.3.0</zonky-postgres.version>-->
   </properties>
 
   <repositories>
@@ -69,6 +70,13 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+<!--      <dependency>-->
+<!--        <groupId>io.zonky.test.postgres</groupId>-->
+<!--        <artifactId>embedded-postgres-binaries-bom</artifactId>-->
+<!--        <version>${zonky-postgres.version}</version>-->
+<!--        <type>pom</type>-->
+<!--        <scope>import</scope>-->
+<!--      </dependency>-->
     </dependencies>
   </dependencyManagement>
 
@@ -106,8 +114,8 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <scope>runtime</scope>
-<!--      <scope>test</scope>-->
+<!--      <scope>runtime</scope>-->
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -203,18 +211,18 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>io.zonky.test</groupId>
-      <artifactId>embedded-database-spring-test</artifactId>
-      <version>${zonky-test.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>${postgres-testcontainer.version}</version>
-      <scope>test</scope>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>io.zonky.test</groupId>-->
+<!--      <artifactId>embedded-database-spring-test</artifactId>-->
+<!--      <version>${zonky-test.version}</version>-->
+<!--      <scope>test</scope>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>org.testcontainers</groupId>-->
+<!--      <artifactId>postgresql</artifactId>-->
+<!--      <version>${postgres-testcontainer.version}</version>-->
+<!--      <scope>test</scope>-->
+<!--    </dependency>-->
   </dependencies>
 
   <build>

@@ -1,36 +1,51 @@
 package io.horrorshow.soulswap.data;
 
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import io.horrorshow.soulswap.data.repository.SOULPatchRepository;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
-import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.DatabaseProvider.DOCKER;
-import static org.junit.jupiter.api.Assertions.*;
+import static io.horrorshow.soulswap.data.SPFile.FileType.SOUL;
+import static io.horrorshow.soulswap.data.SPFile.FileType.SOULPATCH;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
-@AutoConfigureEmbeddedDatabase(provider = DOCKER)
 @DisplayName("SOULSwapRepository Tests")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class SOULPatchRepositoryTest {
 
+    private static final HashMap<String, SOULPatch> soulPatches = new HashMap<>();
     @Autowired
     private SOULPatchRepository repository;
-
-    private static final HashMap<String, SOULPatch> soulPatches = new HashMap<>();
 
     @BeforeAll
     static void initAll() {
         SOULPatch soulPatch1 = new SOULPatch();
+        soulPatch1.setSpFiles(new HashSet<>());
+
+        SPFile file1 = new SPFile();
+        file1.setName("soulfile name");
+        file1.setFileContent("soulfile content");
+        file1.setFileType(SOUL);
+        file1.setSoulPatch(soulPatch1);
+
+        SPFile file2 = new SPFile();
+        file2.setName("soulpatch manifest 1");
+        file2.setFileContent("soulpatch manifest content");
+        file2.setFileType(SOULPATCH);
+        file2.setSoulPatch(soulPatch1);
+
+        soulPatch1.getSpFiles().add(file1);
+        soulPatch1.getSpFiles().add(file2);
+
         SOULPatch soulPatch2 = new SOULPatch();
         soulPatch1.setName("name1");
         soulPatch2.setName("name2");
@@ -41,40 +56,12 @@ class SOULPatchRepositoryTest {
         soulPatches.put("Valid2", soulPatch2);
     }
 
-    @BeforeEach
-    void init() {
-        repository.deleteAll();
-    }
-
     @Test
-    void generates_unique_id() {
-        repository.save(soulPatches.get("Valid1"));
-    }
-
-    @Test
-    void find_all_soulpatches() {
+    void save_and_retrieve_some_soulpatches() {
         repository.saveAll(soulPatches.values());
         List<SOULPatch> patches = repository.findAll();
-        assertTrue(patches.containsAll(soulPatches.values()));
-    }
-
-    @Test
-    void delete_all_found_soulpatches() {
-        repository.saveAll(soulPatches.values());
-        List<SOULPatch> soulPatchesInRepo = repository.findAll();
-        assertTrue(soulPatchesInRepo.size() > 0);
-        soulPatchesInRepo.forEach(soulPatch -> repository.delete(soulPatch));
-        assertEquals(0, repository.findAll().size());
-    }
-
-    @Test
-    void delete_soulpatch_By_Id() {
-        repository.saveAll(soulPatches.values());
-        Long id = soulPatches.get("Valid1").getId();
-        assertNotNull(id);
-        SOULPatch toBeDeleted = repository.getOne(id);
-        assertEquals(id, toBeDeleted.getId());
-        repository.deleteById(toBeDeleted.getId());
-        assertEquals(Optional.empty(), repository.findById(toBeDeleted.getId()));
+        for (SOULPatch patch : patches) {
+            assertNotNull(patch.getId());
+        }
     }
 }

@@ -12,18 +12,17 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Parameter;
 import org.hibernate.search.annotations.*;
-import org.springframework.stereotype.Indexed;
 
 import javax.persistence.*;
 
 @Entity
 @Indexed
-@Table(name = "soulpatchfiles")
+@Table(name = "spfiles")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@AnalyzerDef(name = "soulpatchfile_analyzer",
+@AnalyzerDef(name = "soulfile_analyzer",
         tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
         filters = {
                 @TokenFilterDef(factory = LowerCaseFilterFactory.class),
@@ -31,23 +30,34 @@ import javax.persistence.*;
                         @Parameter(name = "language", value = "English")
                 })
         })
-public class SOULPatchFile extends AuditModel {
+public class SPFile extends AuditModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "soulfile_generator")
+    @SequenceGenerator(name = "soulfile_generator", sequenceName = "soulfile_sequence")
+    @Column(name = "id", updatable = false, nullable = false)
+    @DocumentId
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "soulpatch_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @EqualsAndHashCode.Exclude
     private SOULPatch soulPatch;
 
+    @Enumerated(EnumType.STRING)
+    private FileType fileType;
+
     @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
-    @Analyzer(definition = "soulpatchfile_analyzer")
+    @Analyzer(definition = "soulfile_analyzer")
     private String name;
 
     @Column(columnDefinition = "TEXT")
     @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
-    @Analyzer(definition = "soulpatchfile_analyzer")
-    private String content;
+    @Analyzer(definition = "soulfile_analyzer")
+    private String fileContent;
+
+    public enum FileType {
+        SOUL, SOULPATCH, OTHER
+    }
 }

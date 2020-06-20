@@ -1,8 +1,6 @@
 package io.horrorshow.soulswap.data;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
 import org.apache.lucene.analysis.snowball.SnowballPorterFilterFactory;
 import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
@@ -12,12 +10,19 @@ import org.hibernate.search.annotations.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static io.horrorshow.soulswap.data.SPFile.FileType.SOUL;
+import static io.horrorshow.soulswap.data.SPFile.FileType.SOULPATCH;
 
 @Entity
 @Indexed
 @Table(name = "soulpatches")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @AnalyzerDef(name = "soulpatch_analyzer",
@@ -31,7 +36,9 @@ import java.util.List;
 public class SOULPatch extends AuditModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "soulpatch_generator")
+    @SequenceGenerator(name = "soulpatch_generator", sequenceName = "soulpatch_sequence")
+    @Column(name = "id", updatable = false, nullable = false)
     @DocumentId
     private Long id;
 
@@ -45,14 +52,24 @@ public class SOULPatch extends AuditModel {
     @Analyzer(definition = "soulpatch_analyzer")
     private String description;
 
-    @OneToMany(mappedBy = "soulpatch")
-    private List<SOULPatchFile> soulPatchFiles;
-
-    @OneToMany(mappedBy = "soulpatch")
-    private List<SOULFile> soulFiles;
+    @OneToMany(mappedBy = "soulPatch", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private Set<SPFile> spFiles = new HashSet<>();
 
     @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
     private String author;
 
     private Long noServings;
+
+    public List<SPFile> getSoulFiles() {
+        return spFiles.stream().filter(
+                spFile -> spFile.getFileType()
+                        .equals(SOUL)).collect(Collectors.toList());
+    }
+
+    public List<SPFile> getSoulpatchFiles() {
+        return spFiles.stream().filter(
+                spFile -> spFile.getFileType()
+                        .equals(SOULPATCH)).collect(Collectors.toList());
+    }
 }

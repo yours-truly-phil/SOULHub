@@ -3,8 +3,9 @@ server:
 spring:
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
@@ -22,9 +23,9 @@ vaadin:
   compatibilityMode: false
 logging:
   level:
-    org.atmosphere: WARN
+    org.atmosphere: INFO
     org.springframework: INFO
     io.horrorshow: INFO
     com.zaxxer: INFO
-    root: ERROR
+    root: INFO
 
