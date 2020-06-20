@@ -1,5 +1,6 @@
 drop table if exists spfiles;
 drop table if exists soulpatches;
+drop sequence if exists hibernate_sequence;
 
 create table soulpatches
 (

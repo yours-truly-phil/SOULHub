@@ -1,3 +1,6 @@
+delete from spfiles;
+delete from soulpatches;
+
 insert into soulpatches(id, created_at, updated_at, author, description, name, no_servings)
 values (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'author 0', 'description 0', 'name 0',
         0),
@@ -40,4 +43,3 @@ VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'SO
        (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'SOULPATCH', 'soulpatchfile content 4',
         'soulpatchfile 4',
         (select id from soulpatches where name = 'name 4'));
-
