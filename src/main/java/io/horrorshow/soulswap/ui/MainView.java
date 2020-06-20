@@ -15,6 +15,10 @@ import io.horrorshow.soulswap.data.SOULPatch;
 import io.horrorshow.soulswap.service.SOULPatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.stream.Collectors;
+
+import static java.lang.String.format;
+
 @Route
 @PWA(name = "SOULSwap - SOUL-Patch Web UI",
         shortName = "SOULSwap-Web",
@@ -57,10 +61,14 @@ public class MainView extends VerticalLayout {
         grid.addColumn(SOULPatch::getName).setHeader("name");
         grid.addColumn(SOULPatch::getDescription).setHeader("description");
         // TODO: Schema change, one to many soulpatch -> soul/soulpatch files
-//        grid.addColumn(SOULPatch::getSoulFileName).setHeader("soulFileName");
-//        grid.addColumn(SOULPatch::getSoulFileContent).setHeader("soulFileContent");
-//        grid.addColumn(SOULPatch::getSoulpatchFileName).setHeader("soulpatchFileName");
-//        grid.addColumn(SOULPatch::getSoulpatchFileContent).setHeader("soulpatchFileContent");
+        grid.addColumn(
+                soulPatch -> soulPatch.getSpFiles().stream()
+                        .map(spFile ->
+                                format("filename: %s (type: %s)",
+                                        spFile.getName(), spFile.getFileType().toString()))
+                        .collect(Collectors.joining(", "))
+        ).setHeader("Files");
+
         grid.addColumn(SOULPatch::getAuthor).setHeader("author");
         grid.addColumn(soulPatch -> String.valueOf(soulPatch.getNoServings())).setHeader("noServings");
 
