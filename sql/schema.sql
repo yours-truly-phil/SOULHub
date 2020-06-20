@@ -16,9 +16,9 @@ create table soulpatches
 
 alter table soulpatches owner to postgres;
 
-create sequence soulpatches_sequence;
+create sequence hibernate_sequence;
 
-alter sequence soulpatches_sequence owner to postgres;
+alter sequence hibernate_sequence owner to postgres;
 
 create table spfiles
 (
@@ -36,7 +36,3 @@ create table spfiles
 );
 
 alter table spfiles owner to postgres;
-
-create sequence spfiles_sequence;
-
-alter sequence spfiles_sequence owner to postgres;

@@ -36,8 +36,7 @@ import static io.horrorshow.soulswap.data.SPFile.FileType.SOULPATCH;
 public class SOULPatch extends AuditModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "soulpatch_generator")
-    @SequenceGenerator(name = "soulpatch_generator", sequenceName = "soulpatch_sequence")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false, nullable = false)
     @DocumentId
     private Long id;
@@ -52,7 +51,7 @@ public class SOULPatch extends AuditModel {
     @Analyzer(definition = "soulpatch_analyzer")
     private String description;
 
-    @OneToMany(mappedBy = "soulPatch", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "soulPatch", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @ToString.Exclude
     private Set<SPFile> spFiles = new HashSet<>();
 

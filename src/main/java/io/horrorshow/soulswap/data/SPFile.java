@@ -33,26 +33,26 @@ import javax.persistence.*;
 public class SPFile extends AuditModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "soulfile_generator")
-    @SequenceGenerator(name = "soulfile_generator", sequenceName = "soulfile_sequence")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false, nullable = false)
     @DocumentId
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "soulpatch_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @EqualsAndHashCode.Exclude
     private SOULPatch soulPatch;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "filetype")
     private FileType fileType;
 
     @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
     @Analyzer(definition = "soulfile_analyzer")
     private String name;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", name = "content")
     @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
     @Analyzer(definition = "soulfile_analyzer")
     private String fileContent;
