@@ -1,17 +1,21 @@
 package io.horrorshow.soulswap.ui;
 
+import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.PWA;
 import io.horrorshow.soulswap.data.SOULPatch;
+import io.horrorshow.soulswap.data.SPFile;
 import io.horrorshow.soulswap.service.SOULPatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -56,21 +60,36 @@ public class MainView extends VerticalLayout {
         filterText.addValueChangeListener(e -> updateList());
 
         grid.addThemeName("bordered");
+        grid.setHeightByRows(true);
 
-        grid.addColumn(soulPatch -> String.valueOf(soulPatch.getId())).setHeader("Id");
-        grid.addColumn(SOULPatch::getName).setHeader("name");
-        grid.addColumn(SOULPatch::getDescription).setHeader("description");
+        grid.addColumn(soulPatch -> String.valueOf(soulPatch.getId()))
+                .setHeader("Id").setFlexGrow(0).setResizable(true);
+        grid.addColumn(SOULPatch::getName)
+                .setHeader("name").setFlexGrow(0).setResizable(true);
+        grid.addColumn(SOULPatch::getDescription)
+                .setHeader("description").setAutoWidth(true).setFlexGrow(1).setResizable(true);
         // TODO: Schema change, one to many soulpatch -> soul/soulpatch files
-        grid.addColumn(
-                soulPatch -> soulPatch.getSpFiles().stream()
-                        .map(spFile ->
-                                format("filename: %s (type: %s)",
-                                        spFile.getName(), spFile.getFileType().toString()))
-                        .collect(Collectors.joining(", "))
-        ).setHeader("Files");
 
-        grid.addColumn(SOULPatch::getAuthor).setHeader("author");
-        grid.addColumn(soulPatch -> String.valueOf(soulPatch.getNoServings())).setHeader("noServings");
+        grid.addColumn(new ComponentRenderer<>(sp -> {
+
+            VerticalLayout files = new VerticalLayout();
+
+            sp.getSpFiles().forEach(spFile -> {
+                HorizontalLayout layout = new HorizontalLayout();
+                layout.add(new Button(spFile.getName(), event -> {
+                    // TODO implement on click of a file name in soulpatches grid
+                }));
+                layout.add(new Label(String.format("Type: %s", spFile.getFileType().toString())));
+                files.add(layout);
+            });
+
+            return files;
+        })).setHeader("Files").setFlexGrow(10).setResizable(true);
+
+        grid.addColumn(SOULPatch::getAuthor)
+                .setHeader("author").setFlexGrow(0).setResizable(true);
+        grid.addColumn(soulPatch -> String.valueOf(soulPatch.getNoServings()))
+                .setHeader("noServings").setFlexGrow(0).setResizable(true);
 
         Button addPatchBtn = new Button("add SOULPatch",
                 e -> Notification.show("not yet implemented"));
