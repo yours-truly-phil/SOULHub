@@ -3,15 +3,14 @@ package io.horrorshow.soulswap.ui;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.*;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.internal.MessageDigestUtil;
 import com.vaadin.flow.server.StreamResource;
 import io.horrorshow.soulswap.data.SOULPatch;
@@ -27,54 +26,85 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class SOULPatchForm extends FormLayout {
+public class SOULPatchForm extends Div {
 
     private final MainView mainView;
 
-    private final Binder<SOULPatch> binder = new Binder<>(SOULPatch.class);
+    private final VerticalLayout content;
 
-    private final TextField id = new TextField("Id");
-    private final TextField name = new TextField("Name");
-    private final TextArea description = new TextArea("Description");
-    private final TextField soulFileName = new TextField("Soulfile name");
-    private final TextArea soulFileContent = new TextArea("Soulfile content");
-    private final TextField soulpatchFileName = new TextField("soulpatch file name");
-    private final TextArea soulpatchFileContent = new TextArea("soulpatch file content");
-    private final TextField author = new TextField("Author");
-    private final TextField noServings = new TextField("no Servings");
+    private final Binder<SOULPatch> binder;
 
-    private final Button save = new Button("Save");
-    private final Button delete = new Button("Delete");
+    private final TextField id = new TextField("id");
+    private final TextField name = new TextField("name");
+    private final TextArea description = new TextArea("description");
+    private final TextField author = new TextField("author");
+    private final TextField noServings = new TextField("no servings");
+
+    private final Button save = new Button("save");
+    private final Button delete = new Button("delete");
+
+    private SOULPatch soulPatch;
 
     public SOULPatchForm(MainView mainView) {
         this.mainView = mainView;
 
+        setClassName("soulpatch-form");
+
+        content = new VerticalLayout();
+        content.setSizeUndefined();
+        content.addClassName("soulpatch-form-content");
+        add(content);
+
         Component upload = createFileUpload();
+        add(upload);
 
+        id.setWidth("100%");
         id.setReadOnly(true);
+        content.add(id);
 
-        HorizontalLayout buttons = new HorizontalLayout(save, delete);
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        add(id, name, description,
-                soulFileName, soulFileContent,
-                soulpatchFileName, soulpatchFileContent,
-                author, noServings, upload, buttons);
+        name.setWidth("100%");
+        name.setRequired(true);
+        name.setValueChangeMode(ValueChangeMode.EAGER);
+        content.add(name);
 
-        binder.bind(id, soulPatch -> String.valueOf(soulPatch.getId()),
-                (soulPatch, s) -> soulPatch.setId(Long.valueOf(s)));
+        description.setWidth("100%");
+        description.setRequired(true);
+        content.add(description);
+
+        author.setWidth("100%");
+        author.setRequired(true);
+        content.add(author);
+
+        noServings.setWidth("100%");
+        noServings.setReadOnly(true);
+        content.add(noServings);
+
+        binder = new Binder<>(SOULPatch.class);
+        binder.bind(id, it -> String.valueOf(it.getId()),
+                (it, val) -> it.setId(Long.valueOf(val)));
         binder.bind(name, SOULPatch::getName, SOULPatch::setName);
         binder.bind(description, SOULPatch::getDescription, SOULPatch::setDescription);
-        // TODO: Schema change, one to many soulpatch -> soul/soulpatch files
-//        binder.bind(soulFileName, SOULPatch::getSoulFileName, SOULPatch::setSoulFileName);
-//        binder.bind(soulFileContent, SOULPatch::getSoulFileContent, SOULPatch::setSoulFileContent);
-//        binder.bind(soulpatchFileName, SOULPatch::getSoulpatchFileName, SOULPatch::setSoulpatchFileName);
-//        binder.bind(soulpatchFileContent, SOULPatch::getSoulpatchFileContent, SOULPatch::setSoulpatchFileContent);
         binder.bind(author, SOULPatch::getAuthor, SOULPatch::setAuthor);
-        binder.bind(noServings, soulPatch -> String.valueOf(soulPatch.getNoServings()),
-                (soulPatch, s) -> soulPatch.setNoServings(Long.valueOf(s)));
+        binder.bind(noServings, it -> String.valueOf(it.getNoServings()),
+                (it, val) -> it.setNoServings(Long.valueOf(val)));
 
+        // enable / disable save button while editing
+        binder.addStatusChangeListener(e -> {
+            final boolean isValid = !e.hasValidationErrors();
+            final boolean hasChanges = binder.hasChanges();
+            save.setEnabled(hasChanges && isValid);
+        });
+
+        save.setWidth("100%");
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         save.addClickListener(e -> save());
+
+        delete.setWidth("100%");
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR,
+                ButtonVariant.LUMO_PRIMARY);
         delete.addClickListener(e -> delete());
+
+        content.add(save, delete);
     }
 
     private Component createFileUpload() {
