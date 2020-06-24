@@ -27,6 +27,7 @@
     <webdrivermanager.version>3.8.1</webdrivermanager.version>
     <hibernate-search.version>5.11.5.Final</hibernate-search.version>
 <!--    <zonky-postgres.version>12.3.0</zonky-postgres.version>-->
+    <acewidget.version>1.4-Beta</acewidget.version>
   </properties>
 
   <repositories>
@@ -186,6 +187,11 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-devtools</artifactId>
       <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.hilerio</groupId>
+      <artifactId>ace-widget</artifactId>
+      <version>${acewidget.version}</version>
     </dependency>
 
     <dependency>

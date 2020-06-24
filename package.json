@@ -45,7 +45,8 @@
       "@vaadin/vaadin-radio-button": "1.2.6",
       "@vaadin/vaadin-lumo-styles": "1.5.0",
       "@vaadin/vaadin-material-styles": "1.2.3",
-      "@vaadin/vaadin-rich-text-editor": "1.1.1"
+      "@vaadin/vaadin-rich-text-editor": "1.1.1",
+      "@granite-elements/ace-widget": "2.2.7-b1"
     },
     "devDependencies": {
       "webpack-babel-multi-target-plugin": "2.3.3",
@@ -59,7 +60,7 @@
       "webpack-merge": "4.2.2",
       "webpack-dev-server": "3.10.3"
     },
-    "hash": "0c78019bae31f57b0be0ef3e59beb9c7b7df3a3a935cf03b81c42f565c18caf5"
+    "hash": "08da58e102b715492084918e392afba02a5f4432b2a1d12d0c7ddbb70e341706"
   },
   "dependencies": {
     "@polymer/polymer": "3.2.0",
@@ -104,7 +105,8 @@
     "@vaadin/vaadin-radio-button": "1.2.6",
     "@vaadin/vaadin-lumo-styles": "1.5.0",
     "@vaadin/vaadin-material-styles": "1.2.3",
-    "@vaadin/vaadin-rich-text-editor": "1.1.1"
+    "@vaadin/vaadin-rich-text-editor": "1.1.1",
+    "@granite-elements/ace-widget": "2.2.7-b1"
   },
   "devDependencies": {
     "chokidar": "^3.4.0",

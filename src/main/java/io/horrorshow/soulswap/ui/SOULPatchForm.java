@@ -56,7 +56,7 @@ public class SOULPatchForm extends Div {
         add(content);
 
         Component upload = createFileUpload();
-        add(upload);
+        content.add(upload);
 
         id.setWidth("100%");
         id.setReadOnly(true);
@@ -78,6 +78,10 @@ public class SOULPatchForm extends Div {
         noServings.setWidth("100%");
         noServings.setReadOnly(true);
         content.add(noServings);
+
+        SOULFileEditor spFileEditor = new SOULFileEditor(null);
+        spFileEditor.setWidth("100%");
+        content.add(spFileEditor);
 
         binder = new Binder<>(SOULPatch.class);
 
