@@ -236,17 +236,17 @@
         <configuration>
           <wait>500</wait>
           <maxAttempts>240</maxAttempts>
-          <layers>
-            <enabled>true</enabled>
-          </layers>
+<!--          <layers>-->
+<!--            <enabled>true</enabled>-->
+<!--          </layers>-->
         </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>build-image</goal>
-            </goals>
-          </execution>
-        </executions>
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <goals>-->
+<!--              <goal>build-image</goal>-->
+<!--            </goals>-->
+<!--          </execution>-->
+<!--        </executions>-->
       </plugin>
 
       <!--

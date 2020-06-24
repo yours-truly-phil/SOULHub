@@ -80,20 +80,12 @@ public class SOULPatchForm extends Div {
         content.add(noServings);
 
         binder = new Binder<>(SOULPatch.class);
-        binder.bind(id, it -> String.valueOf(it.getId()),
-                (it, val) -> it.setId(Long.valueOf(val)));
-        binder.bind(name, SOULPatch::getName, SOULPatch::setName);
-        binder.bind(description, SOULPatch::getDescription, SOULPatch::setDescription);
-        binder.bind(author, SOULPatch::getAuthor, SOULPatch::setAuthor);
-        binder.bind(noServings, it -> String.valueOf(it.getNoServings()),
-                (it, val) -> it.setNoServings(Long.valueOf(val)));
 
-        // enable / disable save button while editing
-        binder.addStatusChangeListener(e -> {
-            final boolean isValid = !e.hasValidationErrors();
-            final boolean hasChanges = binder.hasChanges();
-            save.setEnabled(hasChanges && isValid);
-        });
+        binder.forField(id).bind(it -> String.valueOf(it.getId()), null);
+        binder.forField(name).bind(SOULPatch::getName, SOULPatch::setName);
+        binder.forField(description).bind(SOULPatch::getDescription, SOULPatch::setDescription);
+        binder.forField(author).bind(SOULPatch::getAuthor, SOULPatch::setAuthor);
+        binder.forField(noServings).bind(it -> String.valueOf(it.getNoServings()), null);
 
         save.setWidth("100%");
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
