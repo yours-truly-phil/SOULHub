@@ -84,6 +84,9 @@ public class SOULPatchForm extends Div {
         noServings.setReadOnly(true);
         content.add(noServings);
 
+        spFilesForm.setWidth("100%");
+        content.add(spFilesForm);
+
         binder = new Binder<>(SOULPatch.class);
 
         binder.forField(id).bind(it -> String.valueOf(it.getId()), null);
@@ -91,6 +94,8 @@ public class SOULPatchForm extends Div {
         binder.forField(description).bind(SOULPatch::getDescription, SOULPatch::setDescription);
         binder.forField(author).bind(SOULPatch::getAuthor, SOULPatch::setAuthor);
         binder.forField(noServings).bind(it -> String.valueOf(it.getNoServings()), null);
+
+        // TODO bind the set of spfiles in the soulpatch entity to the new custom field spfilesform once intellij idea works again
 
         save.setWidth("100%");
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
