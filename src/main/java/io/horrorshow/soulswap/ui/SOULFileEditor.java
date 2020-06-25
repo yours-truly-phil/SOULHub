@@ -9,9 +9,9 @@ import io.horrorshow.soulswap.data.SPFile;
 
 public class SOULFileEditor extends VerticalLayout {
 
-    private final SPFile spFile;
     private final TextField name = new TextField("filename");
     private AceEditor aceEditor;
+    private SPFile spFile;
 
     public SOULFileEditor(SPFile spFile) {
         this.spFile = spFile;
@@ -30,9 +30,9 @@ public class SOULFileEditor extends VerticalLayout {
         aceEditor.setTabSize(4);
         aceEditor.setWrap(false);
 
-        aceEditor.setWidth("100%");
+        aceEditor.setSizeFull();
         aceEditor.setMinlines(10);
-        aceEditor.setMaxlines(100);
+
         aceEditor.setPlaceholder("SOULFile content");
 
         aceEditor.addFocusListener(e -> {
@@ -42,11 +42,7 @@ public class SOULFileEditor extends VerticalLayout {
         add(aceEditor);
     }
 
-    public AceEditor getAceEditor() {
-        return aceEditor;
-    }
-
-    public TextField getFileName() {
-        return name;
+    public SPFile getSpFile() {
+        return spFile;
     }
 }

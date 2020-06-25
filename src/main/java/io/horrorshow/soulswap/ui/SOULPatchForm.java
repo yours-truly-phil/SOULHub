@@ -3,6 +3,7 @@ package io.horrorshow.soulswap.ui;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -10,10 +11,14 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.HasItemsAndComponents;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.internal.MessageDigestUtil;
 import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulswap.data.SOULPatch;
+import io.horrorshow.soulswap.data.SPFile;
 import org.apache.commons.io.IOUtils;
 
 import javax.imageio.ImageIO;
@@ -23,8 +28,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class SOULPatchForm extends Div {
 
@@ -40,10 +45,10 @@ public class SOULPatchForm extends Div {
     private final TextField author = new TextField("author");
     private final TextField noServings = new TextField("no servings");
 
+    private final SPFilesForm spFilesForm = new SPFilesForm();
+
     private final Button save = new Button("save");
     private final Button delete = new Button("delete");
-
-    private SOULPatch soulPatch;
 
     public SOULPatchForm(MainView mainView) {
         this.mainView = mainView;
@@ -79,10 +84,6 @@ public class SOULPatchForm extends Div {
         noServings.setReadOnly(true);
         content.add(noServings);
 
-        SOULFileEditor spFileEditor = new SOULFileEditor(null);
-        spFileEditor.setWidth("100%");
-        content.add(spFileEditor);
-
         binder = new Binder<>(SOULPatch.class);
 
         binder.forField(id).bind(it -> String.valueOf(it.getId()), null);
@@ -90,10 +91,6 @@ public class SOULPatchForm extends Div {
         binder.forField(description).bind(SOULPatch::getDescription, SOULPatch::setDescription);
         binder.forField(author).bind(SOULPatch::getAuthor, SOULPatch::setAuthor);
         binder.forField(noServings).bind(it -> String.valueOf(it.getNoServings()), null);
-        binder.forField(spFileEditor.getAceEditor())
-                .bind(soulPatch1 -> "test value", null);
-        binder.forField(spFileEditor.getFileName())
-                .bind(soulPatch1 -> "test file name", null);
 
         save.setWidth("100%");
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -219,5 +216,24 @@ public class SOULPatchForm extends Div {
         p.getElement().setText(text);
         outputContainer.add(p);
         outputContainer.add(content);
+    }
+
+    public class SPFilesForm extends CustomField<List<SPFile>> {
+
+        List<SOULFileEditor> soulFileEditors;
+
+        public SPFilesForm() {
+            soulFileEditors = new ArrayList<>();
+        }
+
+        @Override
+        protected List<SPFile> generateModelValue() {
+            return soulFileEditors.stream().map(SOULFileEditor::getSpFile).collect(Collectors.toList());
+        }
+
+        @Override
+        protected void setPresentationValue(List<SPFile> spFiles) {
+            soulFileEditors = spFiles.stream().map(SOULFileEditor::new).collect(Collectors.toList());
+        }
     }
 }
