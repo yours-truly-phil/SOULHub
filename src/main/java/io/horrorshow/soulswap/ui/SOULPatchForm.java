@@ -90,6 +90,10 @@ public class SOULPatchForm extends Div {
         binder.forField(description).bind(SOULPatch::getDescription, SOULPatch::setDescription);
         binder.forField(author).bind(SOULPatch::getAuthor, SOULPatch::setAuthor);
         binder.forField(noServings).bind(it -> String.valueOf(it.getNoServings()), null);
+        binder.forField(spFileEditor.getAceEditor())
+                .bind(soulPatch1 -> "test value", null);
+        binder.forField(spFileEditor.getFileName())
+                .bind(soulPatch1 -> "test file name", null);
 
         save.setWidth("100%");
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);

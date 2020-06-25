@@ -41,4 +41,12 @@ public class SOULFileEditor extends VerticalLayout {
 
         add(aceEditor);
     }
+
+    public AceEditor getAceEditor() {
+        return aceEditor;
+    }
+
+    public TextField getFileName() {
+        return name;
+    }
 }
