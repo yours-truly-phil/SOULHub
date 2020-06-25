@@ -3,6 +3,7 @@ package io.horrorshow.soulswap.ui;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
@@ -74,7 +75,9 @@ public class MainView extends VerticalLayout {
             sp.getSpFiles().forEach(spFile -> {
                 HorizontalLayout layout = new HorizontalLayout();
                 layout.add(new Button(spFile.getName(), event -> {
-                    // TODO implement on click of a file name in soulpatches grid
+                    Dialog fileEditorDialog = new Dialog(new SOULFileEditor(spFile));
+                    fileEditorDialog.setSizeFull();
+                    fileEditorDialog.open();
                 }));
                 layout.add(new Label(String.format("Type: %s", spFile.getFileType().toString())));
                 files.add(layout);

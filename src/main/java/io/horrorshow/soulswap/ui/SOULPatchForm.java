@@ -4,6 +4,7 @@ import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.customfield.CustomField;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -46,7 +47,7 @@ public class SOULPatchForm extends Div {
     private final Grid<SPFile> spFilesGrid = new Grid<>();
     private final Button save = new Button("save");
     private final Button delete = new Button("delete");
-    private Div editorPlaceholder = new Div();
+    private Dialog fileEditorDialog = new Dialog();
 
     public SOULPatchForm(MainView mainView) {
         this.mainView = mainView;
@@ -90,11 +91,13 @@ public class SOULPatchForm extends Div {
         spFilesGrid.addColumn(SPFile::getName).setHeader("filename");
         spFilesGrid.addColumn(spFile -> spFile.getFileType().toString()).setHeader("filetype");
         spFilesGrid.addColumn(new ComponentRenderer<>(it -> new Button("show file", event -> {
-            editorPlaceholder.removeAll();
-            editorPlaceholder.add(new SOULFileEditor(it));
+            fileEditorDialog.removeAll();
+            fileEditorDialog.add(new SOULFileEditor(it));
+            fileEditorDialog.setSizeFull();
+            fileEditorDialog.open();
         })));
         content.add(spFilesGrid);
-        content.add(editorPlaceholder);
+        content.add(fileEditorDialog);
 
         binder = new Binder<>(SOULPatch.class);
 
@@ -230,25 +233,25 @@ public class SOULPatchForm extends Div {
         outputContainer.add(content);
     }
 
-    /**
-     * to display a code editor to edit whatever text files are attached to the soulpatch
-     */
-    public class SPFilesForm extends CustomField<SPFile> {
-
-        SOULFileEditor editor;
-
-        public SPFilesForm() {
-            editor = new SOULFileEditor(new SPFile());
-        }
-
-        @Override
-        protected SPFile generateModelValue() {
-            return editor.getSpFile();
-        }
-
-        @Override
-        protected void setPresentationValue(SPFile spFile) {
-            editor = new SOULFileEditor(spFile);
-        }
-    }
+//    /**
+//     * to display a code editor to edit whatever text files are attached to the soulpatch
+//     */
+//    public class SPFilesForm extends CustomField<SPFile> {
+//
+//        SOULFileEditor editor;
+//
+//        public SPFilesForm() {
+//            editor = new SOULFileEditor(new SPFile());
+//        }
+//
+//        @Override
+//        protected SPFile generateModelValue() {
+//            return editor.getSpFile();
+//        }
+//
+//        @Override
+//        protected void setPresentationValue(SPFile spFile) {
+//            editor = new SOULFileEditor(spFile);
+//        }
+//    }
 }
