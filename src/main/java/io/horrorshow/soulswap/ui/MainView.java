@@ -1,6 +1,5 @@
 package io.horrorshow.soulswap.ui;
 
-import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -14,14 +13,11 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.PWA;
+import com.vaadin.flow.theme.Theme;
+import com.vaadin.flow.theme.lumo.Lumo;
 import io.horrorshow.soulswap.data.SOULPatch;
-import io.horrorshow.soulswap.data.SPFile;
 import io.horrorshow.soulswap.service.SOULPatchService;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.stream.Collectors;
-
-import static java.lang.String.format;
 
 @Route
 @PWA(name = "SOULSwap - SOUL-Patch Web UI",
@@ -31,6 +27,7 @@ import static java.lang.String.format;
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css",
         themeFor = "vaadin-text-field")
+@Theme(value = Lumo.class, variant = Lumo.DARK)
 public class MainView extends VerticalLayout {
 
     public final SOULPatchService service;
@@ -114,7 +111,8 @@ public class MainView extends VerticalLayout {
 
         HorizontalLayout mainContent = new HorizontalLayout(grid, form);
         mainContent.setSizeFull();
-        grid.setSizeFull();
+        form.setWidth("40%");
+//        grid.setSizeFull();
 
         add(toolbar, mainContent);
         setSizeFull();

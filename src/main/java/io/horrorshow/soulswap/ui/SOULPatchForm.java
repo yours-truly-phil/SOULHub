@@ -27,7 +27,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Iterator;
 
 public class SOULPatchForm extends Div {
 
@@ -42,12 +43,10 @@ public class SOULPatchForm extends Div {
     private final TextArea description = new TextArea("description");
     private final TextField author = new TextField("author");
     private final TextField noServings = new TextField("no servings");
-
-//    private final SPFilesForm spFilesForm = new SPFilesForm();
     private final Grid<SPFile> spFilesGrid = new Grid<>();
-
     private final Button save = new Button("save");
     private final Button delete = new Button("delete");
+    private Div editorPlaceholder = new Div();
 
     public SOULPatchForm(MainView mainView) {
         this.mainView = mainView;
@@ -90,8 +89,12 @@ public class SOULPatchForm extends Div {
         spFilesGrid.addColumn(SPFile::getId).setHeader("Id");
         spFilesGrid.addColumn(SPFile::getName).setHeader("filename");
         spFilesGrid.addColumn(spFile -> spFile.getFileType().toString()).setHeader("filetype");
-        spFilesGrid.addColumn(new ComponentRenderer<>(() -> new Button("show contents")));
+        spFilesGrid.addColumn(new ComponentRenderer<>(it -> new Button("show file", event -> {
+            editorPlaceholder.removeAll();
+            editorPlaceholder.add(new SOULFileEditor(it));
+        })));
         content.add(spFilesGrid);
+        content.add(editorPlaceholder);
 
         binder = new Binder<>(SOULPatch.class);
 

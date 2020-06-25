@@ -14,7 +14,9 @@ public class SOULFileEditor extends VerticalLayout {
     private SPFile spFile;
 
     public SOULFileEditor(SPFile spFile) {
+        super();
         this.spFile = spFile;
+        setSizeFull();
 
         name.setWidth("100%");
         name.setRequired(true);
@@ -38,7 +40,6 @@ public class SOULFileEditor extends VerticalLayout {
         aceEditor.addFocusListener(e -> {
             System.out.println("aceEditor focus listener bam");
         });
-
         add(aceEditor);
     }
 
