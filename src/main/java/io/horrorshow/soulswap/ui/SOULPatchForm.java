@@ -4,6 +4,7 @@ import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.customfield.CustomField;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -11,12 +12,10 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.HasItemsAndComponents;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
-import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.internal.MessageDigestUtil;
 import com.vaadin.flow.server.StreamResource;
-import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulswap.data.SOULPatch;
 import io.horrorshow.soulswap.data.SPFile;
 import org.apache.commons.io.IOUtils;
@@ -29,7 +28,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SOULPatchForm extends Div {
 
@@ -45,7 +43,8 @@ public class SOULPatchForm extends Div {
     private final TextField author = new TextField("author");
     private final TextField noServings = new TextField("no servings");
 
-    private final SPFilesForm spFilesForm = new SPFilesForm();
+//    private final SPFilesForm spFilesForm = new SPFilesForm();
+    private final Grid<SPFile> spFilesGrid = new Grid<>();
 
     private final Button save = new Button("save");
     private final Button delete = new Button("delete");
@@ -84,8 +83,15 @@ public class SOULPatchForm extends Div {
         noServings.setReadOnly(true);
         content.add(noServings);
 
-        spFilesForm.setWidth("100%");
-        content.add(spFilesForm);
+        spFilesGrid.addThemeName("bordered");
+        spFilesGrid.setHeightByRows(true);
+        spFilesGrid.setWidthFull();
+
+        spFilesGrid.addColumn(SPFile::getId).setHeader("Id");
+        spFilesGrid.addColumn(SPFile::getName).setHeader("filename");
+        spFilesGrid.addColumn(spFile -> spFile.getFileType().toString()).setHeader("filetype");
+        spFilesGrid.addColumn(new ComponentRenderer<>(() -> new Button("show contents")));
+        content.add(spFilesGrid);
 
         binder = new Binder<>(SOULPatch.class);
 
@@ -94,8 +100,6 @@ public class SOULPatchForm extends Div {
         binder.forField(description).bind(SOULPatch::getDescription, SOULPatch::setDescription);
         binder.forField(author).bind(SOULPatch::getAuthor, SOULPatch::setAuthor);
         binder.forField(noServings).bind(it -> String.valueOf(it.getNoServings()), null);
-
-        // TODO bind the set of spfiles in the soulpatch entity to the new custom field spfilesform once intellij idea works again
 
         save.setWidth("100%");
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -146,11 +150,11 @@ public class SOULPatchForm extends Div {
     }
 
     public void setSOULPatch(SOULPatch soulPatch) {
-        binder.setBean(soulPatch);
-
         if (soulPatch == null) {
             setVisible(false);
         } else {
+            spFilesGrid.setItems(soulPatch.getSpFiles());
+            binder.setBean(soulPatch);
             setVisible(true);
             name.focus();
         }
@@ -223,22 +227,25 @@ public class SOULPatchForm extends Div {
         outputContainer.add(content);
     }
 
-    public class SPFilesForm extends CustomField<List<SPFile>> {
+    /**
+     * to display a code editor to edit whatever text files are attached to the soulpatch
+     */
+    public class SPFilesForm extends CustomField<SPFile> {
 
-        List<SOULFileEditor> soulFileEditors;
+        SOULFileEditor editor;
 
         public SPFilesForm() {
-            soulFileEditors = new ArrayList<>();
+            editor = new SOULFileEditor(new SPFile());
         }
 
         @Override
-        protected List<SPFile> generateModelValue() {
-            return soulFileEditors.stream().map(SOULFileEditor::getSpFile).collect(Collectors.toList());
+        protected SPFile generateModelValue() {
+            return editor.getSpFile();
         }
 
         @Override
-        protected void setPresentationValue(List<SPFile> spFiles) {
-            soulFileEditors = spFiles.stream().map(SOULFileEditor::new).collect(Collectors.toList());
+        protected void setPresentationValue(SPFile spFile) {
+            editor = new SOULFileEditor(spFile);
         }
     }
 }
