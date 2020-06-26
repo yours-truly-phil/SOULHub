@@ -44,7 +44,7 @@ public class SOULPatchForm extends Div {
     private final Button delete = new Button("delete");
     private final Dialog fileEditorDialog = new Dialog();
     private final Component upload = createFileUpload();
-    private Binder<SOULPatch> binder;
+    private final Binder<SOULPatch> binder = new Binder<>(SOULPatch.class);
 
     public SOULPatchForm(MainView mainView) {
         this.mainView = mainView;
@@ -55,7 +55,7 @@ public class SOULPatchForm extends Div {
 
         arrangeComponents();
 
-        createSOULPatchBinder();
+        initSOULPatchBinder();
     }
 
     private void initFields() {
@@ -101,7 +101,6 @@ public class SOULPatchForm extends Div {
         VerticalLayout content = new VerticalLayout();
         content.setSizeUndefined();
         content.addClassName("soulpatch-form-content");
-        add(content);
         content.add(upload);
         content.add(id);
         content.add(name);
@@ -111,11 +110,10 @@ public class SOULPatchForm extends Div {
         content.add(spFilesGrid);
         content.add(fileEditorDialog);
         content.add(save, delete);
+        add(content);
     }
 
-    private void createSOULPatchBinder() {
-        binder = new Binder<>(SOULPatch.class);
-
+    private void initSOULPatchBinder() {
         binder.forField(id).bind(it -> String.valueOf(it.getId()), null);
         binder.forField(name).bind(SOULPatch::getName, SOULPatch::setName);
         binder.forField(description).bind(SOULPatch::getDescription, SOULPatch::setDescription);

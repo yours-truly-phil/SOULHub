@@ -32,21 +32,25 @@ public class SOULFileEditor extends VerticalLayout {
         this.mainView = mainView;
         setSizeFull();
 
+        initFields();
+
+        arrangeComponents();
+
+        initSpFileBinder();
+    }
+
+    private void initFields() {
         name.setWidth("100%");
         name.setRequired(true);
-        add(name);
 
         createdAt.setTitle("Created at");
         createdAt.setReadOnly(true);
-        add(createdAt);
 
         updatedAt.setTitle("Updated at");
         updatedAt.setReadOnly(true);
-        add(updatedAt);
 
         fileType.setTitle("File-Type");
         fileType.setReadOnly(true);
-        add(fileType);
 
         aceEditor.setTheme(AceTheme.monokai);
         aceEditor.setMode(AceMode.xml);
@@ -64,17 +68,26 @@ public class SOULFileEditor extends VerticalLayout {
             System.out.println("aceEditor focus listener bam");
         });
 
-        add(aceEditor);
 
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         save.addClickListener(event -> save());
-        add(save);
 
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR,
                 ButtonVariant.LUMO_PRIMARY);
         delete.addClickListener(event -> delete());
-        add(delete);
+    }
 
+    private void arrangeComponents() {
+        add(name);
+        add(createdAt);
+        add(updatedAt);
+        add(fileType);
+        add(aceEditor);
+        add(save);
+        add(delete);
+    }
+
+    private void initSpFileBinder() {
         binder.forField(name).bind(SPFile::getName, SPFile::setName);
         binder.forField(aceEditor).bind(SPFile::getFileContent, SPFile::setFileContent);
         binder.forField(createdAt).bind(it ->
