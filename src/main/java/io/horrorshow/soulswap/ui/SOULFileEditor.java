@@ -5,12 +5,10 @@ import com.hilerio.ace.AceMode;
 import com.hilerio.ace.AceTheme;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import io.horrorshow.soulswap.data.SPFile;
-import lombok.Getter;
 
 import java.time.format.DateTimeFormatter;
 
@@ -26,7 +24,6 @@ public class SOULFileEditor extends VerticalLayout {
 
     private final Button save = new Button("save");
     private final Button delete = new Button("delete");
-    private final Button cancel = new Button("cancel");
 
     private Binder<SPFile> binder = new Binder<>(SPFile.class);
 
@@ -109,16 +106,5 @@ public class SOULFileEditor extends VerticalLayout {
         SPFile spFile = binder.getBean();
         mainView.service.deleteSpFile(spFile);
         mainView.updateList();
-    }
-
-    @Getter
-    public static class SpFileEditorDialog extends Dialog {
-        private final SOULFileEditor editor;
-
-        public SpFileEditorDialog(MainView mainView) {
-            super();
-            editor = new SOULFileEditor(mainView);
-            add(editor);
-        }
     }
 }

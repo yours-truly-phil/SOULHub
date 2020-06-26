@@ -41,7 +41,7 @@ public class MainView extends VerticalLayout {
 
     private final SOULPatchForm form = new SOULPatchForm(this);
 
-    private final SOULFileEditor.SpFileEditorDialog spFileEditorDialog = new SOULFileEditor.SpFileEditorDialog(this);
+    private final SpFileEditorDialog spFileEditorDialog = new SpFileEditorDialog(this);
 
     /**
      * Construct a new Vaadin view.
