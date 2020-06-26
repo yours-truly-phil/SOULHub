@@ -34,10 +34,6 @@ public class SOULPatchForm extends Div {
 
     private final MainView mainView;
 
-    private final VerticalLayout content;
-
-    private final Binder<SOULPatch> binder;
-
     private final TextField id = new TextField("id");
     private final TextField name = new TextField("name");
     private final TextArea description = new TextArea("description");
@@ -47,40 +43,37 @@ public class SOULPatchForm extends Div {
     private final Button save = new Button("save");
     private final Button delete = new Button("delete");
     private final Dialog fileEditorDialog = new Dialog();
+    private final Component upload = createFileUpload();
+    private Binder<SOULPatch> binder;
 
     public SOULPatchForm(MainView mainView) {
         this.mainView = mainView;
 
         setClassName("soulpatch-form");
 
-        content = new VerticalLayout();
-        content.setSizeUndefined();
-        content.addClassName("soulpatch-form-content");
-        add(content);
+        initFields();
 
-        Component upload = createFileUpload();
-        content.add(upload);
+        arrangeComponents();
 
+        createSOULPatchBinder();
+    }
+
+    private void initFields() {
         id.setWidth("100%");
         id.setReadOnly(true);
-        content.add(id);
 
         name.setWidth("100%");
         name.setRequired(true);
         name.setValueChangeMode(ValueChangeMode.EAGER);
-        content.add(name);
 
         description.setWidth("100%");
         description.setRequired(true);
-        content.add(description);
 
         author.setWidth("100%");
         author.setRequired(true);
-        content.add(author);
 
         noServings.setWidth("100%");
         noServings.setReadOnly(true);
-        content.add(noServings);
 
         spFilesGrid.addThemeName("bordered");
         spFilesGrid.setHeightByRows(true);
@@ -92,16 +85,7 @@ public class SOULPatchForm extends Div {
         spFilesGrid.addColumn(new ComponentRenderer<>(it -> new Button("show file", event -> {
             mainView.showFileEditor(it);
         })));
-        content.add(spFilesGrid);
-        content.add(fileEditorDialog);
 
-        binder = new Binder<>(SOULPatch.class);
-
-        binder.forField(id).bind(it -> String.valueOf(it.getId()), null);
-        binder.forField(name).bind(SOULPatch::getName, SOULPatch::setName);
-        binder.forField(description).bind(SOULPatch::getDescription, SOULPatch::setDescription);
-        binder.forField(author).bind(SOULPatch::getAuthor, SOULPatch::setAuthor);
-        binder.forField(noServings).bind(it -> String.valueOf(it.getNoServings()), null);
 
         save.setWidth("100%");
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -111,8 +95,32 @@ public class SOULPatchForm extends Div {
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR,
                 ButtonVariant.LUMO_PRIMARY);
         delete.addClickListener(e -> delete());
+    }
 
+    private void arrangeComponents() {
+        VerticalLayout content = new VerticalLayout();
+        content.setSizeUndefined();
+        content.addClassName("soulpatch-form-content");
+        add(content);
+        content.add(upload);
+        content.add(id);
+        content.add(name);
+        content.add(description);
+        content.add(author);
+        content.add(noServings);
+        content.add(spFilesGrid);
+        content.add(fileEditorDialog);
         content.add(save, delete);
+    }
+
+    private void createSOULPatchBinder() {
+        binder = new Binder<>(SOULPatch.class);
+
+        binder.forField(id).bind(it -> String.valueOf(it.getId()), null);
+        binder.forField(name).bind(SOULPatch::getName, SOULPatch::setName);
+        binder.forField(description).bind(SOULPatch::getDescription, SOULPatch::setDescription);
+        binder.forField(author).bind(SOULPatch::getAuthor, SOULPatch::setAuthor);
+        binder.forField(noServings).bind(it -> String.valueOf(it.getNoServings()), null);
     }
 
     private Component createFileUpload() {
