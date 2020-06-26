@@ -3,7 +3,6 @@ package io.horrorshow.soulswap.ui;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
@@ -17,7 +16,9 @@ import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import io.horrorshow.soulswap.data.SOULPatch;
+import io.horrorshow.soulswap.data.SPFile;
 import io.horrorshow.soulswap.service.SOULPatchService;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Route
@@ -29,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @CssImport(value = "./styles/vaadin-text-field-styles.css",
         themeFor = "vaadin-text-field")
 @Theme(value = Lumo.class, variant = Lumo.DARK)
+@Getter
 public class MainView extends VerticalLayout {
 
     public final SOULPatchService service;
@@ -38,6 +40,8 @@ public class MainView extends VerticalLayout {
     private final TextField filterText = new TextField("filter by (regex)");
 
     private final SOULPatchForm form = new SOULPatchForm(this);
+
+    private final SOULFileEditor.SpFileEditorDialog spFileEditorDialog = new SOULFileEditor.SpFileEditorDialog(this);
 
     /**
      * Construct a new Vaadin view.
@@ -66,7 +70,6 @@ public class MainView extends VerticalLayout {
                 .setHeader("name").setFlexGrow(0).setResizable(true);
         grid.addColumn(SOULPatch::getDescription)
                 .setHeader("description").setAutoWidth(true).setFlexGrow(1).setResizable(true);
-        // TODO: Schema change, one to many soulpatch -> soul/soulpatch files
 
         grid.addColumn(new ComponentRenderer<>(sp -> {
 
@@ -75,9 +78,7 @@ public class MainView extends VerticalLayout {
             sp.getSpFiles().forEach(spFile -> {
                 HorizontalLayout layout = new HorizontalLayout();
                 layout.add(new Button(spFile.getName(), event -> {
-                    Dialog fileEditorDialog = new Dialog(new SOULFileEditor(spFile));
-                    fileEditorDialog.setSizeFull();
-                    fileEditorDialog.open();
+                    showFileEditor(spFile);
                 }));
                 layout.add(new Label(String.format("Type: %s", spFile.getFileType().toString())));
                 files.add(layout);
@@ -115,7 +116,6 @@ public class MainView extends VerticalLayout {
         HorizontalLayout mainContent = new HorizontalLayout(grid, form);
         mainContent.setSizeFull();
         form.setWidth("40%");
-//        grid.setSizeFull();
 
         add(toolbar, mainContent);
         setSizeFull();
@@ -130,5 +130,11 @@ public class MainView extends VerticalLayout {
 
     public void updateList() {
         grid.setItems(service.findAll(filterText.getValue()));
+    }
+
+    public void showFileEditor(SPFile spFile) {
+        spFileEditorDialog.getEditor().setSpFile(spFile);
+        spFileEditorDialog.setSizeFull();
+        spFileEditorDialog.open();
     }
 }

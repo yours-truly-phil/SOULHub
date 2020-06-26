@@ -46,7 +46,7 @@ public class SOULPatchForm extends Div {
     private final Grid<SPFile> spFilesGrid = new Grid<>();
     private final Button save = new Button("save");
     private final Button delete = new Button("delete");
-    private Dialog fileEditorDialog = new Dialog();
+    private final Dialog fileEditorDialog = new Dialog();
 
     public SOULPatchForm(MainView mainView) {
         this.mainView = mainView;
@@ -90,10 +90,7 @@ public class SOULPatchForm extends Div {
         spFilesGrid.addColumn(SPFile::getName).setHeader("filename");
         spFilesGrid.addColumn(spFile -> spFile.getFileType().toString()).setHeader("filetype");
         spFilesGrid.addColumn(new ComponentRenderer<>(it -> new Button("show file", event -> {
-            fileEditorDialog.removeAll();
-            fileEditorDialog.add(new SOULFileEditor(it));
-            fileEditorDialog.setSizeFull();
-            fileEditorDialog.open();
+            mainView.showFileEditor(it);
         })));
         content.add(spFilesGrid);
         content.add(fileEditorDialog);

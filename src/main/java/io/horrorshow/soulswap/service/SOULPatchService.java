@@ -1,7 +1,9 @@
 package io.horrorshow.soulswap.service;
 
 import io.horrorshow.soulswap.data.SOULPatch;
+import io.horrorshow.soulswap.data.SPFile;
 import io.horrorshow.soulswap.data.repository.SOULPatchRepository;
+import io.horrorshow.soulswap.data.repository.SPFileRepository;
 import io.horrorshow.soulswap.exception.ResourceNotFound;
 import io.horrorshow.soulswap.xml.SOULFileXMLType;
 import io.horrorshow.soulswap.xml.SOULPatchFileXMLType;
@@ -23,13 +25,15 @@ import java.util.stream.Collectors;
 public class SOULPatchService {
 
     private final SOULPatchRepository soulPatchRepository;
+    private final SPFileRepository spFileRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Autowired
-    public SOULPatchService(SOULPatchRepository soulPatchRepository) {
+    public SOULPatchService(SOULPatchRepository soulPatchRepository, SPFileRepository spFileRepository) {
         this.soulPatchRepository = soulPatchRepository;
+        this.spFileRepository = spFileRepository;
     }
 
     public synchronized List<SOULPatch> findAll() {
@@ -77,6 +81,12 @@ public class SOULPatchService {
         return xmlPatches;
     }
 
+    public SOULPatch findById(Long id) {
+        return soulPatchRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFound(String.format("SOULPatch Id: %d", id)));
+    }
+
     public SOULPatch update(Long id, SOULPatch soulPatch) {
         return soulPatchRepository.findById(id).map(sp -> {
             sp.setName(soulPatch.getName());
@@ -84,6 +94,7 @@ public class SOULPatchService {
             sp.setNoServings(soulPatch.getNoServings());
             sp.setUpdatedAt(LocalDateTime.now());
             // TODO think about how / if / where to update the files owned by this soulpatch
+            // i think i don't want to update spfiles here, but gonna sleep on it once more
             return soulPatchRepository.save(soulPatch);
         }).orElseThrow(() ->
                 new ResourceNotFound(String.format("%s id: %d", SOULPatch.class.getName(), id)));
@@ -93,14 +104,12 @@ public class SOULPatchService {
         return soulPatchRepository.save(soulPatch);
     }
 
-    public void delete(SOULPatch soulPatch) {
-        soulPatchRepository.delete(soulPatch);
+    public SPFile saveSpFile(SPFile spFile) {
+        return spFileRepository.save(spFile);
     }
 
-    public SOULPatch findById(Long id) {
-        return soulPatchRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFound(String.format("SOULPatch Id: %d", id)));
+    public void delete(SOULPatch soulPatch) {
+        soulPatchRepository.delete(soulPatch);
     }
 
     public void deleteById(Long id) {
@@ -108,6 +117,10 @@ public class SOULPatchService {
                 .orElseThrow(() ->
                         new ResourceNotFound(String.format("SOULPatch Id: %d", id)));
         soulPatchRepository.delete(p);
+    }
+
+    public void deleteSpFile(SPFile spFile) {
+        spFileRepository.delete(spFile);
     }
 
     public boolean isSPXmlMatchSPData(SOULPatch patch, SOULPatchXMLType xmlType) {
