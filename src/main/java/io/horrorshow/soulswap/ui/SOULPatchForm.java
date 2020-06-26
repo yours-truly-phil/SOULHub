@@ -3,7 +3,6 @@ package io.horrorshow.soulswap.ui;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.*;
@@ -232,26 +231,4 @@ public class SOULPatchForm extends Div {
         outputContainer.add(p);
         outputContainer.add(content);
     }
-
-//    /**
-//     * to display a code editor to edit whatever text files are attached to the soulpatch
-//     */
-//    public class SPFilesForm extends CustomField<SPFile> {
-//
-//        SOULFileEditor editor;
-//
-//        public SPFilesForm() {
-//            editor = new SOULFileEditor(new SPFile());
-//        }
-//
-//        @Override
-//        protected SPFile generateModelValue() {
-//            return editor.getSpFile();
-//        }
-//
-//        @Override
-//        protected void setPresentationValue(SPFile spFile) {
-//            editor = new SOULFileEditor(spFile);
-//        }
-//    }
 }

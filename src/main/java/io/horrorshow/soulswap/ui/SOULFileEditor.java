@@ -65,12 +65,10 @@ public class SOULFileEditor extends VerticalLayout {
         aceEditor.setValue(spFile.getFileContent());
         add(aceEditor);
 
-        // TODO use binder to bind bean values
+        // TODO ✔ use binder to bind bean values
+        binder.forField(name).bind(SPFile::getName, SPFile::setName);
+        binder.forField(aceEditor).bind(SPFile::getFileContent, SPFile::setFileContent);
 
         // TODO crud buttons
     }
-//
-//    public SPFile getSpFile() {
-//        return spFile;
-//    }
 }
