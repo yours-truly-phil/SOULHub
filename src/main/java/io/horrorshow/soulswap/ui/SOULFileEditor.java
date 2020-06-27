@@ -113,7 +113,7 @@ public class SOULFileEditor extends VerticalLayout {
     }
 
     /**
-     * TODO this does two thinks with side effects
+     * TODO this does two things with side effects
      *
      * @param spFile
      *         spFile, if not null, this editor gets shown to the user
