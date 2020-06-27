@@ -58,6 +58,10 @@ public class SOULPatchForm extends Div {
         initSOULPatchBinder();
     }
 
+    /**
+     * sets the properties of all ui components of this
+     * editor, like their visual style, sizes, titles, listeners
+     */
     private void initFields() {
         id.setWidth("100%");
         id.setReadOnly(true);
@@ -97,6 +101,10 @@ public class SOULPatchForm extends Div {
         delete.addClickListener(e -> delete());
     }
 
+    /**
+     * position all components in the right order relative to each other
+     * into the gui
+     */
     private void arrangeComponents() {
         VerticalLayout content = new VerticalLayout();
         content.setSizeUndefined();
@@ -113,6 +121,11 @@ public class SOULPatchForm extends Div {
         add(content);
     }
 
+    /**
+     * binds SOULPatch values to the UI components
+     * <p>
+     * To change the values displayed in the UI, call binder.setBean(newSOULPatch)
+     */
     private void initSOULPatchBinder() {
         binder.forField(id).bind(it -> String.valueOf(it.getId()), null);
         binder.forField(name).bind(SOULPatch::getName, SOULPatch::setName);
@@ -140,6 +153,7 @@ public class SOULPatchForm extends Div {
         upload.setDropLabelIcon(dropIcon);
 
         upload.addSucceededListener(event -> {
+            // TODO parse the file and open a new soulfileeditor dialog to edit the file
             Component component = createComponent(
                     event.getMIMEType(),
                     event.getFileName(),
@@ -157,6 +171,14 @@ public class SOULPatchForm extends Div {
         return fileUploadLayout;
     }
 
+    /**
+     * TODO I dislike the logic / side effects in this method
+     *
+     * @param soulPatch
+     *         soulPatch, if not null, makes this form visible and binds its
+     *         values to the elements.
+     *         If null, hides the form (urghs)
+     */
     public void setSOULPatch(SOULPatch soulPatch) {
         if (soulPatch == null) {
             setVisible(false);
@@ -176,6 +198,7 @@ public class SOULPatchForm extends Div {
     }
 
     private void delete() {
+        // TODO notify user about successful deletion
         SOULPatch patch = binder.getBean();
         mainView.service.delete(patch);
         mainView.updateList();

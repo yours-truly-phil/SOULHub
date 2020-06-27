@@ -25,7 +25,7 @@ public class SOULFileEditor extends VerticalLayout {
     private final Button save = new Button("save");
     private final Button delete = new Button("delete");
 
-    private Binder<SPFile> binder = new Binder<>(SPFile.class);
+    private final Binder<SPFile> binder = new Binder<>(SPFile.class);
 
     public SOULFileEditor(MainView mainView) {
         super();
@@ -39,6 +39,10 @@ public class SOULFileEditor extends VerticalLayout {
         initSpFileBinder();
     }
 
+    /**
+     * sets the properties of all ui components of this
+     * editor, like their visual style, sizes, titles, listeners
+     */
     private void initFields() {
         name.setWidth("100%");
         name.setRequired(true);
@@ -77,6 +81,10 @@ public class SOULFileEditor extends VerticalLayout {
         delete.addClickListener(event -> delete());
     }
 
+    /**
+     * places the components at the right locations relative to each other
+     * into the gui
+     */
     private void arrangeComponents() {
         add(name);
         add(createdAt);
@@ -87,6 +95,13 @@ public class SOULFileEditor extends VerticalLayout {
         add(delete);
     }
 
+    /**
+     * binds SPFile attribute values to the UI components.
+     * <p>
+     * it's not necessary to have to set values of ui components manually,
+     * after binding (in this method), to display another SPFile's contents,
+     * it's enough to call binder.setBean(newSpFile)
+     */
     private void initSpFileBinder() {
         binder.forField(name).bind(SPFile::getName, SPFile::setName);
         binder.forField(aceEditor).bind(SPFile::getFileContent, SPFile::setFileContent);
@@ -97,6 +112,13 @@ public class SOULFileEditor extends VerticalLayout {
         binder.forField(fileType).bind(it -> it.getFileType().toString(), null);
     }
 
+    /**
+     * TODO this does two thinks with side effects
+     *
+     * @param spFile
+     *         spFile, if not null, this editor gets shown to the user
+     *         if null, hides the editor
+     */
     public void setSpFile(SPFile spFile) {
         if (spFile == null) {
             setVisible(false);
