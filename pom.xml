@@ -217,7 +217,13 @@
         </exclusion>
       </exclusions>
     </dependency>
-<!--    <dependency>-->
+    <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+      <version>RELEASE</version>
+      <scope>compile</scope>
+    </dependency>
+    <!--    <dependency>-->
 <!--      <groupId>io.zonky.test</groupId>-->
 <!--      <artifactId>embedded-database-spring-test</artifactId>-->
 <!--      <version>${zonky-test.version}</version>-->

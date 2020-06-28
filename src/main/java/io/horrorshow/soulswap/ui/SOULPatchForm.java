@@ -6,6 +6,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
@@ -19,6 +20,7 @@ import com.vaadin.flow.server.StreamResource;
 import io.horrorshow.soulswap.data.SOULPatch;
 import io.horrorshow.soulswap.data.SPFile;
 import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -86,9 +88,8 @@ public class SOULPatchForm extends Div {
         spFilesGrid.addColumn(SPFile::getId).setHeader("Id");
         spFilesGrid.addColumn(SPFile::getName).setHeader("filename");
         spFilesGrid.addColumn(spFile -> spFile.getFileType().toString()).setHeader("filetype");
-        spFilesGrid.addColumn(new ComponentRenderer<>(it -> new Button("show file", event -> {
-            mainView.showFileEditor(it);
-        })));
+        spFilesGrid.addColumn(new ComponentRenderer<>(it ->
+                new Button("show file", event -> mainView.showFileEditor(it))));
 
 
         save.setWidth("100%");
@@ -171,38 +172,35 @@ public class SOULPatchForm extends Div {
         return fileUploadLayout;
     }
 
-    /**
-     * TODO I dislike the logic / side effects in this method
-     *
-     * @param soulPatch
-     *         soulPatch, if not null, makes this form visible and binds its
-     *         values to the elements.
-     *         If null, hides the form (urghs)
-     */
-    public void setSOULPatch(SOULPatch soulPatch) {
-        if (soulPatch == null) {
-            setVisible(false);
-        } else {
-            spFilesGrid.setItems(soulPatch.getSpFiles());
-            binder.setBean(soulPatch);
-            setVisible(true);
-            name.focus();
-        }
+    public void showSOULPatch(@NotNull SOULPatch soulPatch) {
+        binder.setBean(soulPatch);
+        spFilesGrid.setItems(soulPatch.getSpFiles());
+        setVisible(true);
+        name.focus();
+    }
+
+    public void hideSOULPatchForm() {
+        setVisible(false);
     }
 
     private void save() {
         SOULPatch patch = binder.getBean();
         mainView.service.save(patch);
         mainView.updateList();
-        setSOULPatch(null);
+        hideSOULPatchForm();
+        new Notification(String.format(
+                "soulpatch %s saved", patch.getName()),
+                3000).open();
     }
 
     private void delete() {
-        // TODO notify user about successful deletion
         SOULPatch patch = binder.getBean();
         mainView.service.delete(patch);
         mainView.updateList();
-        setSOULPatch(null);
+        hideSOULPatchForm();
+        new Notification(String.format(
+                "soulpatch %s removed", patch.getName()),
+                3000).open();
     }
 
     private Component createComponent(String mimeType, String fileName, InputStream stream) {

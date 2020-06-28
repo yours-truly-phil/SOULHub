@@ -5,7 +5,6 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -39,6 +38,8 @@ public class MainView extends VerticalLayout {
 
     private final TextField filterText = new TextField("filter by (regex)");
 
+    private final Button addSOULPatch = new Button("add SOULPatch");
+
     private final SOULPatchForm form = new SOULPatchForm(this);
 
     private final SpFileEditorDialog spFileEditorDialog = new SpFileEditorDialog(this);
@@ -55,15 +56,51 @@ public class MainView extends VerticalLayout {
 
         this.service = service;
 
-        filterText.setPlaceholder("Filter by name...");
-        filterText.setClearButtonVisible(true);
-        filterText.setValueChangeMode(ValueChangeMode.EAGER);
+        addClassName("centered-content");
 
-        filterText.addValueChangeListener(e -> updateList());
+        initFields();
 
+        arrangeComponents();
+
+        form.setVisible(false);
+
+        updateList();
+    }
+
+    private void initFields() {
+        initFilterText();
+
+        initSOULPatchesGrid();
+
+        initAddSOULPatchBtn();
+
+        initSOULPatchForm();
+    }
+
+    private void initSOULPatchForm() {
+        form.setWidth("40%");
+    }
+
+    private void initAddSOULPatchBtn() {
+        addSOULPatch.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        addSOULPatch.addClickListener(e -> {
+            grid.asSingleSelect().clear();
+            form.showSOULPatch(new SOULPatch());
+        });
+    }
+
+    private void initSOULPatchesGrid() {
         grid.addThemeName("bordered");
         grid.setHeightByRows(true);
 
+        addSOULPatchesGridColumns();
+
+        grid.asSingleSelect().addValueChangeListener(e ->
+                grid.asSingleSelect().getOptionalValue()
+                        .ifPresentOrElse(form::showSOULPatch, form::hideSOULPatchForm));
+    }
+
+    private void addSOULPatchesGridColumns() {
         grid.addColumn(soulPatch -> String.valueOf(soulPatch.getId()))
                 .setHeader("Id").setFlexGrow(0).setResizable(true);
         grid.addColumn(SOULPatch::getName)
@@ -77,9 +114,8 @@ public class MainView extends VerticalLayout {
 
             sp.getSpFiles().forEach(spFile -> {
                 HorizontalLayout layout = new HorizontalLayout();
-                layout.add(new Button(spFile.getName(), event -> {
-                    showFileEditor(spFile);
-                }));
+                layout.add(new Button(spFile.getName(), event ->
+                        showFileEditor(spFile)));
                 layout.add(new Label(String.format("Type: %s", spFile.getFileType().toString())));
                 files.add(layout);
             });
@@ -91,41 +127,24 @@ public class MainView extends VerticalLayout {
                 .setHeader("author").setFlexGrow(0).setResizable(true);
         grid.addColumn(soulPatch -> String.valueOf(soulPatch.getNoServings()))
                 .setHeader("noServings").setFlexGrow(0).setResizable(true);
+    }
 
-        Button addPatchBtn = new Button("add SOULPatch",
-                e -> Notification.show("not yet implemented"));
-        // Theme variants give you predefined extra styles for components.
-        // Example: Primary button has a more prominent look.
-        addPatchBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        addPatchBtn.addClickListener(e -> {
-            grid.asSingleSelect().clear();
-            form.setSOULPatch(new SOULPatch());
-        });
+    private void initFilterText() {
+        filterText.setPlaceholder("Filter by name...");
+        filterText.setClearButtonVisible(true);
+        filterText.setValueChangeMode(ValueChangeMode.EAGER);
 
-        Button createIndexBtn = new Button("create Database Index");
-        createIndexBtn.addClickListener(
-                e -> service.createDatabaseIndex()
-        );
+        filterText.addValueChangeListener(e -> updateList());
+    }
 
-
-        HorizontalLayout toolbar = new HorizontalLayout(filterText, addPatchBtn, createIndexBtn);
-
-        // Use custom CSS classes to apply styling. This is defined in shared-styles.css.
-        addClassName("centered-content");
+    private void arrangeComponents() {
+        HorizontalLayout toolbar = new HorizontalLayout(filterText, addSOULPatch);
 
         HorizontalLayout mainContent = new HorizontalLayout(grid, form);
         mainContent.setSizeFull();
-        form.setWidth("40%");
 
         add(toolbar, mainContent);
         setSizeFull();
-
-        form.setSOULPatch(null);
-        updateList();
-
-        grid.asSingleSelect().addValueChangeListener(
-                e -> form.setSOULPatch(grid.asSingleSelect().getValue())
-        );
     }
 
     public void updateList() {
@@ -133,7 +152,7 @@ public class MainView extends VerticalLayout {
     }
 
     public void showFileEditor(SPFile spFile) {
-        spFileEditorDialog.getEditor().setSpFile(spFile);
+        spFileEditorDialog.getEditor().showSpFile(spFile);
         spFileEditorDialog.setSizeFull();
         spFileEditorDialog.open();
     }

@@ -5,10 +5,12 @@ import com.hilerio.ace.AceMode;
 import com.hilerio.ace.AceTheme;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import io.horrorshow.soulswap.data.SPFile;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.format.DateTimeFormatter;
 
@@ -68,9 +70,8 @@ public class SOULFileEditor extends VerticalLayout {
 
         aceEditor.setPlaceholder("SOULFile content");
 
-        aceEditor.addFocusListener(e -> {
-            System.out.println("aceEditor focus listener bam");
-        });
+        aceEditor.addFocusListener(e ->
+                System.out.println("aceEditor focus listener bam"));
 
 
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -112,34 +113,25 @@ public class SOULFileEditor extends VerticalLayout {
         binder.forField(fileType).bind(it -> it.getFileType().toString(), null);
     }
 
-    /**
-     * TODO this does two things with side effects
-     *
-     * @param spFile
-     *         spFile, if not null, this editor gets shown to the user
-     *         if null, hides the editor
-     */
-    public void setSpFile(SPFile spFile) {
-        if (spFile == null) {
-            setVisible(false);
-        } else {
-            binder.setBean(spFile);
-            setVisible(true);
-            aceEditor.focus();
-        }
+    public void showSpFile(@NotNull SPFile spFile) {
+        binder.setBean(spFile);
+        setVisible(true);
+        aceEditor.focus();
     }
 
     private void save() {
-        // TODO indicate success to the user
         SPFile spFile = binder.getBean();
         mainView.service.saveSpFile(spFile);
         mainView.updateList();
+        new Notification(String.format("file %s saved", spFile.getName()),
+                3000).open();
     }
 
     private void delete() {
-        // TODO confirmation dialog
         SPFile spFile = binder.getBean();
         mainView.service.deleteSpFile(spFile);
         mainView.updateList();
+        new Notification(String.format("file %s removed", spFile.getName()),
+                3000).open();
     }
 }
