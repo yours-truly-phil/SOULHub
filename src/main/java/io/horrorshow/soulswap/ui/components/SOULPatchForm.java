@@ -89,11 +89,11 @@ public class SOULPatchForm extends Div {
         spFilesGrid.setHeightByRows(true);
         spFilesGrid.setWidthFull();
 
-        spFilesGrid.addColumn(SPFile::getId).setHeader("Id");
-        spFilesGrid.addColumn(SPFile::getName).setHeader("filename");
-        spFilesGrid.addColumn(spFile -> spFile.getFileType().toString()).setHeader("filetype");
         spFilesGrid.addColumn(new ComponentRenderer<>(it ->
-                new Button("show file", event -> SOULPatchesView.showFileEditor(it))));
+                new Button(it.getName(), event -> SOULPatchesView.showFileEditor(it))))
+                .setHeader("filename").setAutoWidth(true);
+        spFilesGrid.addColumn(spFile -> spFile.getFileType().toString())
+                .setHeader("filetype").setAutoWidth(true);
 
 
         save.setWidth("100%");

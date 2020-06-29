@@ -71,7 +71,7 @@ public class SOULPatchesView extends VerticalLayout {
     }
 
     private void initSOULPatchForm() {
-        form.setWidth("40%");
+        form.setMinWidth("20em");
     }
 
     private void initAddSOULPatchBtn() {
@@ -109,7 +109,7 @@ public class SOULPatchesView extends VerticalLayout {
                 HorizontalLayout layout = new HorizontalLayout();
                 layout.add(new Button(spFile.getName(), event ->
                         showFileEditor(spFile)));
-                layout.add(new Label(String.format("Type: %s", spFile.getFileType().toString())));
+                layout.add(new Label(String.format("%s-file", spFile.getFileType().toString())));
                 files.add(layout);
             });
 
