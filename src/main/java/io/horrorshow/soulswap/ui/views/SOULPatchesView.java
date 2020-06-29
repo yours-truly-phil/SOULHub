@@ -1,4 +1,4 @@
-package io.horrorshow.soulswap.ui;
+package io.horrorshow.soulswap.ui.views;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -14,6 +14,9 @@ import com.vaadin.flow.router.Route;
 import io.horrorshow.soulswap.data.SOULPatch;
 import io.horrorshow.soulswap.data.SPFile;
 import io.horrorshow.soulswap.service.SOULPatchService;
+import io.horrorshow.soulswap.ui.MainLayout;
+import io.horrorshow.soulswap.ui.components.SOULPatchForm;
+import io.horrorshow.soulswap.ui.components.SpFileEditorDialog;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 

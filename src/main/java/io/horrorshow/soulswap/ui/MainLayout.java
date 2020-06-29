@@ -12,6 +12,7 @@ import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
+import io.horrorshow.soulswap.ui.views.SOULPatchesView;
 
 @PWA(name = "SOULSwap - SOUL-Patch Web UI",
         shortName = "SOULSwap-Web",

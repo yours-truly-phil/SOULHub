@@ -1,8 +1,9 @@
-package io.horrorshow.soulswap.ui;
+package io.horrorshow.soulswap.ui.components;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import io.horrorshow.soulswap.ui.views.SOULPatchesView;
 import lombok.Getter;
 
 @Getter

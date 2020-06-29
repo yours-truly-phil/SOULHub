@@ -1,4 +1,4 @@
-package io.horrorshow.soulswap.ui;
+package io.horrorshow.soulswap.ui.components;
 
 import com.hilerio.ace.AceEditor;
 import com.hilerio.ace.AceMode;
@@ -10,13 +10,14 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import io.horrorshow.soulswap.data.SPFile;
+import io.horrorshow.soulswap.ui.views.SOULPatchesView;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.format.DateTimeFormatter;
 
 public class SOULFileEditor extends VerticalLayout {
 
-    private final SOULPatchesView SOULPatchesView;
+    private final io.horrorshow.soulswap.ui.views.SOULPatchesView SOULPatchesView;
 
     private final TextField name = new TextField("filename");
     private final AceEditor aceEditor = new AceEditor();

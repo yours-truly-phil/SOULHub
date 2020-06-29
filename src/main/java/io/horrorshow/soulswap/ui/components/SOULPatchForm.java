@@ -1,4 +1,4 @@
-package io.horrorshow.soulswap.ui;
+package io.horrorshow.soulswap.ui.components;
 
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
@@ -19,6 +19,7 @@ import com.vaadin.flow.internal.MessageDigestUtil;
 import com.vaadin.flow.server.StreamResource;
 import io.horrorshow.soulswap.data.SOULPatch;
 import io.horrorshow.soulswap.data.SPFile;
+import io.horrorshow.soulswap.ui.views.SOULPatchesView;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +35,7 @@ import java.util.Iterator;
 
 public class SOULPatchForm extends Div {
 
-    private final SOULPatchesView SOULPatchesView;
+    private final io.horrorshow.soulswap.ui.views.SOULPatchesView SOULPatchesView;
 
     private final TextField id = new TextField("id");
     private final TextField name = new TextField("name");
