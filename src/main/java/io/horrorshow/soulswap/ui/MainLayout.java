@@ -21,7 +21,7 @@ import com.vaadin.flow.theme.lumo.Lumo;
 @CssImport(value = "./styles/vaadin-text-field-styles.css",
         themeFor = "vaadin-text-field")
 @Theme(value = Lumo.class, variant = Lumo.DARK)
-public class MainLayout  extends AppLayout {
+public class MainLayout extends AppLayout {
 
     public MainLayout() {
         createHeader();
