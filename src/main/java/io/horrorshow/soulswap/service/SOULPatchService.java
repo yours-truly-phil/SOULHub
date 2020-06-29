@@ -87,6 +87,10 @@ public class SOULPatchService {
                         new ResourceNotFound(String.format("SOULPatch Id: %d", id)));
     }
 
+    public long countSOULPatches() {
+        return soulPatchRepository.count();
+    }
+
     public SOULPatch update(Long id, SOULPatch soulPatch) {
         return soulPatchRepository.findById(id).map(sp -> {
             sp.setName(soulPatch.getName());
@@ -147,5 +151,9 @@ public class SOULPatchService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public long countSPFiles() {
+        return spFileRepository.count();
     }
 }

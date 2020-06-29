@@ -1,17 +1,22 @@
 package io.horrorshow.soulswap.ui.views;
 
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import io.horrorshow.soulswap.service.SOULPatchService;
 import io.horrorshow.soulswap.ui.MainLayout;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Route(value = "about", layout = MainLayout.class)
 @PageTitle("SOULSwap | About")
-public class AboutView  extends VerticalLayout {
+public class AboutView extends VerticalLayout {
 
-    public AboutView() {
+    private SOULPatchService soulPatchService;
+
+    public AboutView(@Autowired SOULPatchService soulPatchService) {
+        this.soulPatchService = soulPatchService;
         addClassName("about-view");
 
         createContent();
@@ -19,19 +24,18 @@ public class AboutView  extends VerticalLayout {
 
     private void createContent() {
         H1 title = new H1("About SOULSwap");
-        Paragraph loremIpsum = new Paragraph("Lorem ipsum " +
-                "dolor sit amet, consectetur adipiscing elit. Mauris id metus nibh. " +
-                "Cras ligula nunc, iaculis quis est vitae, commodo malesuada justo. " +
-                "Aliquam semper cursus neque, eu ornare ex tincidunt nec. " +
-                "Vivamus ultrices metus enim, nec eleifend diam congue ut. " +
-                "Orci varius natoque penatibus et magnis dis parturient montes, " +
-                "nascetur ridiculus mus. Suspendisse dignissim nisl tristique orci " +
-                "ornare sodales eu ut turpis. Ut vitae mollis urna. Duis sagittis justo " +
-                "ac libero accumsan, vitae elementum ex convallis. Aenean quis velit ante. " +
-                "Maecenas odio lectus, laoreet quis laoreet suscipit, scelerisque a urna. " +
-                "Duis nulla tellus, tincidunt ut pretium eget, consequat ultricies ante.");
+
+        Span noSOULPatches = new Span(
+                String.format("%s SOUL Patches stored",
+                        soulPatchService.countSOULPatches()));
+
+        Span noSPFiles = new Span(
+                String.format("%s soul files attached",
+                        soulPatchService.countSPFiles()));
+
         add(title);
-        add(loremIpsum);
+        add(noSOULPatches);
+        add(noSPFiles);
     }
 
 }
