@@ -34,7 +34,7 @@ import java.util.Iterator;
 
 public class SOULPatchForm extends Div {
 
-    private final MainView mainView;
+    private final SOULPatchesView SOULPatchesView;
 
     private final TextField id = new TextField("id");
     private final TextField name = new TextField("name");
@@ -49,8 +49,8 @@ public class SOULPatchForm extends Div {
     private final Component upload = createFileUpload();
     private final Binder<SOULPatch> binder = new Binder<>(SOULPatch.class);
 
-    public SOULPatchForm(MainView mainView) {
-        this.mainView = mainView;
+    public SOULPatchForm(SOULPatchesView SOULPatchesView) {
+        this.SOULPatchesView = SOULPatchesView;
 
         setClassName("soulpatch-form");
 
@@ -82,7 +82,7 @@ public class SOULPatchForm extends Div {
         noServings.setWidth("100%");
         noServings.setReadOnly(true);
 
-        newSpFile.addClickListener(event -> mainView.showFileEditor(new SPFile()));
+        newSpFile.addClickListener(event -> SOULPatchesView.showFileEditor(new SPFile()));
 
         spFilesGrid.addThemeName("bordered");
         spFilesGrid.setHeightByRows(true);
@@ -92,7 +92,7 @@ public class SOULPatchForm extends Div {
         spFilesGrid.addColumn(SPFile::getName).setHeader("filename");
         spFilesGrid.addColumn(spFile -> spFile.getFileType().toString()).setHeader("filetype");
         spFilesGrid.addColumn(new ComponentRenderer<>(it ->
-                new Button("show file", event -> mainView.showFileEditor(it))));
+                new Button("show file", event -> SOULPatchesView.showFileEditor(it))));
 
 
         save.setWidth("100%");
@@ -189,8 +189,8 @@ public class SOULPatchForm extends Div {
 
     private void save() {
         SOULPatch patch = binder.getBean();
-        mainView.service.save(patch);
-        mainView.updateList();
+        SOULPatchesView.service.save(patch);
+        SOULPatchesView.updateList();
         hideSOULPatchForm();
         new Notification(String.format(
                 "soulpatch %s saved", patch.getName()),
@@ -199,8 +199,8 @@ public class SOULPatchForm extends Div {
 
     private void delete() {
         SOULPatch patch = binder.getBean();
-        mainView.service.delete(patch);
-        mainView.updateList();
+        SOULPatchesView.service.delete(patch);
+        SOULPatchesView.updateList();
         hideSOULPatchForm();
         new Notification(String.format(
                 "soulpatch %s removed", patch.getName()),

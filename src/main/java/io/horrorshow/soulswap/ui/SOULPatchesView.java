@@ -20,17 +20,17 @@ import io.horrorshow.soulswap.service.SOULPatchService;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Route
-@PWA(name = "SOULSwap - SOUL-Patch Web UI",
-        shortName = "SOULSwap-Web",
-        description = "Serves SOULPatches (SOUL files)",
-        enableInstallPrompt = false)
-@CssImport("./styles/shared-styles.css")
-@CssImport(value = "./styles/vaadin-text-field-styles.css",
-        themeFor = "vaadin-text-field")
-@Theme(value = Lumo.class, variant = Lumo.DARK)
+@Route(value = "", layout = MainLayout.class)
+//@PWA(name = "SOULSwap - SOUL-Patch Web UI",
+//        shortName = "SOULSwap-Web",
+//        description = "Serves SOULPatches (SOUL files)",
+//        enableInstallPrompt = false)
+//@CssImport("./styles/shared-styles.css")
+//@CssImport(value = "./styles/vaadin-text-field-styles.css",
+//        themeFor = "vaadin-text-field")
+//@Theme(value = Lumo.class, variant = Lumo.DARK)
 @Getter
-public class MainView extends VerticalLayout {
+public class SOULPatchesView extends VerticalLayout {
 
     public final SOULPatchService service;
 
@@ -52,7 +52,7 @@ public class MainView extends VerticalLayout {
      * @param service
      *         The message service. Automatically injected Spring managed bean.
      */
-    public MainView(@Autowired SOULPatchService service) {
+    public SOULPatchesView(@Autowired SOULPatchService service) {
 
         this.service = service;
 

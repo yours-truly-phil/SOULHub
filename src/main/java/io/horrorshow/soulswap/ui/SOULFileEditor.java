@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 
 public class SOULFileEditor extends VerticalLayout {
 
-    private final MainView mainView;
+    private final SOULPatchesView SOULPatchesView;
 
     private final TextField name = new TextField("filename");
     private final AceEditor aceEditor = new AceEditor();
@@ -29,9 +29,9 @@ public class SOULFileEditor extends VerticalLayout {
 
     private final Binder<SPFile> binder = new Binder<>(SPFile.class);
 
-    public SOULFileEditor(MainView mainView) {
+    public SOULFileEditor(SOULPatchesView SOULPatchesView) {
         super();
-        this.mainView = mainView;
+        this.SOULPatchesView = SOULPatchesView;
         setSizeFull();
 
         initFields();
@@ -128,16 +128,16 @@ public class SOULFileEditor extends VerticalLayout {
 
     private void save() {
         SPFile spFile = binder.getBean();
-        mainView.service.saveSpFile(spFile);
-        mainView.updateList();
+        SOULPatchesView.service.saveSpFile(spFile);
+        SOULPatchesView.updateList();
         new Notification(String.format("file %s saved", spFile.getName()),
                 3000).open();
     }
 
     private void delete() {
         SPFile spFile = binder.getBean();
-        mainView.service.deleteSpFile(spFile);
-        mainView.updateList();
+        SOULPatchesView.service.deleteSpFile(spFile);
+        SOULPatchesView.updateList();
         new Notification(String.format("file %s removed", spFile.getName()),
                 3000).open();
     }
