@@ -107,10 +107,17 @@ public class SOULFileEditor extends VerticalLayout {
         binder.forField(name).bind(SPFile::getName, SPFile::setName);
         binder.forField(aceEditor).bind(SPFile::getFileContent, SPFile::setFileContent);
         binder.forField(createdAt).bind(it ->
-                it.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), null);
+                it.getCreatedAt() != null
+                        ? it.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                        : "not persisted", null);
         binder.forField(updatedAt).bind(it ->
-                it.getUpdatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), null);
-        binder.forField(fileType).bind(it -> it.getFileType().toString(), null);
+                it.getUpdatedAt() != null
+                        ? it.getUpdatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                        : "not persisted", null);
+        binder.forField(fileType).bind(it ->
+                it.getFileType() != null
+                        ? it.getFileType().toString()
+                        : "unknown", null);
     }
 
     public void showSpFile(@NotNull SPFile spFile) {

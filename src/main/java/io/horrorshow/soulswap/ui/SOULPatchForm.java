@@ -45,6 +45,7 @@ public class SOULPatchForm extends Div {
     private final Button save = new Button("save");
     private final Button delete = new Button("delete");
     private final Dialog fileEditorDialog = new Dialog();
+    private final Button newSpFile = new Button("create soulpatch file");
     private final Component upload = createFileUpload();
     private final Binder<SOULPatch> binder = new Binder<>(SOULPatch.class);
 
@@ -81,6 +82,8 @@ public class SOULPatchForm extends Div {
         noServings.setWidth("100%");
         noServings.setReadOnly(true);
 
+        newSpFile.addClickListener(event -> mainView.showFileEditor(new SPFile()));
+
         spFilesGrid.addThemeName("bordered");
         spFilesGrid.setHeightByRows(true);
         spFilesGrid.setWidthFull();
@@ -116,6 +119,7 @@ public class SOULPatchForm extends Div {
         content.add(description);
         content.add(author);
         content.add(noServings);
+        content.add(newSpFile);
         content.add(spFilesGrid);
         content.add(fileEditorDialog);
         content.add(save, delete);
@@ -150,7 +154,7 @@ public class SOULPatchForm extends Div {
         Span dropLabel = new Span("Drag soul and soulpatch files here");
         upload.setDropLabel(dropLabel);
 
-        Span dropIcon = new Span("¸¸.•*♫♪*\uD83C\uD83C\uDFB6\uDFB5¨*•♫♪");
+        Span dropIcon = new Span("¸¸.•*♫♪*\uD83C\uDFB6¨*•♫♪");
         upload.setDropLabelIcon(dropIcon);
 
         upload.addSucceededListener(event -> {
