@@ -1,21 +1,21 @@
 delete
+from user_role;
+delete
+from app_role;
+delete
 from app_user;
 
 insert into app_user (id, user_name, encrypted_password, status)
-values (nextval('hibernate_sequence'), 'dbuser1', '$2a$10$PrI5Gk9L.tSZiW9FXhTS8O8Mz9E97k2FZbFvGFFaSsiTUIl.TCrFu', 1);
-insert into app_user (id, user_name, encrypted_password, status)
-values (nextval('hibernate_sequence'), 'dbadmin1', '$2a$10$PrI5Gk9L.tSZiW9FXhTS8O8Mz9E97k2FZbFvGFFaSsiTUIl.TCrFu', 1);
+values (nextval('hibernate_sequence'), 'dbuser1', '$2a$10$PrI5Gk9L.tSZiW9FXhTS8O8Mz9E97k2FZbFvGFFaSsiTUIl.TCrFu', 'ACTIVE');
 
-delete
-from app_role;
+insert into app_user (id, user_name, encrypted_password, status)
+values (nextval('hibernate_sequence'), 'dbadmin1', '$2a$10$PrI5Gk9L.tSZiW9FXhTS8O8Mz9E97k2FZbFvGFFaSsiTUIl.TCrFu', 'ACTIVE');
 
 insert into app_role (id, role_name)
 VALUES ((select id from app_user where user_name = 'dbadmin1'), 'ROLE_ADMIN');
+
 insert into app_role (id, role_name)
 VALUES ((select id from app_user where user_name = 'dbuser1'), 'ROLE_USER');
-
-delete
-from user_role;
 
 insert into user_role (id, user_id, role_id)
 VALUES (nextval('hibernate_sequence'),

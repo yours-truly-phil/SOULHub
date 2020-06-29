@@ -1,6 +1,12 @@
+drop table if exists user_role;
+drop table if exists app_role;
+drop table if exists app_user;
+drop table if exists persistent_logins;
+
 drop table if exists spfiles;
 drop table if exists soulpatches;
 drop sequence if exists hibernate_sequence;
+
 
 create sequence hibernate_sequence;
 
@@ -13,7 +19,7 @@ create table app_user
             primary key,
     user_name          varchar(255) not null unique,
     encrypted_password varchar(255) not null,
-    status             int          not null
+    status             varchar(255) not null
 );
 
 create table app_role
@@ -36,10 +42,10 @@ create table user_role
 
 create table persistent_logins
 (
-    username varchar(255) not null,
-    series varchar(255) not null,
-    token varchar(255) not null,
-    last_used timestamp not null,
+    username  varchar(255) not null,
+    series    varchar(255) not null,
+    token     varchar(255) not null,
+    last_used timestamp    not null,
     primary key (series)
 );
 
