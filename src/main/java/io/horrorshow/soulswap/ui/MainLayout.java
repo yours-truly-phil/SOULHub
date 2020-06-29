@@ -3,6 +3,7 @@ package io.horrorshow.soulswap.ui;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -13,7 +14,6 @@ import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import io.horrorshow.soulswap.ui.views.AboutView;
-import io.horrorshow.soulswap.ui.views.LoginView;
 import io.horrorshow.soulswap.ui.views.SOULPatchesView;
 
 @PWA(name = "SOULSwap - SOUL-Patch Web UI",
@@ -37,15 +37,18 @@ public class MainLayout extends AppLayout {
 
         DrawerToggle drawerToggle = new DrawerToggle();
 
+        Anchor login = new Anchor("login", "Login");
+        Anchor logout = new Anchor("logout", "Log out");
+
         HorizontalLayout header = new HorizontalLayout();
         header.addClassName("header");
         header.setWidth("100%");
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
 
-        RouterLink loginLink = new RouterLink("Login", LoginView.class);
-        loginLink.setHighlightCondition(HighlightConditions.sameLocation());
 
-        header.add(drawerToggle, logo, loginLink);
+        header.add(drawerToggle, logo, logout);
+        header.expand(logo);
+        header.add(login, logout);
         addToNavbar(header);
     }
 
