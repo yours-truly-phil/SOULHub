@@ -23,6 +23,8 @@ public class AboutView extends VerticalLayout {
     }
 
     private void createContent() {
+        setAlignItems(Alignment.CENTER);
+
         H1 title = new H1("About SOULSwap");
 
         Span noSOULPatches = new Span(

@@ -13,6 +13,7 @@ import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import io.horrorshow.soulswap.ui.views.AboutView;
+import io.horrorshow.soulswap.ui.views.LoginView;
 import io.horrorshow.soulswap.ui.views.SOULPatchesView;
 
 @PWA(name = "SOULSwap - SOUL-Patch Web UI",
@@ -34,11 +35,17 @@ public class MainLayout extends AppLayout {
         H1 logo = new H1("SOULSwap - serving your SOUL Patches");
         logo.addClassName("logo");
 
-        HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo);
+        DrawerToggle drawerToggle = new DrawerToggle();
+
+        HorizontalLayout header = new HorizontalLayout();
         header.addClassName("header");
         header.setWidth("100%");
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
 
+        RouterLink loginLink = new RouterLink("Login", LoginView.class);
+        loginLink.setHighlightCondition(HighlightConditions.sameLocation());
+
+        header.add(drawerToggle, logo, loginLink);
         addToNavbar(header);
     }
 
