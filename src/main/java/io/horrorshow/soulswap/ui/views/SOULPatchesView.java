@@ -49,7 +49,7 @@ public class SOULPatchesView extends VerticalLayout {
 
         this.service = service;
 
-        addClassName("centered-content");
+        addClassName("soulpatches-view");
 
         initFields();
 

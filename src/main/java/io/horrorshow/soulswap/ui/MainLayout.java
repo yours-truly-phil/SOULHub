@@ -12,6 +12,7 @@ import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
+import io.horrorshow.soulswap.ui.views.AboutView;
 import io.horrorshow.soulswap.ui.views.SOULPatchesView;
 
 @PWA(name = "SOULSwap - SOUL-Patch Web UI",
@@ -45,8 +46,12 @@ public class MainLayout extends AppLayout {
         RouterLink soulPatchesLink = new RouterLink("SOULPatches", SOULPatchesView.class);
         soulPatchesLink.setHighlightCondition(HighlightConditions.sameLocation());
 
+        RouterLink aboutLink = new RouterLink("About", AboutView.class);
+        aboutLink.setHighlightCondition(HighlightConditions.sameLocation());
+
         addToDrawer(new VerticalLayout(
-                soulPatchesLink
+                soulPatchesLink,
+                aboutLink
         ));
     }
 }
