@@ -14,6 +14,8 @@ import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import io.horrorshow.soulswap.ui.views.AboutView;
+import io.horrorshow.soulswap.ui.views.AdminView;
+import io.horrorshow.soulswap.ui.views.RegistrationView;
 import io.horrorshow.soulswap.ui.views.SOULPatchesView;
 
 @PWA(name = "SOULSwap - SOUL-Patch Web UI",
@@ -39,6 +41,8 @@ public class MainLayout extends AppLayout {
 
         Anchor login = new Anchor("login", "Login");
         Anchor logout = new Anchor("logout", "Log out");
+        RouterLink registration = new RouterLink("Registration", RegistrationView.class);
+        registration.setHighlightCondition(HighlightConditions.sameLocation());
 
         HorizontalLayout header = new HorizontalLayout();
         header.addClassName("header");
@@ -46,9 +50,9 @@ public class MainLayout extends AppLayout {
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
 
 
-        header.add(drawerToggle, logo, logout);
+        header.add(drawerToggle, logo);
         header.expand(logo);
-        header.add(login, logout);
+        header.add(login, logout, registration);
         addToNavbar(header);
     }
 
@@ -59,9 +63,13 @@ public class MainLayout extends AppLayout {
         RouterLink aboutLink = new RouterLink("About", AboutView.class);
         aboutLink.setHighlightCondition(HighlightConditions.sameLocation());
 
+        RouterLink adminLink = new RouterLink("Administration", AdminView.class);
+        adminLink.setHighlightCondition(HighlightConditions.sameLocation());
+
         addToDrawer(new VerticalLayout(
                 soulPatchesLink,
-                aboutLink
+                aboutLink,
+                adminLink
         ));
     }
 }
