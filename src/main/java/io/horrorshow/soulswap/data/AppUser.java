@@ -31,6 +31,7 @@ public class AppUser {
     private String encryptedPassword;
 
     @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
     private UserStatus status;
 
     @ManyToMany
@@ -38,6 +39,7 @@ public class AppUser {
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @EqualsAndHashCode.Exclude
     private Set<AppRole> roles;
 
     public enum UserStatus {

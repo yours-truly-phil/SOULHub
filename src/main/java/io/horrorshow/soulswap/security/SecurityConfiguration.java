@@ -9,11 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
@@ -41,23 +38,71 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Require login to access internal pages and configure login form
+     *
+     * @param http
+     *
+     * @throws Exception
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .requestCache().requestCache(new CustomRequestCache())
+        // Not using Spring CSRF here to be able to use plain HTML for the login page
+        http.csrf().disable() //
+
+                // Register our CustomRequestCache that saves unauthorized access attempts, so
+                // the user is redirected after login.
+                .requestCache().requestCache(new CustomRequestCache()) //
+
+                // Restrict access to our application.
                 .and().authorizeRequests()
-                .requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
 
-                .anyRequest().authenticated()
+                // Allow all flow internal requests.
+                .requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll() //
 
-                .and().formLogin()
-                .loginPage(LOGIN_URL).permitAll()
-                .loginProcessingUrl(LOGIN_PROCESSING_URL)
+                // Allow all requests by logged in users.
+                .anyRequest().authenticated() //
+
+                // Configure the login page.
+                .and().formLogin().loginPage(LOGIN_URL).permitAll() //
+                .loginProcessingUrl(LOGIN_PROCESSING_URL) //
                 .failureUrl(LOGIN_FAILURE_URL)
+
+                // Configure logout
                 .and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
+
         http.authorizeRequests().and()
                 .rememberMe().tokenRepository(this.persistentTokenRepository())
                 .tokenValiditySeconds(24 * 60 * 60);// 24h
+    }
+
+    /**
+     * Allows access to static resources, bypassing Spring security
+     *
+     * @param web
+     *
+     * @throws Exception
+     */
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers(
+                // Vaadin Flow static resources
+                "/VAADIN/**",
+                // the standard favicon URI
+                "/favicon.ico",
+                // the robots exclusion standard
+                "/robots.txt",
+                // web application manifest
+                "/manifest.webmanifest",
+                "/sw.js",
+                "/offline-page.html",
+                // (development mode) static resources
+                "/frontend/**",
+                // (development mode) webjars
+                "/webjars/**",
+                // (production mode) static resources
+                "/fontend-es5/**", "/frontend-es6/**"
+        );
     }
 
     @Override
@@ -70,21 +115,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
         tokenRepository.setDataSource(dataSource);
         return tokenRepository;
-    }
-
-    @Override
-    public void configure(WebSecurity web) {
-        web.ignoring().antMatchers(
-                "/VAADIN/**",
-                "/favicon.ico",
-                "robots.txt",
-                "/manifest.webmanifest",
-                "/sw.js",
-                "/offline.html",
-                "/icons/**",
-                "/images/**",
-                "/styles/**",
-                "/h2-console/**");
     }
 
 }
