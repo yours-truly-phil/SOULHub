@@ -1,6 +1,6 @@
 package io.horrorshow.soulhub.security;
 
-import io.horrorshow.soulhub.service.UserDetailsServiceImpl;
+import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,7 +30,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new UserDetailsServiceImpl();
+        return new SOULHubUserDetailsService();
     }
 
     @Bean
@@ -69,11 +69,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .failureUrl(LOGIN_FAILURE_URL)
 
                 // Configure logout
-                .and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
-
-        http.authorizeRequests().and()
-                .rememberMe().tokenRepository(this.persistentTokenRepository())
-                .tokenValiditySeconds(24 * 60 * 60);// 24h
+                .and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL)
+                    .deleteCookies("soulhub-remember-me-cookie")
+                        .permitAll()
+                        .and()
+                    .rememberMe()
+                    //.key("my-secure-key")
+                    .rememberMeCookieName("soulhub-remember-me-cookie")
+                    .tokenRepository(persistentTokenRepository())
+                    .tokenValiditySeconds(24 * 60 * 60)
+                    .and()
+                .exceptionHandling();
     }
 
     /**

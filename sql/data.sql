@@ -6,10 +6,12 @@ delete
 from app_user;
 
 insert into app_user (id, user_name, encrypted_password, status)
-values (nextval('hibernate_sequence'), 'dbuser1', '$2y$12$67cy20h5f8MJeb7y3FFtA.lW1wVooYQe.uKsvSYZQuxAkNoGOlWBy', 'ACTIVE');
+values (nextval('hibernate_sequence'), 'dbuser1', '$2y$12$67cy20h5f8MJeb7y3FFtA.lW1wVooYQe.uKsvSYZQuxAkNoGOlWBy',
+        'ACTIVE');
 
 insert into app_user (id, user_name, encrypted_password, status)
-values (nextval('hibernate_sequence'), 'dbadmin1', '$2y$12$67cy20h5f8MJeb7y3FFtA.lW1wVooYQe.uKsvSYZQuxAkNoGOlWBy', 'ACTIVE');
+values (nextval('hibernate_sequence'), 'dbadmin1', '$2y$12$67cy20h5f8MJeb7y3FFtA.lW1wVooYQe.uKsvSYZQuxAkNoGOlWBy',
+        'ACTIVE');
 
 insert into app_role (id, role_name)
 VALUES ((select id from app_user where user_name = 'dbadmin1'), 'ADMIN');

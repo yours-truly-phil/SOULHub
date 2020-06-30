@@ -13,7 +13,7 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class SOULHubUserDetailsService implements UserDetailsService {
 
     @Autowired
     private AppUserRepository appUserRepository;

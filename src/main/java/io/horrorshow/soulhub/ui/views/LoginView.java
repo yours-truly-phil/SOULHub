@@ -2,6 +2,7 @@ package io.horrorshow.soulhub.ui.views;
 
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.login.LoginForm;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -20,6 +21,11 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         setSizeFull();
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
+        loginForm.addForgotPasswordListener(event -> {
+            Notification notification = new Notification("Password reset not available");
+            notification.setDuration(5003);
+            notification.open();
+        });
 
         loginForm.setAction("login");
 
