@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soulhub:soulhubRequest xmlns:soulhub="http://soulhub.horrorshow.io/soulhub"
+ xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://soulhub.horrorshow.io/soulhub  ../src/main/resources/xsd/soulhub.xsd">
+    <soulhub:soulpatchId>ID000</soulhub:soulpatchId>
+</soulhub:soulhubRequest>

@@ -1,0 +1,47 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:soulhub="http://soulhub.horrorshow.io/soulhub"
+  targetNamespace="http://soulhub.horrorshow.io/soulhub" elementFormDefault="qualified"
+  attributeFormDefault="qualified" version="0.0.1-SNAPSHOT"
+  xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" vc:minVersion="1.1">
+
+  <xs:element name="soulhubRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="soulpatchId" type="xs:string" maxOccurs="1" minOccurs="1"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="soulhubResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="soulpatch" maxOccurs="unbounded" minOccurs="0" type="soulhub:SOULPatchXMLType">
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="SOULPatchXMLType">
+    <xs:sequence>
+      <xs:element name="soulpatchfile" type="soulhub:SOULPatchFileXMLType" maxOccurs="unbounded" minOccurs="0"/>
+      <xs:element name="soulfile" type="soulhub:SOULFileXMLType" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="SOULPatchFileXMLType">
+    <xs:sequence>
+      <xs:element name="filecontent" type="xs:string" maxOccurs="1" minOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="filename" type="xs:string" use="required"/>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="SOULFileXMLType">
+    <xs:sequence>
+      <xs:element name="filecontent" type="xs:string" maxOccurs="1" minOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="filename" type="xs:string" use="required"/>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+  </xs:complexType>
+</xs:schema>

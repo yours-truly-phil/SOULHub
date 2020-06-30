@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sswp:soulhubResponse xmlns:sswp="http://soulhub.horrorshow.io/soulhub"
+ xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://soulhub.horrorshow.io/soulhub  ../src/main/resources/xsd/soulhub.xsd">
+    <sswp:soulpatch sswp:id="ID000">
+        <sswp:soulpatchfile sswp:filename="filename0" sswp:id="ID001">
+            <sswp:filecontent>filecontent0</sswp:filecontent>
+        </sswp:soulpatchfile>
+        <sswp:soulfile sswp:filename="filename1" sswp:id="ID002">
+            <sswp:filecontent>filecontent1</sswp:filecontent>
+        </sswp:soulfile>
+    </sswp:soulpatch>
+</sswp:soulhubResponse>

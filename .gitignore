@@ -63,4 +63,5 @@ build/
 /node_modules/
 
 ### hibernate search index
-/io.horrorshow.soulswap.data.*
+#/io.horrorshow.soulswap.data.*
+/io.horrorshow.soulhub.data.*

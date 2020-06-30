@@ -9,10 +9,10 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>io.horrorshow</groupId>
-  <artifactId>soulswap</artifactId>
+  <artifactId>soulhub</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>SOULSwap</name>
-  <description>SOUL Patch Exchange</description>
+  <name>SOULHub</name>
+  <description>SOUL Hub - SOUL Patches Exchange</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,12 +21,9 @@
     <hibernate-validator.version>6.1.0.Final</hibernate-validator.version>
     <jaxb-impl.version>2.3.3</jaxb-impl.version>
     <jaxb-maven-plugin.version>2.5.0</jaxb-maven-plugin.version>
-<!--    <zonky-test.version>1.5.4</zonky-test.version>-->
-<!--    <postgres-testcontainer.version>1.14.3</postgres-testcontainer.version>-->
     <vaadin.version>14.2.1</vaadin.version>
     <webdrivermanager.version>3.8.1</webdrivermanager.version>
     <hibernate-search.version>5.11.5.Final</hibernate-search.version>
-<!--    <zonky-postgres.version>12.3.0</zonky-postgres.version>-->
     <acewidget.version>1.4-Beta</acewidget.version>
   </properties>
 
@@ -71,13 +68,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-<!--      <dependency>-->
-<!--        <groupId>io.zonky.test.postgres</groupId>-->
-<!--        <artifactId>embedded-postgres-binaries-bom</artifactId>-->
-<!--        <version>${zonky-postgres.version}</version>-->
-<!--        <type>pom</type>-->
-<!--        <scope>import</scope>-->
-<!--      </dependency>-->
     </dependencies>
   </dependencyManagement>
 
@@ -226,24 +216,6 @@
       <artifactId>spring-security-test</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.jetbrains</groupId>
-      <artifactId>annotations</artifactId>
-      <version>RELEASE</version>
-      <scope>compile</scope>
-    </dependency>
-    <!--    <dependency>-->
-<!--      <groupId>io.zonky.test</groupId>-->
-<!--      <artifactId>embedded-database-spring-test</artifactId>-->
-<!--      <version>${zonky-test.version}</version>-->
-<!--      <scope>test</scope>-->
-<!--    </dependency>-->
-<!--    <dependency>-->
-<!--      <groupId>org.testcontainers</groupId>-->
-<!--      <artifactId>postgresql</artifactId>-->
-<!--      <version>${postgres-testcontainer.version}</version>-->
-<!--      <scope>test</scope>-->
-<!--    </dependency>-->
   </dependencies>
 
   <build>
@@ -300,9 +272,9 @@
           </execution>
         </executions>
         <configuration>
-          <packageName>io.horrorshow.soulswap.xml</packageName>
+          <packageName>io.horrorshow.soulhub.xml</packageName>
           <sources>
-            <source>${project.basedir}/src/main/resources/xsd/soulswap.xsd</source>
+            <source>${project.basedir}/src/main/resources/xsd/soulhub.xsd</source>
           </sources>
         </configuration>
       </plugin>

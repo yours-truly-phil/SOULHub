@@ -4,4 +4,4 @@ docker run \
   -p 8080:8080 \
   -p 5005:5005 \
   -e "SPRING_PROFILES_ACTIVE=dev" \
-  -t horrorshow.io/soulswap/soulswap-web-server
+  -t horrorshow.io/soulhub/soulhub-web-server
