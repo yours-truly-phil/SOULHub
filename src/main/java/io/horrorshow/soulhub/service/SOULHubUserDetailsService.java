@@ -6,7 +6,6 @@ import io.horrorshow.soulhub.data.repository.AppUserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +19,7 @@ import java.util.stream.Collectors;
 public class SOULHubUserDetailsService implements UserDetailsService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     private AppUserRepository appUserRepository;
 
@@ -40,19 +40,6 @@ public class SOULHubUserDetailsService implements UserDetailsService {
         builder.roles(appUser.getRoles().stream().map(AppRole::getRoleName)
                 .collect(Collectors.toSet()).toArray(String[]::new));
         return builder.build();
-    }
-
-    public String getLoggedInUsername() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication();
-        logger.debug(String.format("Username requested for user %s", principal.toString()));
-        if (principal instanceof UserDetails) {
-            return ((UserDetails) principal).getUsername();
-        } else if (principal instanceof UsernamePasswordAuthenticationToken) {
-            return ((UsernamePasswordAuthenticationToken) principal).getName();
-        } else {
-            logger.debug(String.format("Unexpected Authentication Class: %s", principal.getClass().getName()));
-            return "";
-        }
     }
 
     public boolean isAuthenticated() {

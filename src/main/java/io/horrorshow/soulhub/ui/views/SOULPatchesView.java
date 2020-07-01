@@ -14,6 +14,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
+import io.horrorshow.soulhub.security.SecurityUtils;
 import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.MainLayout;
@@ -77,7 +78,7 @@ public class SOULPatchesView extends VerticalLayout {
     }
 
     private void initGreeting() {
-        userGreeting.setText("Hello " + userService.getLoggedInUsername());
+        userGreeting.setText("Hello " + SecurityUtils.getUsername());
     }
 
     private void initSOULPatchForm() {

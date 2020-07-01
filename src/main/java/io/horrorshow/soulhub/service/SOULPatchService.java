@@ -97,8 +97,6 @@ public class SOULPatchService {
             sp.setDescription(soulPatch.getDescription());
             sp.setNoServings(soulPatch.getNoServings());
             sp.setUpdatedAt(LocalDateTime.now());
-            // TODO think about how / if / where to update the files owned by this soulpatch
-            // i think i don't want to update spfiles here, but gonna sleep on it once more
             return soulPatchRepository.save(soulPatch);
         }).orElseThrow(() ->
                 new ResourceNotFound(String.format("%s id: %d", SOULPatch.class.getName(), id)));

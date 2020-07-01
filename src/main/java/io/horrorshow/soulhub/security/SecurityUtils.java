@@ -5,9 +5,11 @@ import com.vaadin.flow.shared.ApplicationConstants;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +22,7 @@ public class SecurityUtils {
     private SecurityUtils() {
     }
 
-    static boolean isFrameworkInternalRequest(HttpServletRequest request) {
+    public static boolean isFrameworkInternalRequest(HttpServletRequest request) {
         final String parameterValue = request.getParameter(
                 ApplicationConstants.REQUEST_TYPE_PARAMETER);
         return parameterValue != null
@@ -28,19 +30,39 @@ public class SecurityUtils {
                 .anyMatch(it -> it.getIdentifier().equals(parameterValue));
     }
 
-    static boolean isUserLoggedIn() {
+    public static boolean isUserLoggedIn() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication != null
                 && !(authentication instanceof AnonymousAuthenticationToken)
                 && authentication.isAuthenticated();
     }
 
-    static String encryptPassword(String password) {
+    public static String encryptPassword(String password) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         return encoder.encode(password);
     }
 
-    static boolean isAccessGranted(Class<?> securedClass) {
+    public static String getUsername() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication();
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        } else if (principal instanceof UsernamePasswordAuthenticationToken) {
+            return ((UsernamePasswordAuthenticationToken) principal).getName();
+        } else {
+            return principal.toString();
+        }
+    }
+
+    /**
+     * Checks if access is granted for the current user for the given secured view,
+     * defined by the view class.
+     *
+     * @param securedClass
+     *         View class
+     *
+     * @return true if access is granted, otherwise false.
+     */
+    public static boolean isAccessGranted(Class<?> securedClass) {
         // Allow if no roles are required.
         Secured secured = AnnotationUtils.findAnnotation(securedClass, Secured.class);
         if (secured == null) {
