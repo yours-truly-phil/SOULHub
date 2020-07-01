@@ -70,15 +70,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 // Configure logout
                 .and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL)
-                    .deleteCookies("soulhub-remember-me-cookie")
-                        .permitAll()
-                        .and()
-                    .rememberMe()
-                    //.key("my-secure-key")
-                    .rememberMeCookieName("soulhub-remember-me-cookie")
-                    .tokenRepository(persistentTokenRepository())
-                    .tokenValiditySeconds(24 * 60 * 60)
-                    .and()
+                .deleteCookies("soulhub-remember-me-cookie")
+                .permitAll()
+                .and()
+                .rememberMe()
+                .key("remember-me-key")
+                .rememberMeCookieName("soulhub-remember-me-cookie")
+                .tokenRepository(persistentTokenRepository())
+                .tokenValiditySeconds(24 * 60 * 60)
+                .and()
                 .exceptionHandling();
     }
 
