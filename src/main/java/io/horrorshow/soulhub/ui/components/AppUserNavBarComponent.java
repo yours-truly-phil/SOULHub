@@ -6,8 +6,9 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 public class AppUserNavBarComponent extends HorizontalLayout {
 
-    private Anchor logout = new Anchor("logout", "Logout");
-    private Span username;
+    private static final long serialVersionUID = 833982187716488558L;
+    private final Anchor logout = new Anchor("logout", "Logout");
+    private final Span username;
 
     public AppUserNavBarComponent(String username) {
         this.username = new Span(username);

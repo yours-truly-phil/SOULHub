@@ -9,10 +9,10 @@ import io.horrorshow.soulhub.ui.views.RegistrationView;
 import javax.annotation.PostConstruct;
 
 public class LoginNavBarComponent extends HorizontalLayout {
+    private static final long serialVersionUID = 7056111594761246275L;
 
-    private Anchor login = new Anchor("login", "Login");
-    private Anchor logout = new Anchor("logout", "Logout");
-    private RouterLink registration = new RouterLink("Registration", RegistrationView.class);
+    private final Anchor login = new Anchor("login", "Login");
+    private final RouterLink registration = new RouterLink("Registration", RegistrationView.class);
 
     public LoginNavBarComponent() {
         init();
@@ -30,7 +30,6 @@ public class LoginNavBarComponent extends HorizontalLayout {
 
     private void arrangeComponents() {
         add(login);
-        add(logout);
         add(registration);
     }
 
