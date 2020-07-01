@@ -3,7 +3,6 @@ package io.horrorshow.soulhub.ui;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -13,9 +12,9 @@ import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
+import io.horrorshow.soulhub.ui.components.UserAccessNavbar;
 import io.horrorshow.soulhub.ui.views.AboutView;
 import io.horrorshow.soulhub.ui.views.AdminView;
-import io.horrorshow.soulhub.ui.views.RegistrationView;
 import io.horrorshow.soulhub.ui.views.SOULPatchesView;
 
 @PWA(name = "SOULHub - SOUL-Patch Web UI",
@@ -28,6 +27,8 @@ import io.horrorshow.soulhub.ui.views.SOULPatchesView;
 @Theme(value = Lumo.class, variant = Lumo.DARK)
 public class MainLayout extends AppLayout {
 
+    UserAccessNavbar userAccessNavbar = new UserAccessNavbar();
+
     public MainLayout() {
         createHeader();
         createDrawer();
@@ -39,11 +40,6 @@ public class MainLayout extends AppLayout {
 
         DrawerToggle drawerToggle = new DrawerToggle();
 
-        Anchor login = new Anchor("login", "Login");
-        Anchor logout = new Anchor("logout", "Log out");
-        RouterLink registration = new RouterLink("Registration", RegistrationView.class);
-        registration.setHighlightCondition(HighlightConditions.sameLocation());
-
         HorizontalLayout header = new HorizontalLayout();
         header.addClassName("header");
         header.setWidth("100%");
@@ -52,7 +48,9 @@ public class MainLayout extends AppLayout {
 
         header.add(drawerToggle, logo);
         header.expand(logo);
-        header.add(login, logout, registration);
+
+        header.add(userAccessNavbar);
+
         addToNavbar(header);
     }
 
