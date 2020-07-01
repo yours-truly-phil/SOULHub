@@ -6,13 +6,20 @@ import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.RouterLink;
 import io.horrorshow.soulhub.ui.views.RegistrationView;
 
-public class UserAccessNavbar extends HorizontalLayout {
+import javax.annotation.PostConstruct;
 
-    Anchor login = new Anchor("login", "Login");
-    Anchor logout = new Anchor("logout", "Logout");
-    RouterLink registration = new RouterLink("Registration", RegistrationView.class);
+public class LoginNavBarComponent extends HorizontalLayout {
 
-    public UserAccessNavbar() {
+    private Anchor login = new Anchor("login", "Login");
+    private Anchor logout = new Anchor("logout", "Logout");
+    private RouterLink registration = new RouterLink("Registration", RegistrationView.class);
+
+    public LoginNavBarComponent() {
+        init();
+    }
+
+    @PostConstruct
+    private void init() {
         initComponents();
         arrangeComponents();
     }

@@ -12,10 +12,13 @@ import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
-import io.horrorshow.soulhub.ui.components.UserAccessNavbar;
+import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
+import io.horrorshow.soulhub.ui.components.AppUserNavBarComponent;
+import io.horrorshow.soulhub.ui.components.LoginNavBarComponent;
 import io.horrorshow.soulhub.ui.views.AboutView;
 import io.horrorshow.soulhub.ui.views.AdminView;
 import io.horrorshow.soulhub.ui.views.SOULPatchesView;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @PWA(name = "SOULHub - SOUL-Patch Web UI",
         shortName = "SOULHub-Web",
@@ -27,9 +30,13 @@ import io.horrorshow.soulhub.ui.views.SOULPatchesView;
 @Theme(value = Lumo.class, variant = Lumo.DARK)
 public class MainLayout extends AppLayout {
 
-    UserAccessNavbar userAccessNavbar = new UserAccessNavbar();
+    private final SOULHubUserDetailsService userDetailsService;
 
-    public MainLayout() {
+    HorizontalLayout appUserNavBar;
+
+    public MainLayout(@Autowired SOULHubUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+
         createHeader();
         createDrawer();
     }
@@ -49,7 +56,12 @@ public class MainLayout extends AppLayout {
         header.add(drawerToggle, logo);
         header.expand(logo);
 
-        header.add(userAccessNavbar);
+//        if (userDetailsService.isAuthenticated()) {
+//            appUserNavBar = new AppUserNavBarComponent(userDetailsService.getLoggedInUsername().get());
+//        } else {
+            appUserNavBar = new LoginNavBarComponent();
+//        }
+        header.add(appUserNavBar);
 
         addToNavbar(header);
     }

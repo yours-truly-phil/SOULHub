@@ -25,7 +25,7 @@ logging:
   level:
     org.atmosphere: INFO
     org.springframework: INFO
-    io.horrorshow: INFO
+    io.horrorshow: DEBUG
     com.zaxxer: INFO
     root: INFO
 

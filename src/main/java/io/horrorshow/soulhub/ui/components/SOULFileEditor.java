@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 
 public class SOULFileEditor extends VerticalLayout {
 
-    private final io.horrorshow.soulhub.ui.views.SOULPatchesView SOULPatchesView;
+    private final SOULPatchesView SOULPatchesView;
 
     private final TextField name = new TextField("filename");
     private final AceEditor aceEditor = new AceEditor();

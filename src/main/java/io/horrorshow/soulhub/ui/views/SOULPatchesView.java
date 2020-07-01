@@ -4,6 +4,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -13,6 +14,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
+import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.components.SOULPatchForm;
@@ -27,15 +29,14 @@ public class SOULPatchesView extends VerticalLayout {
 
     public final SOULPatchService service;
 
+    public final SOULHubUserDetailsService userService;
+
     private final Grid<SOULPatch> grid = new Grid<>();
-
     private final TextField filterText = new TextField("filter by (regex)");
-
     private final Button addSOULPatch = new Button("add SOULPatch");
-
     private final SOULPatchForm form = new SOULPatchForm(this);
-
     private final SpFileEditorDialog spFileEditorDialog = new SpFileEditorDialog(this);
+    private Span userGreeting = new Span("Hello!");
 
     /**
      * Construct a new Vaadin view.
@@ -44,10 +45,13 @@ public class SOULPatchesView extends VerticalLayout {
      *
      * @param service
      *         The message service. Automatically injected Spring managed bean.
+     * @param userService
      */
-    public SOULPatchesView(@Autowired SOULPatchService service) {
+    @Autowired
+    public SOULPatchesView(SOULPatchService service, SOULHubUserDetailsService userService) {
 
         this.service = service;
+        this.userService = userService;
 
         addClassName("soulpatches-view");
 
@@ -68,6 +72,12 @@ public class SOULPatchesView extends VerticalLayout {
         initAddSOULPatchBtn();
 
         initSOULPatchForm();
+
+        initGreeting();
+    }
+
+    private void initGreeting() {
+        userGreeting.setText("Hello " + userService.getLoggedInUsername());
     }
 
     private void initSOULPatchForm() {
@@ -136,7 +146,7 @@ public class SOULPatchesView extends VerticalLayout {
         HorizontalLayout mainContent = new HorizontalLayout(grid, form);
         mainContent.setSizeFull();
 
-        add(toolbar, mainContent);
+        add(userGreeting, toolbar, mainContent);
         setSizeFull();
     }
 

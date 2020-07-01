@@ -34,7 +34,7 @@ import java.util.Iterator;
 
 public class SOULPatchForm extends Div {
 
-    private final io.horrorshow.soulhub.ui.views.SOULPatchesView SOULPatchesView;
+    private final SOULPatchesView SOULPatchesView;
 
     private final TextField id = new TextField("id");
     private final TextField name = new TextField("name");
