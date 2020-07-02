@@ -1,5 +1,7 @@
 package io.horrorshow.soulhub.security;
 
+import io.horrorshow.soulhub.data.repository.AppRoleRepository;
+import io.horrorshow.soulhub.data.repository.AppUserRepository;
 import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,9 +30,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private AppRoleRepository appRoleRepository;
+
+    @Autowired
+    private AppUserRepository appUserRepository;
+
     @Bean
     public UserDetailsService userDetailsService() {
-        return new SOULHubUserDetailsService();
+        return new SOULHubUserDetailsService(appRoleRepository, appUserRepository);
     }
 
     @Bean

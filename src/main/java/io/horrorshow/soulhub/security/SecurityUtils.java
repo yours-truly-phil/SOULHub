@@ -19,6 +19,8 @@ import java.util.stream.Stream;
 
 public class SecurityUtils {
 
+    private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
     private SecurityUtils() {
     }
 
@@ -37,8 +39,12 @@ public class SecurityUtils {
                 && authentication.isAuthenticated();
     }
 
+    public static BCryptPasswordEncoder passwordEncoder() {
+        return encoder;
+    }
+
     public static String encryptPassword(String password) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+//        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         return encoder.encode(password);
     }
 

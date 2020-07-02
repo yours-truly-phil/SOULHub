@@ -39,7 +39,6 @@ public class MainLayout extends AppLayout {
     }
 
     private void createHeader() {
-//        H1 logo = new H1("SOULHub - serving your SOUL Patches");
         Image logo = new Image("img/Logo.svg", "SOULHub logo");
 
         logo.addClassName("logo");
