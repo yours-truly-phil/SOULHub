@@ -38,8 +38,8 @@ public class SOULPatchController {
     }
 
     @GetMapping("/soulpatches/{soulpatchId}")
-    public SOULPatch getSOULPatch(@PathVariable Long soulpatchId) {
-        return service.findById(soulpatchId);
+    public SOULPatchRecord getSOULPatch(@PathVariable Long soulpatchId) {
+        return RecordsConverter.newSoulPatchRecord(service.findById(soulpatchId));
     }
 
     @PostMapping("/soulpatches")
