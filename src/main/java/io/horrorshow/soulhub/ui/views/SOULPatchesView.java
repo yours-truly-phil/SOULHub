@@ -28,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 @PageTitle("SOULHub | SOUL Patches")
 public class SOULPatchesView extends VerticalLayout {
 
+    private static final long serialVersionUID = 3981631233877217865L;
+
     public final SOULPatchService service;
 
     public final SOULHubUserDetailsService userService;
@@ -37,7 +39,7 @@ public class SOULPatchesView extends VerticalLayout {
     private final Button addSOULPatch = new Button("add SOULPatch");
     private final SOULPatchForm form = new SOULPatchForm(this);
     private final SpFileEditorDialog spFileEditorDialog = new SpFileEditorDialog(this);
-    private Span userGreeting = new Span("Hello!");
+    private final Span userGreeting = new Span("Hello!");
 
     /**
      * Construct a new Vaadin view.
