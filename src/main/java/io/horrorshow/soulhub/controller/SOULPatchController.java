@@ -30,7 +30,7 @@ public class SOULPatchController {
         return "This is SOULHub!";
     }
 
-    @GetMapping("/soulpatches")
+    @GetMapping(value = "/soulpatches")
     public List<SOULPatchRecord> getSOULPatches() {
         return service.findAll().stream()
                 .map(RecordsConverter::newSoulPatchRecord)

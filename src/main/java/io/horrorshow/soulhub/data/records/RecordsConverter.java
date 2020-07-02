@@ -4,6 +4,7 @@ import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
 
+import java.util.Base64;
 import java.util.stream.Collectors;
 
 public class RecordsConverter {
@@ -27,7 +28,7 @@ public class RecordsConverter {
                 spFile.getName(),
                 spFile.getCreatedAt(),
                 spFile.getUpdatedAt(),
-                spFile.getFileContent()
+                Base64.getEncoder().encodeToString(spFile.getFileContent().getBytes())
         );
     }
 
