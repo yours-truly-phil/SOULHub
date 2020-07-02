@@ -5,21 +5,25 @@
 */
 
 .soulpatches-view {
-  margin: 0 auto;
+    margin: 0 auto;
+}
+
+.logo {
+    max-height: 5em;
 }
 
 /* Main Layout */
 a[highlight] {
-  font-weight: bold;
-  text-decoration: underline;
+    font-weight: bold;
+    text-decoration: underline;
 }
 
 .header {
-  padding: 0 var(--lumo-space-m);
+    padding: 0 var(--lumo-space-m);
 }
 
 .header h1.logo {
-  font-size: 1em;
-  margin: var(--lumo-space-m);
+    font-size: 1em;
+    margin: var(--lumo-space-m);
 }
 

@@ -3,7 +3,8 @@ package io.horrorshow.soulhub.ui;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -38,7 +39,9 @@ public class MainLayout extends AppLayout {
     }
 
     private void createHeader() {
-        H1 logo = new H1("SOULHub - serving your SOUL Patches");
+//        H1 logo = new H1("SOULHub - serving your SOUL Patches");
+        Image logo = new Image("img/Logo.svg", "SOULHub logo");
+
         logo.addClassName("logo");
 
         DrawerToggle drawerToggle = new DrawerToggle();
@@ -50,7 +53,9 @@ public class MainLayout extends AppLayout {
 
 
         header.add(drawerToggle, logo);
-        header.expand(logo);
+        Div navbarCenterSpace = new Div();
+        header.add(navbarCenterSpace);
+        header.expand(navbarCenterSpace);
 
         if (SecurityUtils.isUserLoggedIn()) {
             appUserNavBar = new AppUserNavBarComponent(SecurityUtils.getUsername());
