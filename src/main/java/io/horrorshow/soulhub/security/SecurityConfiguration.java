@@ -27,14 +27,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String LOGIN_URL = "/login";
     private static final String LOGOUT_SUCCESS_URL = "/login";
 
-    @Autowired
-    private DataSource dataSource;
+    private final DataSource dataSource;
+
+    private final AppRoleRepository appRoleRepository;
+
+    private final AppUserRepository appUserRepository;
 
     @Autowired
-    private AppRoleRepository appRoleRepository;
+    public SecurityConfiguration(DataSource dataSource, AppRoleRepository appRoleRepository, AppUserRepository appUserRepository) {
+        this.dataSource = dataSource;
+        this.appRoleRepository = appRoleRepository;
 
-    @Autowired
-    private AppUserRepository appUserRepository;
+        this.appUserRepository = appUserRepository;
+    }
 
     @Bean
     public UserDetailsService userDetailsService() {

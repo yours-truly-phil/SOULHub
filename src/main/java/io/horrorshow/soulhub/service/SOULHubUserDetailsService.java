@@ -22,17 +22,13 @@ import java.util.stream.Collectors;
 
 public class SOULHubUserDetailsService implements UserDetailsService {
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-
     public static final String USER_ROLE = "USER";
     public static final String ADMIN_ROLE = "ADMIN";
-
-    @Autowired
     private final AppRoleRepository appRoleRepository;
+    private final AppUserRepository appUserRepository;
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private final AppUserRepository appUserRepository;
-
     public SOULHubUserDetailsService(AppRoleRepository appRoleRepository, AppUserRepository appUserRepository) {
         this.appRoleRepository = appRoleRepository;
         this.appUserRepository = appUserRepository;
