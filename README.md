@@ -14,8 +14,19 @@ that need to fit the given environment.
 postgres has to be running (any recent postgres docker image).
 It can be run by ./docker_run_postgres.sh (careful -> paths)
 
-And then like any spring-boot project with the IDE (or without) 
-the maven profile spring-boot:run.
+`docker run --rm --name pg-docker -e POSTGRES_PASSWORD=postgres -d -p 5432:5432 -v [YOUR HOMEDIR]/docker/volumes/postgres:/var/lib/postgresql/data postgres`
+
+Be careful, since this sets postgres to use the user postgres with password postgres.
+
+To get some data into the system, execute the sql scripts (sql/schema.sql and then sql/data.sql)
+against the postgres database.
+
+Then run or debug the SOULHubApplication spring boot application.
+
+Once the application is running, visit localhost:8080.
+
+The data.sql inserted two users, a user with role user (username: dbuser1 password: password)
+and a user with role user and admin (username: dbadmin1 password: password)
 
 ##### production
 
