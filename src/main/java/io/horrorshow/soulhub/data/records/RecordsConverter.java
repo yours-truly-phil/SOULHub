@@ -15,7 +15,7 @@ public class RecordsConverter {
                 soulPatch.getName(),
                 soulPatch.getDescription(),
                 soulPatch.getSpFiles().stream().map(RecordsConverter::newSPFileRecord).collect(Collectors.toSet()),
-                new UserRecord(soulPatch.getAuthor()),
+                new UserRecord(soulPatch.getAuthor().getUserName()),
                 soulPatch.getCreatedAt(),
                 soulPatch.getUpdatedAt()
         );

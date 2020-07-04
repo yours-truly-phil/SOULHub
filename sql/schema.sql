@@ -56,7 +56,8 @@ create table soulpatches
             primary key,
     created_at  timestamp not null,
     updated_at  timestamp not null,
-    author      varchar(255),
+    author      bigint    not null
+        constraint soulpatches_author_user_constraint references app_user,
     description text,
     name        varchar(255),
     no_servings bigint

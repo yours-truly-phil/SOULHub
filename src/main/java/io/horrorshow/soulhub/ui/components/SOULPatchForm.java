@@ -78,6 +78,7 @@ public class SOULPatchForm extends Div {
 
         author.setWidth("100%");
         author.setRequired(true);
+        author.setReadOnly(true);
 
         noServings.setWidth("100%");
         noServings.setReadOnly(true);
@@ -135,7 +136,7 @@ public class SOULPatchForm extends Div {
         binder.forField(id).bind(it -> String.valueOf(it.getId()), null);
         binder.forField(name).bind(SOULPatch::getName, SOULPatch::setName);
         binder.forField(description).bind(SOULPatch::getDescription, SOULPatch::setDescription);
-        binder.forField(author).bind(SOULPatch::getAuthor, SOULPatch::setAuthor);
+        binder.forField(author).bind(soulPatch -> soulPatch.getAuthor().getUserName(), null);
         binder.forField(noServings).bind(it -> String.valueOf(it.getNoServings()), null);
     }
 

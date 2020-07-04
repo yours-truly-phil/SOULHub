@@ -1,5 +1,6 @@
 package io.horrorshow.soulhub.service;
 
+import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.data.repository.SOULPatchRepository;
@@ -13,10 +14,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.horrorshow.soulhub.data.SPFile.FileType.SOUL;
@@ -41,7 +39,8 @@ public class SOULPatchServiceTest {
         p.setId(no);
         p.setName(String.format("name %s", no));
         p.setDescription(String.format("description %s", no));
-        p.setAuthor(String.format("author %s", no));
+        p.setAuthor(new AppUser(0L, String.format("author %s", no),
+                "$pw", AppUser.UserStatus.ACTIVE, Collections.emptySet()));
         p.setNoServings(no);
 
         p.getSpFiles().add(createTestSPFile(2 * no, SOUL, p));

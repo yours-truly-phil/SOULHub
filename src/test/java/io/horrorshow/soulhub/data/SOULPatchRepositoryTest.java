@@ -1,7 +1,9 @@
 package io.horrorshow.soulhub.data;
 
+import io.horrorshow.soulhub.data.repository.AppUserRepository;
 import io.horrorshow.soulhub.data.repository.SOULPatchRepository;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,9 +25,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DisplayName("SOULHubRepository Tests")
 class SOULPatchRepositoryTest {
 
-    private static final HashMap<String, SOULPatch> soulPatches = new HashMap<>();
+    private static final HashMap<String, SOULPatch> soulPatches =
+            new HashMap<>();
+    private static final AppUser user1 =
+            new AppUser(0L, "user1", "$pw",
+                    AppUser.UserStatus.ACTIVE, Collections.emptySet());
+
     @Autowired
-    private SOULPatchRepository repository;
+    private SOULPatchRepository soulPatchRepository;
+    @Autowired
+    private AppUserRepository appUserRepository;
 
     @BeforeAll
     static void initAll() {
@@ -49,17 +59,21 @@ class SOULPatchRepositoryTest {
         SOULPatch soulPatch2 = new SOULPatch();
         soulPatch1.setName("name1");
         soulPatch2.setName("name2");
-        soulPatch1.setAuthor("author1");
-        soulPatch2.setAuthor("author2");
 
         soulPatches.put("Valid1", soulPatch1);
         soulPatches.put("Valid2", soulPatch2);
     }
 
+    @BeforeEach
+    void init() {
+        AppUser user = appUserRepository.save(user1);
+        soulPatches.forEach((s, soulPatch) -> soulPatch.setAuthor(user));
+        soulPatchRepository.saveAll(soulPatches.values());
+    }
+
     @Test
     void save_and_retrieve_some_soulpatches() {
-        repository.saveAll(soulPatches.values());
-        List<SOULPatch> patches = repository.findAll();
+        List<SOULPatch> patches = soulPatchRepository.findAll();
         for (SOULPatch patch : patches) {
             assertNotNull(patch.getId());
         }

@@ -35,6 +35,7 @@ import static io.horrorshow.soulhub.data.SPFile.FileType.SOULPATCH;
         })
 public class SOULPatch extends AuditModel {
 
+    private static final long serialVersionUID = -6746949290547828924L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false, nullable = false)
@@ -55,8 +56,11 @@ public class SOULPatch extends AuditModel {
     @ToString.Exclude
     private Set<SPFile> spFiles = new HashSet<>();
 
-    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
-    private String author;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JoinColumn(name = "author", nullable = false)
+    private AppUser author;
 
     private Long noServings;
 

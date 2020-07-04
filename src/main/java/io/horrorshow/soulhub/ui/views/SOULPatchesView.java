@@ -129,7 +129,7 @@ public class SOULPatchesView extends VerticalLayout {
             return files;
         })).setHeader("Files").setFlexGrow(10).setResizable(true);
 
-        grid.addColumn(SOULPatch::getAuthor)
+        grid.addColumn(soulPatch -> soulPatch.getAuthor().getUserName())
                 .setHeader("author").setFlexGrow(0).setResizable(true);
         grid.addColumn(soulPatch -> String.valueOf(soulPatch.getNoServings()))
                 .setHeader("noServings").setFlexGrow(0).setResizable(true);
