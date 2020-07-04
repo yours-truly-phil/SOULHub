@@ -23,6 +23,7 @@ import io.horrorshow.soulhub.ui.components.SpFileEditorDialog;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@SuppressWarnings("SpringJavaAutowiredMembersInspection")
 @Route(value = "", layout = MainLayout.class)
 @Getter
 @PageTitle("SOULHub | SOUL Patches")
@@ -41,15 +42,6 @@ public class SOULPatchesView extends VerticalLayout {
     private final SpFileEditorDialog spFileEditorDialog = new SpFileEditorDialog(this);
     private final Span userGreeting = new Span("Hello!");
 
-    /**
-     * Construct a new Vaadin view.
-     * <p>
-     * Build the initial UI state for the user accessing the application.
-     *
-     * @param service
-     *         The message service. Automatically injected Spring managed bean.
-     * @param userService
-     */
     @Autowired
     public SOULPatchesView(SOULPatchService service, SOULHubUserDetailsService userService) {
 

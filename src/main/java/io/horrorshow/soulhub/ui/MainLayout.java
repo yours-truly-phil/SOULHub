@@ -67,19 +67,21 @@ public class MainLayout extends AppLayout {
     }
 
     private void createDrawer() {
+        VerticalLayout drawerLayout = new VerticalLayout();
+
         RouterLink soulPatchesLink = new RouterLink("SOULPatches", SOULPatchesView.class);
         soulPatchesLink.setHighlightCondition(HighlightConditions.sameLocation());
-
+        drawerLayout.add(soulPatchesLink);
         RouterLink aboutLink = new RouterLink("About", AboutView.class);
         aboutLink.setHighlightCondition(HighlightConditions.sameLocation());
+        drawerLayout.add(aboutLink);
 
-        RouterLink adminLink = new RouterLink("Administration", AdminView.class);
-        adminLink.setHighlightCondition(HighlightConditions.sameLocation());
+        if (SecurityUtils.isAccessGranted(AdminView.class)) {
+            RouterLink adminLink = new RouterLink("Administration", AdminView.class);
+            adminLink.setHighlightCondition(HighlightConditions.sameLocation());
+            drawerLayout.add(adminLink);
+        }
 
-        addToDrawer(new VerticalLayout(
-                soulPatchesLink,
-                aboutLink,
-                adminLink
-        ));
+        addToDrawer(drawerLayout);
     }
 }
