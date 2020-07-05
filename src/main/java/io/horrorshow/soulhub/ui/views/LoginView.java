@@ -14,7 +14,8 @@ import io.horrorshow.soulhub.ui.MainLayout;
 @PageTitle("SOULHub | Login")
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
-    private LoginForm loginForm = new LoginForm();
+    private static final long serialVersionUID = 7631869443546476927L;
+    private final LoginForm loginForm = new LoginForm();
 
     public LoginView() {
         addClassName("login-view");
