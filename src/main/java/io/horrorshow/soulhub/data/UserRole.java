@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Indexed
 @Entity
@@ -18,8 +19,9 @@ import javax.persistence.*;
         uniqueConstraints = {
                 @UniqueConstraint(name = "user_role_user_id_role_id_key", columnNames = {"user_id", "role_id"})
         })
-public class UserRole {
+public class UserRole implements Serializable {
 
+    private static final long serialVersionUID = -3481942783325489931L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)

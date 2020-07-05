@@ -34,6 +34,7 @@ import java.util.Iterator;
 
 public class SOULPatchForm extends Div {
 
+    private static final long serialVersionUID = -7531039924193682445L;
     private final SOULPatchesView SOULPatchesView;
 
     private final TextField id = new TextField("id");

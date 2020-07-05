@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 @Entity
@@ -17,8 +18,9 @@ import java.util.Set;
         uniqueConstraints = {
                 @UniqueConstraint(name = "app_user_user_name_key", columnNames = "user_name")
         })
-public class AppUser {
+public class AppUser implements Serializable {
 
+    private static final long serialVersionUID = -4675920971250068707L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)

@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 
 public class SOULFileEditor extends VerticalLayout {
 
+    private static final long serialVersionUID = -6950603059471911545L;
     private final SOULPatchesView SOULPatchesView;
 
     private final TextField name = new TextField("filename");
@@ -58,8 +59,8 @@ public class SOULFileEditor extends VerticalLayout {
         fileType.setTitle("File-Type");
         fileType.setReadOnly(true);
 
-        aceEditor.setTheme(AceTheme.monokai);
-        aceEditor.setMode(AceMode.xml);
+        aceEditor.setTheme(AceTheme.cobalt);
+        aceEditor.setMode(AceMode.c_cpp);
 
         aceEditor.setSofttabs(true);
         aceEditor.setTabSize(4);

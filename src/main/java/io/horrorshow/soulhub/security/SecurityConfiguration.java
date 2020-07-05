@@ -121,6 +121,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 "/webjars/**",
                 // images
                 "/img/**",
+                "/icons/**",
+                // ace-editor
+                "/ace-builds/**",
                 // (production mode) static resources
                 "/fontend-es5/**", "/frontend-es6/**"
         );

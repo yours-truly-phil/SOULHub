@@ -3,6 +3,7 @@ package io.horrorshow.soulhub.data;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 @Entity
@@ -14,8 +15,9 @@ import java.util.Set;
         uniqueConstraints = {
                 @UniqueConstraint(name = "app_role_role_name_key", columnNames = "role_name")
         })
-public class AppRole {
+public class AppRole implements Serializable {
 
+    private static final long serialVersionUID = 4509957085203232948L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
