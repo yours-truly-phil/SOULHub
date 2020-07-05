@@ -8,6 +8,7 @@ import lombok.Getter;
 
 @Getter
 public class SpFileEditorDialog extends Dialog {
+    private static final long serialVersionUID = 3233168273572823081L;
     private final SOULFileEditor editor;
 
     private final Button close = new Button("close file editor dialog");

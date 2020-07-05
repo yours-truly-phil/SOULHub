@@ -6,7 +6,9 @@ import com.hilerio.ace.AceTheme;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import io.horrorshow.soulhub.data.SPFile;
@@ -27,6 +29,8 @@ public class SOULFileEditor extends VerticalLayout {
 
     private final Button save = new Button("save");
     private final Button delete = new Button("delete");
+
+    private final Select<AceTheme> aceTheme = new Select<>();
 
     private final Binder<SPFile> binder = new Binder<>(SPFile.class);
 
@@ -59,7 +63,13 @@ public class SOULFileEditor extends VerticalLayout {
         fileType.setTitle("File-Type");
         fileType.setReadOnly(true);
 
-        aceEditor.setTheme(AceTheme.cobalt);
+        aceTheme.setItems(AceTheme.values());
+        aceTheme.addValueChangeListener(event ->
+                aceEditor.setTheme(event.getValue()));
+        aceTheme.setValue(AceTheme.dracula);
+        aceTheme.setLabel("Editor theme");
+
+        aceEditor.setTheme(AceTheme.dracula);
         aceEditor.setMode(AceMode.c_cpp);
 
         aceEditor.setSofttabs(true);
@@ -88,13 +98,10 @@ public class SOULFileEditor extends VerticalLayout {
      * into the gui
      */
     private void arrangeComponents() {
-        add(name);
-        add(createdAt);
-        add(updatedAt);
-        add(fileType);
+        add(new HorizontalLayout(name, createdAt, updatedAt));
+        add(new HorizontalLayout(fileType, aceTheme));
         add(aceEditor);
-        add(save);
-        add(delete);
+        add(new HorizontalLayout(save, delete));
     }
 
     /**
