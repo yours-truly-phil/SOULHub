@@ -2,6 +2,7 @@ package io.horrorshow.soulhub.service;
 
 import io.horrorshow.soulhub.data.AppRole;
 import io.horrorshow.soulhub.data.AppUser;
+import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.repository.AppRoleRepository;
 import io.horrorshow.soulhub.data.repository.AppUserRepository;
 import io.horrorshow.soulhub.security.SecurityUtils;
@@ -42,11 +43,7 @@ public class SOULHubUserDetailsService implements UserDetailsService {
 
     public AppUser loadAppUser(String username) throws UsernameNotFoundException {
         Optional<AppUser> appUser = appUserRepository.findByUserName(username);
-        if (appUser.isPresent()) {
-            return appUser.get();
-        } else {
-            throw new UsernameNotFoundException(username);
-        }
+        return appUser.orElse(null);
     }
 
     private UserDetails getUserDetails(AppUser appUser) {
@@ -62,7 +59,7 @@ public class SOULHubUserDetailsService implements UserDetailsService {
     }
 
     @Transactional
-    public AppUser registeNewUserAccount(AppUser appUser) throws RoleNotFoundException {
+    public AppUser registerAppUser(AppUser appUser) throws RoleNotFoundException {
         AppUser user = new AppUser();
 
         user.setUserName(appUser.getUserName());
@@ -75,6 +72,15 @@ public class SOULHubUserDetailsService implements UserDetailsService {
         user.setStatus(AppUser.UserStatus.ACTIVE);
         logger.debug(String.format("saving %s: %s", AppUser.class.getSimpleName(), user.toString()));
         return appUserRepository.save(user);
+    }
+
+    public boolean isCurrentUserOwnerOf(SOULPatch soulPatch) {
+        Optional<AppUser> appUser = getCurrentAppUser();
+        return appUser.filter(user -> soulPatch.getAuthor().equals(user)).isPresent();
+    }
+
+    public Optional<AppUser> getCurrentAppUser() {
+        return Optional.ofNullable(loadAppUser(SecurityUtils.getUsername()));
     }
 
 }

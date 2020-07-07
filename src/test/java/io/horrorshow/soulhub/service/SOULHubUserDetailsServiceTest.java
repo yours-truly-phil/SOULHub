@@ -52,7 +52,7 @@ public class SOULHubUserDetailsServiceTest {
         Mockito.doReturn(Optional.of(userRole)).when(roleRepository).findByRoleName(userRoleName);
         Mockito.when(userRepository.save(Mockito.any(AppUser.class))).thenAnswer(AdditionalAnswers.returnsFirstArg());
 
-        AppUser userAccount = userDetailsService.registeNewUserAccount(newUser);
+        AppUser userAccount = userDetailsService.registerAppUser(newUser);
         System.out.println(userAccount);
         // user name
         assertEquals(userName, userAccount.getUserName());
@@ -72,7 +72,7 @@ public class SOULHubUserDetailsServiceTest {
 
         Mockito.doReturn(Optional.empty()).when(roleRepository).findByRoleName(Mockito.anyString());
 
-        assertThrows(RoleNotFoundException.class, () -> userDetailsService.registeNewUserAccount(user));
+        assertThrows(RoleNotFoundException.class, () -> userDetailsService.registerAppUser(user));
     }
 
 
