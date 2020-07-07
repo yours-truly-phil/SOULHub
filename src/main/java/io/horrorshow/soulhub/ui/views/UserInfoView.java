@@ -28,15 +28,19 @@ public class UserInfoView extends VerticalLayout {
 
         addClassName("userinfo-view");
 
+        init();
+    }
+
+    private void init() {
         H1 title = new H1("Userinfo");
 
         Span helloUser = new Span(format("Hello %s", SecurityUtils.getUsername()));
 
         Span isLoggedIn = new Span(format("you are %s",
-                userDetailsService.isAuthenticated()
+                this.userDetailsService.isAuthenticated()
                         ? "authenticated"
                         : "here?! hmm"));
 
-        add(title, helloUser);
+        add(title, helloUser, isLoggedIn);
     }
 }

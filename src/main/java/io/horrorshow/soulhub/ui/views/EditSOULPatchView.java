@@ -1,5 +1,6 @@
 package io.horrorshow.soulhub.ui.views;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
@@ -10,9 +11,15 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.*;
+import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
+import io.horrorshow.soulhub.security.SecurityUtils;
+import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
+import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.MainLayout;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
 import static java.lang.String.format;
@@ -24,6 +31,9 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
 
     private static final long serialVersionUID = -4704235426941430447L;
 
+    private final SOULPatchService soulPatchService;
+    private final SOULHubUserDetailsService userDetailsService;
+
     private final TextField name = new TextField("Name of the your SOULPatch");
     private final TextArea description = new TextArea("Describe your SOULPatch");
     private final Grid<SPFile> files = new Grid<>();
@@ -32,7 +42,10 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     private final Button addFile = new Button("add SOUL file");
     private final Binder<SOULPatch> binder = new Binder<>(SOULPatch.class);
 
-    public EditSOULPatchView() {
+    public EditSOULPatchView(@Autowired SOULPatchService soulPatchService, @Autowired SOULHubUserDetailsService userDetailsService) {
+        this.soulPatchService = soulPatchService;
+        this.userDetailsService = userDetailsService;
+
         setClassName("edit-soulpatch-view");
 
         initFields();
@@ -60,12 +73,12 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
 
         save.setWidthFull();
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        save.addClickListener(event -> new Notification("save clicked").open());
+        save.addClickListener(event -> saveSOULPatch());
 
         delete.setWidthFull();
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR,
                 ButtonVariant.LUMO_PRIMARY);
-        delete.addClickListener(event -> new Notification("delete clicked").open());
+        delete.addClickListener(event -> deleteSOULPatch());
 
         addFile.setWidthFull();
         addFile.addClickListener(event -> new Notification("add file clicked").open());
@@ -80,14 +93,49 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         setSizeFull();
         add(name);
         add(description);
+        add(addFile);
         add(files);
         add(save);
         add(delete);
-        add(addFile);
     }
 
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-        new Notification(format("URL Parameter: %s", parameter)).open();
+        if (isPossibleSOULPatchId(parameter)) {
+            loadSOULPatch(Long.valueOf(parameter));
+        } else {
+            newSOULPatch();
+        }
+    }
+
+    private void loadSOULPatch(Long soulPatchId) {
+        binder.setBean(soulPatchService.findById(soulPatchId));
+    }
+
+    private boolean isPossibleSOULPatchId(String parameter) {
+        return NumberUtils.isCreatable(parameter);
+    }
+
+    private void newSOULPatch() {
+        AppUser currentUser = userDetailsService.loadAppUser(SecurityUtils.getUsername());
+        SOULPatch soulPatch = soulPatchService.createSOULPatch(currentUser);
+        binder.setBean(soulPatch);
+        files.setItems(soulPatch.getSpFiles());
+        name.focus();
+    }
+
+    private void saveSOULPatch() {
+        SOULPatch soulPatch = binder.getBean();
+        soulPatchService.save(soulPatch);
+        new Notification(format("soulpatch %s saved", soulPatch.getName()),
+                3000).open();
+    }
+
+    private void deleteSOULPatch() {
+        SOULPatch soulPatch = binder.getBean();
+        soulPatchService.delete(soulPatch);
+        new Notification(format("soulpatch %s removed", soulPatch.getName()),
+                3000).open();
+        UI.getCurrent().navigate(SOULPatchesView.class);
     }
 }

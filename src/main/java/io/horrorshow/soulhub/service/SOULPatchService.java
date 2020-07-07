@@ -1,5 +1,6 @@
 package io.horrorshow.soulhub.service;
 
+import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.data.repository.SOULPatchRepository;
@@ -80,6 +81,12 @@ public class SOULPatchService {
                     xmlPatches.add(soulPatchXML);
                 });
         return xmlPatches;
+    }
+
+    public SOULPatch createSOULPatch(AppUser creator) {
+        SOULPatch soulPatch = new SOULPatch();
+        soulPatch.setAuthor(creator);
+        return soulPatch;
     }
 
     public SOULPatch findById(Long id) {

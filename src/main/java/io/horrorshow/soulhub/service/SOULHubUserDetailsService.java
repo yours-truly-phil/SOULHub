@@ -38,11 +38,15 @@ public class SOULHubUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        Optional<AppUser> appUser = appUserRepository.findByUserName(userName);
+        return getUserDetails(loadAppUser(userName));
+    }
+
+    public AppUser loadAppUser(String username) throws UsernameNotFoundException {
+        Optional<AppUser> appUser = appUserRepository.findByUserName(username);
         if (appUser.isPresent()) {
-            return getUserDetails(appUser.get());
+            return appUser.get();
         } else {
-            throw new UsernameNotFoundException(userName);
+            throw new UsernameNotFoundException(username);
         }
     }
 
