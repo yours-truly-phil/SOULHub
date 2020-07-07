@@ -85,13 +85,12 @@ public class SOULPatchesView extends VerticalLayout {
         addSOULPatch.addClickListener(e -> {
             grid.asSingleSelect().clear();
             UI.getCurrent().navigate(EditSOULPatchView.class);
-//            form.showSOULPatch(new SOULPatch());
         });
     }
 
     private void initSOULPatchesGrid() {
         grid.addThemeName("bordered");
-        grid.setHeightByRows(true);
+        grid.setHeightFull();
 
         addSOULPatchesGridColumns();
 
@@ -109,24 +108,25 @@ public class SOULPatchesView extends VerticalLayout {
                 .setHeader("description").setAutoWidth(true).setFlexGrow(1).setResizable(true);
 
         grid.addColumn(new ComponentRenderer<>(sp -> {
-
-            VerticalLayout files = new VerticalLayout();
-
-            sp.getSpFiles().forEach(spFile -> {
-                HorizontalLayout layout = new HorizontalLayout();
-                layout.add(new Button(spFile.getName(), event ->
-                        showFileEditor(spFile)));
-                layout.add(new Label(String.format("%s-file", spFile.getFileType().toString())));
-                files.add(layout);
-            });
-
-            return files;
+            VerticalLayout spFilesLayout = new VerticalLayout();
+            if (!sp.getSpFiles().isEmpty()) {
+                sp.getSpFiles().forEach(spFile -> {
+                    HorizontalLayout layout = new HorizontalLayout();
+                    layout.add(new Button(spFile.getName(), event ->
+                            showFileEditor(spFile)));
+                    layout.add(new Label(String.format("%s-file", spFile.getFileType().toString())));
+                    spFilesLayout.add(layout);
+                });
+            } else {
+                spFilesLayout.add(new Span("no files attached"));
+            }
+            return spFilesLayout;
         })).setHeader("Files").setFlexGrow(10).setResizable(true);
 
         grid.addColumn(soulPatch -> soulPatch.getAuthor().getUserName())
                 .setHeader("author").setFlexGrow(0).setResizable(true);
         grid.addColumn(soulPatch -> String.valueOf(soulPatch.getNoViews()))
-                .setHeader("noServings").setFlexGrow(0).setResizable(true);
+                .setHeader("views").setFlexGrow(0).setResizable(true);
     }
 
     private void initFilterText() {

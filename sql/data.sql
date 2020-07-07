@@ -1,4 +1,8 @@
 delete
+from spfiles;
+delete
+from soulpatches;
+delete
 from user_role;
 delete
 from app_role;
@@ -32,10 +36,6 @@ values (nextval('hibernate_sequence'),
         (select id from app_user where user_name = 'dbuser1'),
         (select id from app_role where role_name = 'USER'));
 
-delete
-from spfiles;
-delete
-from soulpatches;
 
 insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
 values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
