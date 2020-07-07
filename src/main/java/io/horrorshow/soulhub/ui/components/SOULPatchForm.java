@@ -45,7 +45,7 @@ public class SOULPatchForm extends Div {
     private final Grid<SPFile> spFilesGrid = new Grid<>();
     private final Button save = new Button("save");
     private final Button delete = new Button("delete");
-    private final Dialog fileEditorDialog = new Dialog();
+    private final Dialog fileEditorDialog = new Dialog(); // TODO check if it's used
     private final Button newSpFile = new Button("create soulpatch file");
     private final Component upload = createFileUpload();
     private final Binder<SOULPatch> binder = new Binder<>(SOULPatch.class);

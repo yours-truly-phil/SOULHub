@@ -1,5 +1,6 @@
 package io.horrorshow.soulhub.ui.views;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
@@ -12,6 +13,7 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.security.SecurityUtils;
@@ -64,7 +66,7 @@ public class SOULPatchesView extends VerticalLayout {
 
         initSOULPatchesGrid();
 
-        initAddSOULPatchBtn();
+        initAddSOULPatchLink();
 
         initSOULPatchForm();
 
@@ -79,11 +81,12 @@ public class SOULPatchesView extends VerticalLayout {
         form.setMinWidth("20em");
     }
 
-    private void initAddSOULPatchBtn() {
+    private void initAddSOULPatchLink() {
         addSOULPatch.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         addSOULPatch.addClickListener(e -> {
             grid.asSingleSelect().clear();
-            form.showSOULPatch(new SOULPatch());
+            UI.getCurrent().navigate(EditSOULPatchView.class);
+//            form.showSOULPatch(new SOULPatch());
         });
     }
 
