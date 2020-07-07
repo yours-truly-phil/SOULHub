@@ -37,7 +37,7 @@ from spfiles;
 delete
 from soulpatches;
 
-insert into soulpatches(id, created_at, updated_at, author, description, name, no_servings)
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
 values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
         (select id from app_user where user_name = 'dbuser1'), 'description 0',
         'clarinetMIDI',

@@ -1,10 +1,10 @@
 drop table if exists user_role;
 drop table if exists app_role;
+drop table if exists spfiles;
+drop table if exists soulpatches;
 drop table if exists app_user;
 drop table if exists persistent_logins;
 
-drop table if exists spfiles;
-drop table if exists soulpatches;
 drop sequence if exists hibernate_sequence;
 
 
@@ -60,7 +60,7 @@ create table soulpatches
         constraint soulpatches_author_user_constraint references app_user,
     description text,
     name        varchar(255),
-    no_servings bigint
+    no_views    bigint default 0
 );
 
 alter table soulpatches

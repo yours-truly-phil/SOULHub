@@ -138,7 +138,7 @@ public class SOULPatchForm extends Div {
         binder.forField(name).bind(SOULPatch::getName, SOULPatch::setName);
         binder.forField(description).bind(SOULPatch::getDescription, SOULPatch::setDescription);
         binder.forField(author).bind(soulPatch -> soulPatch.getAuthor().getUserName(), null);
-        binder.forField(noServings).bind(it -> String.valueOf(it.getNoServings()), null);
+        binder.forField(noServings).bind(it -> String.valueOf(it.getNoViews()), null);
     }
 
     private Component createFileUpload() {

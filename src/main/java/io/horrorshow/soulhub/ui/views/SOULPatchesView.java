@@ -13,7 +13,6 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.security.SecurityUtils;
@@ -126,7 +125,7 @@ public class SOULPatchesView extends VerticalLayout {
 
         grid.addColumn(soulPatch -> soulPatch.getAuthor().getUserName())
                 .setHeader("author").setFlexGrow(0).setResizable(true);
-        grid.addColumn(soulPatch -> String.valueOf(soulPatch.getNoServings()))
+        grid.addColumn(soulPatch -> String.valueOf(soulPatch.getNoViews()))
                 .setHeader("noServings").setFlexGrow(0).setResizable(true);
     }
 

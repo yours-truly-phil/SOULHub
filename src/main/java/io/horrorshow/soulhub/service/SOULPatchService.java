@@ -103,7 +103,7 @@ public class SOULPatchService {
         return soulPatchRepository.findById(id).map(sp -> {
             sp.setName(soulPatch.getName());
             sp.setDescription(soulPatch.getDescription());
-            sp.setNoServings(soulPatch.getNoServings());
+            sp.setNoViews(soulPatch.getNoViews());
             sp.setUpdatedAt(LocalDateTime.now());
             return soulPatchRepository.save(soulPatch);
         }).orElseThrow(() ->

@@ -28,8 +28,7 @@ public class SOULHubUserDetailsService implements UserDetailsService {
     private final AppUserRepository appUserRepository;
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    public SOULHubUserDetailsService(AppRoleRepository appRoleRepository, AppUserRepository appUserRepository) {
+    public SOULHubUserDetailsService(@Autowired AppRoleRepository appRoleRepository, @Autowired AppUserRepository appUserRepository) {
         this.appRoleRepository = appRoleRepository;
         this.appUserRepository = appUserRepository;
     }

@@ -62,7 +62,8 @@ public class SOULPatch extends AuditModel {
     @JoinColumn(name = "author", nullable = false)
     private AppUser author;
 
-    private Long noServings;
+    @Column(name = "no_views")
+    private Long noViews = 0L;
 
     public List<SPFile> getSoulFiles() {
         return spFiles.stream().filter(

@@ -41,7 +41,7 @@ public class SOULPatchServiceTest {
         p.setDescription(String.format("description %s", no));
         p.setAuthor(new AppUser(0L, String.format("author %s", no),
                 "$pw", AppUser.UserStatus.ACTIVE, Collections.emptySet()));
-        p.setNoServings(no);
+        p.setNoViews(no);
 
         p.getSpFiles().add(createTestSPFile(2 * no, SOUL, p));
         p.getSpFiles().add(createTestSPFile(2 * no + 1, SOULPATCH, p));
