@@ -9,8 +9,7 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.*;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.ui.MainLayout;
@@ -21,7 +20,7 @@ import static java.lang.String.format;
 @Secured(value = "ROLE_USER")
 @Route(value = "editsoulpatch", layout = MainLayout.class)
 @PageTitle("SOULHub | Edit SOULPatch")
-public class EditSOULPatchView extends VerticalLayout {
+public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter<String> {
 
     private static final long serialVersionUID = -4704235426941430447L;
 
@@ -61,15 +60,15 @@ public class EditSOULPatchView extends VerticalLayout {
 
         save.setWidthFull();
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        save.addClickListener(event -> new Notification("save clicked"));
+        save.addClickListener(event -> new Notification("save clicked").open());
 
         delete.setWidthFull();
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR,
                 ButtonVariant.LUMO_PRIMARY);
-        delete.addClickListener(event -> new Notification("delete clicked"));
+        delete.addClickListener(event -> new Notification("delete clicked").open());
 
         addFile.setWidthFull();
-        addFile.addClickListener(event -> new Notification("add file clicked"));
+        addFile.addClickListener(event -> new Notification("add file clicked").open());
     }
 
     private void initBinder() {
@@ -87,5 +86,8 @@ public class EditSOULPatchView extends VerticalLayout {
         add(addFile);
     }
 
-
+    @Override
+    public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
+        new Notification(format("URL Parameter: %s", parameter)).open();
+    }
 }
