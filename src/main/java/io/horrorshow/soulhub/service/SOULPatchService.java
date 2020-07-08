@@ -20,7 +20,6 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,7 +32,8 @@ public class SOULPatchService {
     private EntityManager entityManager;
 
     @Autowired
-    public SOULPatchService(SOULPatchRepository soulPatchRepository, SPFileRepository spFileRepository) {
+    public SOULPatchService(SOULPatchRepository soulPatchRepository,
+                            SPFileRepository spFileRepository) {
         this.soulPatchRepository = soulPatchRepository;
         this.spFileRepository = spFileRepository;
     }
@@ -135,13 +135,7 @@ public class SOULPatchService {
 
     public boolean isSPXmlMatchSPData(SOULPatch patch, SOULPatchXMLType xmlType) {
         try {
-            boolean isMatch = xmlType.getId().equals(String.valueOf(patch.getId()));
-            // TODO: soulfiles schema change
-//            isMatch &= xmlType.getSoulfile().get(0).getFilename().equals(patch.getSoulFileName());
-//            isMatch &= xmlType.getSoulfile().get(0).getFilecontent().equals(patch.getSoulFileContent());
-//            isMatch &= xmlType.getSoulpatchfile().get(0).getFilename().equals(patch.getSoulpatchFileName());
-//            isMatch &= xmlType.getSoulpatchfile().get(0).getFilecontent().equals(patch.getSoulpatchFileContent());
-            return isMatch;
+            return xmlType.getId().equals(String.valueOf(patch.getId()));
         } catch (Exception e) {
             return false;
         }

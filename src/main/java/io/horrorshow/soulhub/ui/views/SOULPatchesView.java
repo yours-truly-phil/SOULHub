@@ -24,7 +24,6 @@ import io.horrorshow.soulhub.ui.components.SpFileEditorDialog;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@SuppressWarnings("SpringJavaAutowiredMembersInspection")
 @Route(value = "", layout = MainLayout.class)
 @Getter
 @PageTitle("SOULHub | SOUL Patches")
@@ -43,8 +42,7 @@ public class SOULPatchesView extends VerticalLayout {
     private final SpFileEditorDialog spFileEditorDialog = new SpFileEditorDialog(this);
     private final Span userGreeting = new Span("Hello!");
 
-    @Autowired
-    public SOULPatchesView(SOULPatchService service, SOULHubUserDetailsService userService) {
+    public SOULPatchesView(@Autowired SOULPatchService service, @Autowired SOULHubUserDetailsService userService) {
 
         this.service = service;
         this.userService = userService;
