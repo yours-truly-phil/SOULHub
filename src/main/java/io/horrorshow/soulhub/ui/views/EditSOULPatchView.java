@@ -109,7 +109,10 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     }
 
     private void loadSOULPatch(Long soulPatchId) {
-        binder.setBean(soulPatchService.findById(soulPatchId));
+        SOULPatch soulPatch = soulPatchService.findById(soulPatchId);
+        binder.setBean(soulPatch);
+        files.setItems(soulPatch.getSpFiles());
+        name.focus();
     }
 
     private boolean isPossibleSOULPatchId(String parameter) {
