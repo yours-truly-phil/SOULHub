@@ -2,8 +2,10 @@ package io.horrorshow.soulhub.ui.components;
 
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
@@ -43,7 +45,7 @@ public class SOULPatchForm extends Div {
     private final Grid<SPFile> spFilesGrid = new Grid<>();
     private final Button newSpFile = new Button("create soulpatch file");
     private final Binder<SOULPatch> binder = new Binder<>(SOULPatch.class);
-    private final Button editSOULPatch = new Button("edit soulpatch");
+    private final Button editSOULPatch = new Button("edit soulpatch", VaadinIcon.EDIT.create());
     private Registration editSOULPatchListener;
 
     public SOULPatchForm(SOULPatchesView soulPatchesView) {
@@ -79,7 +81,7 @@ public class SOULPatchForm extends Div {
         noServings.setReadOnly(true);
 
         spFilesGrid.setHeightByRows(true);
-        spFilesGrid.setWidthFull();
+        spFilesGrid.setWidth("200");
 
         spFilesGrid.addColumn(new ComponentRenderer<>(it ->
                 new Button(it.getName(), event -> soulPatchesView.showFileEditor(it))))
@@ -88,6 +90,7 @@ public class SOULPatchForm extends Div {
                 .setHeader("filetype").setAutoWidth(true);
 
         editSOULPatch.setVisible(false);
+        editSOULPatch.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     }
 
     /**
@@ -96,7 +99,6 @@ public class SOULPatchForm extends Div {
      */
     private void arrangeComponents() {
         VerticalLayout content = new VerticalLayout();
-        content.setSizeUndefined();
         content.addClassName("soulpatch-form-content");
         content.add(editSOULPatch);
         content.add(id);

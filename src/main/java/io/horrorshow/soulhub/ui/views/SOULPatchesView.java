@@ -5,6 +5,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.BrowserWindowResizeEvent;
@@ -68,7 +69,6 @@ public class SOULPatchesView extends VerticalLayout {
     }
 
     private void browserWindowResized(BrowserWindowResizeEvent event) {
-        LOGGER.debug("browser window resized: width={} height={}", event.getWidth(), event.getHeight());
         // TODO: check out https://vaadin.com/directory/component/sizereporter/samples
         // TODO: find way to get scaling (4k width on ipad feels different than 4k width on normal screen)
         // TODO: this might already be "normalized" since I only got 2560 with window size pretty much fullscreen
@@ -136,8 +136,9 @@ public class SOULPatchesView extends VerticalLayout {
                     HorizontalLayout layout = new HorizontalLayout();
                     layout.add(
                             new Button(
-                                    format("%s (%s-type)", spFile.getName(),
+                                    format("%s [%s]", spFile.getName(),
                                             spFile.getFileType().toString()),
+                                    VaadinIcon.FILE_CODE.create(),
                                     event -> showFileEditor(spFile)));
 
                     spFilesLayout.add(layout);

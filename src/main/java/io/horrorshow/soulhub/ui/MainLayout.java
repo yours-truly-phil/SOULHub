@@ -1,10 +1,12 @@
 package io.horrorshow.soulhub.ui;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -19,6 +21,8 @@ import io.horrorshow.soulhub.ui.components.LoginNavBarComponent;
 import io.horrorshow.soulhub.ui.views.AboutView;
 import io.horrorshow.soulhub.ui.views.AdminView;
 import io.horrorshow.soulhub.ui.views.SOULPatchesView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @PWA(name = "SOULHub - SOUL-Patch Web UI",
         shortName = "SOULHub-Web",
@@ -31,7 +35,7 @@ import io.horrorshow.soulhub.ui.views.SOULPatchesView;
 public class MainLayout extends AppLayout {
     private static final long serialVersionUID = -4791247729805265577L;
 
-    HorizontalLayout appUserNavBar;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainLayout.class);
 
     public MainLayout() {
         createHeader();
@@ -40,6 +44,7 @@ public class MainLayout extends AppLayout {
 
     private void createHeader() {
         Image logo = new Image("img/Logo.svg", "SOULHub logo");
+        logo.addClickListener(event -> UI.getCurrent().navigate(SOULPatchesView.class));
 
         logo.addClassName("logo");
 
@@ -56,6 +61,7 @@ public class MainLayout extends AppLayout {
         header.add(navbarCenterSpace);
         header.expand(navbarCenterSpace);
 
+        HorizontalLayout appUserNavBar;
         if (SecurityUtils.isUserLoggedIn()) {
             appUserNavBar = new AppUserNavBarComponent(SecurityUtils.getUsername());
         } else {
@@ -70,6 +76,7 @@ public class MainLayout extends AppLayout {
         VerticalLayout drawerLayout = new VerticalLayout();
 
         RouterLink soulPatchesLink = new RouterLink("SOULPatches", SOULPatchesView.class);
+        soulPatchesLink.addComponentAsFirst(VaadinIcon.CLUSTER.create());
         soulPatchesLink.setHighlightCondition(HighlightConditions.sameLocation());
         drawerLayout.add(soulPatchesLink);
         RouterLink aboutLink = new RouterLink("About", AboutView.class);
