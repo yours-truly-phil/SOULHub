@@ -4,6 +4,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -19,6 +20,8 @@ import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
@@ -30,6 +33,8 @@ import static java.lang.String.format;
 public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter<String> {
 
     private static final long serialVersionUID = -4704235426941430447L;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final SOULPatchService soulPatchService;
     private final SOULHubUserDetailsService userDetailsService;
@@ -102,29 +107,43 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
         if (isPossibleSOULPatchId(parameter)) {
-            loadSOULPatch(Long.valueOf(parameter));
+            SOULPatch soulPatch = soulPatchService.findById(Long.valueOf(parameter));
+            if (!userDetailsService.isCurrentUserOwnerOf(soulPatch)) {
+                logger.debug("user not authorized to edit username={} soulpatch={} urlparameter={} event={}",
+                        SecurityUtils.getUsername(), soulPatch, parameter, event);
+                createErrorView(format("Insufficient rights to edit SOULPatch %s", parameter));
+            } else {
+                updateView(soulPatch);
+            }
+        } else if (parameter.equals("new")) {
+            updateView(newSOULPatch());
         } else {
-            newSOULPatch();
+            logger.debug("invalid access. parameter={} user={} event={}",
+                    parameter, SecurityUtils.getUsername(), event);
+            createErrorView(format("Unable to serve request to edit SOULPatch %s", parameter));
         }
     }
 
-    private void loadSOULPatch(Long soulPatchId) {
-        SOULPatch soulPatch = soulPatchService.findById(soulPatchId);
+    private void createErrorView(String message) {
+        removeAll();
+        add(new H1(format("Lol, what did you do?! '%s'", message)));
+        add(new RouterLink("to SOULPatches view", SOULPatchesView.class));
+    }
+
+    private void updateView(SOULPatch soulPatch) {
         binder.setBean(soulPatch);
         files.setItems(soulPatch.getSpFiles());
         name.focus();
     }
 
     private boolean isPossibleSOULPatchId(String parameter) {
-        return NumberUtils.isCreatable(parameter);
+        return NumberUtils.isCreatable(parameter)
+                && soulPatchService.existsById(Long.valueOf(parameter));
     }
 
-    private void newSOULPatch() {
+    private SOULPatch newSOULPatch() {
         AppUser currentUser = userDetailsService.loadAppUser(SecurityUtils.getUsername());
-        SOULPatch soulPatch = soulPatchService.createSOULPatch(currentUser);
-        binder.setBean(soulPatch);
-        files.setItems(soulPatch.getSpFiles());
-        name.focus();
+        return soulPatchService.createSOULPatch(currentUser);
     }
 
     private void saveSOULPatch() {

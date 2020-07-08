@@ -162,4 +162,8 @@ public class SOULPatchService {
     public long countSPFiles() {
         return spFileRepository.count();
     }
+
+    public boolean existsById(Long id) {
+        return soulPatchRepository.existsById(id);
+    }
 }
