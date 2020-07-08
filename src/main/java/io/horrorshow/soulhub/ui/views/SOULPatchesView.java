@@ -4,10 +4,10 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.BrowserWindowResizeEvent;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
@@ -22,7 +22,11 @@ import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.components.SOULPatchForm;
 import io.horrorshow.soulhub.ui.components.SpFileEditorDialog;
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import static java.lang.String.format;
 
 @Route(value = "", layout = MainLayout.class)
 @Getter
@@ -30,11 +34,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class SOULPatchesView extends VerticalLayout {
 
     private static final long serialVersionUID = 3981631233877217865L;
-
+    private static final String COL_NAME = "name";
+    private static final String COL_DESCRIPTION = "description";
+    private static final String COL_FILES = "files";
+    private static final String COL_VIEWS = "views";
+    private static final String COL_AUTHOR = "author";
+    private static final Logger LOGGER = LoggerFactory.getLogger(SOULPatchesView.class);
     public final SOULPatchService service;
-
     public final SOULHubUserDetailsService userService;
-
     private final Grid<SOULPatch> grid = new Grid<>();
     private final TextField filterText = new TextField("filter by (regex)");
     private final Button addSOULPatch = new Button("add SOULPatch");
@@ -49,6 +56,8 @@ public class SOULPatchesView extends VerticalLayout {
 
         addClassName("soulpatches-view");
 
+        UI.getCurrent().getPage().addBrowserWindowResizeListener(this::browserWindowResized);
+
         initFields();
 
         arrangeComponents();
@@ -56,6 +65,16 @@ public class SOULPatchesView extends VerticalLayout {
         form.setVisible(false);
 
         updateList();
+    }
+
+    private void browserWindowResized(BrowserWindowResizeEvent event) {
+        LOGGER.debug("browser window resized: width={} height={}", event.getWidth(), event.getHeight());
+        // TODO: check out https://vaadin.com/directory/component/sizereporter/samples
+        // TODO: find way to get scaling (4k width on ipad feels different than 4k width on normal screen)
+        // TODO: this might already be "normalized" since I only got 2560 with window size pretty much fullscreen
+        grid.getColumnByKey(COL_VIEWS).setVisible(event.getWidth() >= 1300);
+        grid.getColumnByKey(COL_AUTHOR).setVisible(event.getWidth() >= 1100);
+        grid.getColumnByKey(COL_DESCRIPTION).setVisible(event.getWidth() >= 900);
     }
 
     private void initFields() {
@@ -89,6 +108,7 @@ public class SOULPatchesView extends VerticalLayout {
     private void initSOULPatchesGrid() {
         grid.addThemeName("bordered");
         grid.setHeightFull();
+        grid.setColumnReorderingAllowed(true);
 
         addSOULPatchesGridColumns();
 
@@ -98,33 +118,44 @@ public class SOULPatchesView extends VerticalLayout {
     }
 
     private void addSOULPatchesGridColumns() {
-        grid.addColumn(soulPatch -> String.valueOf(soulPatch.getId()))
-                .setHeader("Id").setFlexGrow(0).setResizable(true);
+
         grid.addColumn(SOULPatch::getName)
-                .setHeader("name").setFlexGrow(0).setResizable(true);
+                .setHeader(COL_NAME)
+                .setResizable(true).setAutoWidth(true).setFrozen(true)
+                .setKey(COL_NAME);
+
         grid.addColumn(SOULPatch::getDescription)
-                .setHeader("description").setAutoWidth(true).setFlexGrow(1).setResizable(true);
+                .setHeader(COL_DESCRIPTION)
+                .setAutoWidth(true).setResizable(true)
+                .setKey(COL_DESCRIPTION);
 
         grid.addColumn(new ComponentRenderer<>(sp -> {
             VerticalLayout spFilesLayout = new VerticalLayout();
             if (!sp.getSpFiles().isEmpty()) {
                 sp.getSpFiles().forEach(spFile -> {
                     HorizontalLayout layout = new HorizontalLayout();
-                    layout.add(new Button(spFile.getName(), event ->
-                            showFileEditor(spFile)));
-                    layout.add(new Label(String.format("%s-file", spFile.getFileType().toString())));
+                    layout.add(
+                            new Button(
+                                    format("%s (%s-type)", spFile.getName(),
+                                            spFile.getFileType().toString()),
+                                    event -> showFileEditor(spFile)));
+
                     spFilesLayout.add(layout);
                 });
             } else {
                 spFilesLayout.add(new Span("no files attached"));
             }
             return spFilesLayout;
-        })).setHeader("Files").setFlexGrow(10).setResizable(true);
+        })).setHeader(COL_FILES).setAutoWidth(true).setResizable(true)
+                .setKey(COL_FILES);
+
+        grid.addColumn(soulPatch -> String.valueOf(soulPatch.getNoViews()))
+                .setHeader(COL_VIEWS).setResizable(true)
+                .setKey(COL_VIEWS);
 
         grid.addColumn(soulPatch -> soulPatch.getAuthor().getUserName())
-                .setHeader("author").setFlexGrow(0).setResizable(true);
-        grid.addColumn(soulPatch -> String.valueOf(soulPatch.getNoViews()))
-                .setHeader("views").setFlexGrow(0).setResizable(true);
+                .setHeader(COL_AUTHOR).setResizable(true)
+                .setKey(COL_AUTHOR);
     }
 
     private void initFilterText() {

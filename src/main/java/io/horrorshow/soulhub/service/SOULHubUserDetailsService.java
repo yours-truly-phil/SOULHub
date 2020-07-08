@@ -25,9 +25,9 @@ public class SOULHubUserDetailsService implements UserDetailsService {
 
     public static final String USER_ROLE = "USER";
     public static final String ADMIN_ROLE = "ADMIN";
+    private static final Logger LOGGER = LoggerFactory.getLogger(SOULHubUserDetailsService.class);
     private final AppRoleRepository appRoleRepository;
     private final AppUserRepository appUserRepository;
-    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public SOULHubUserDetailsService(@Autowired AppRoleRepository appRoleRepository, @Autowired AppUserRepository appUserRepository) {
         this.appRoleRepository = appRoleRepository;
@@ -70,7 +70,7 @@ public class SOULHubUserDetailsService implements UserDetailsService {
         );
         userRole.orElseThrow(RoleNotFoundException::new);
         user.setStatus(AppUser.UserStatus.ACTIVE);
-        logger.debug(String.format("saving %s: %s", AppUser.class.getSimpleName(), user.toString()));
+        LOGGER.debug(String.format("saving %s: %s", AppUser.class.getSimpleName(), user.toString()));
         return appUserRepository.save(user);
     }
 
