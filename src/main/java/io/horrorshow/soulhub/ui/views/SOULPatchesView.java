@@ -3,6 +3,7 @@ package io.horrorshow.soulhub.ui.views;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -27,6 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.stream.Collectors;
+
 import static java.lang.String.format;
 
 @Route(value = "", layout = MainLayout.class)
@@ -45,7 +48,8 @@ public class SOULPatchesView extends VerticalLayout {
     public final SOULHubUserDetailsService userService;
     private final Grid<SOULPatch> grid = new Grid<>();
     private final TextField filterText = new TextField("filter by (regex)");
-    private final Button addSOULPatch = new Button("add SOULPatch");
+    private final Checkbox filterOwnedSoulpatches = new Checkbox("show only my soulpatches");
+    private final Button addSOULPatch = new Button("add SOULPatch", VaadinIcon.FILE_ADD.create());
     private final SOULPatchForm form = new SOULPatchForm(this);
     private final SpFileEditorDialog spFileEditorDialog = new SpFileEditorDialog(this);
     private final Span userGreeting = new Span("Hello!");
@@ -78,7 +82,7 @@ public class SOULPatchesView extends VerticalLayout {
     }
 
     private void initFields() {
-        initFilterText();
+        initFilters();
 
         initSOULPatchesGrid();
 
@@ -94,7 +98,7 @@ public class SOULPatchesView extends VerticalLayout {
     }
 
     private void initSOULPatchForm() {
-        form.setMinWidth("20em");
+        form.setMinWidth("30em");
     }
 
     private void initAddSOULPatchLink() {
@@ -159,16 +163,18 @@ public class SOULPatchesView extends VerticalLayout {
                 .setKey(COL_AUTHOR);
     }
 
-    private void initFilterText() {
+    private void initFilters() {
         filterText.setPlaceholder("Filter by name...");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.EAGER);
 
         filterText.addValueChangeListener(e -> updateList());
+
+        filterOwnedSoulpatches.addValueChangeListener(event -> updateList());
     }
 
     private void arrangeComponents() {
-        HorizontalLayout toolbar = new HorizontalLayout(filterText, addSOULPatch);
+        HorizontalLayout toolbar = new HorizontalLayout(filterText, filterOwnedSoulpatches, addSOULPatch);
 
         HorizontalLayout mainContent = new HorizontalLayout(grid, form);
         mainContent.setSizeFull();
@@ -178,13 +184,19 @@ public class SOULPatchesView extends VerticalLayout {
     }
 
     public void updateList() {
-        grid.setItems(service.findAll(filterText.getValue()));
+        grid.setItems(
+                service.findAll(filterText.getValue()).stream()
+                        .filter(soulPatch -> (filterOwnedSoulpatches.getValue() &&
+                                soulPatch.getAuthor().getUserName()
+                                        .equals(SecurityUtils.getUsername()))
+
+                                ||
+                                !filterOwnedSoulpatches.getValue())
+                        .collect(Collectors.toList()));
     }
 
     public void showFileEditor(SPFile spFile) {
         spFileEditorDialog.getEditor().showSpFile(spFile);
-        spFileEditorDialog.setMaxWidth("100%");
-        spFileEditorDialog.setMaxHeight("100%");
         spFileEditorDialog.open();
     }
 }
