@@ -2,11 +2,8 @@ package io.horrorshow.soulhub.ui.components;
 
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.*;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
@@ -14,7 +11,6 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
-import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.internal.MessageDigestUtil;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.shared.Registration;
@@ -45,11 +41,7 @@ public class SOULPatchForm extends Div {
     private final TextField author = new TextField("author");
     private final TextField noServings = new TextField("no servings");
     private final Grid<SPFile> spFilesGrid = new Grid<>();
-    private final Button save = new Button("save");
-    private final Button delete = new Button("delete");
-    private final Dialog fileEditorDialog = new Dialog(); // TODO check if it's used
     private final Button newSpFile = new Button("create soulpatch file");
-    private final Component upload = createFileUpload();
     private final Binder<SOULPatch> binder = new Binder<>(SOULPatch.class);
     private final Button editSOULPatch = new Button("edit soulpatch");
     private Registration editSOULPatchListener;
@@ -75,22 +67,17 @@ public class SOULPatchForm extends Div {
         id.setReadOnly(true);
 
         name.setWidth("100%");
-        name.setRequired(true);
-        name.setValueChangeMode(ValueChangeMode.EAGER);
+        name.setReadOnly(true);
 
         description.setWidth("100%");
-        description.setRequired(true);
+        description.setReadOnly(true);
 
         author.setWidth("100%");
-        author.setRequired(true);
         author.setReadOnly(true);
 
         noServings.setWidth("100%");
         noServings.setReadOnly(true);
 
-        newSpFile.addClickListener(event -> soulPatchesView.showFileEditor(new SPFile()));
-
-        spFilesGrid.addThemeName("bordered");
         spFilesGrid.setHeightByRows(true);
         spFilesGrid.setWidthFull();
 
@@ -101,15 +88,6 @@ public class SOULPatchForm extends Div {
                 .setHeader("filetype").setAutoWidth(true);
 
         editSOULPatch.setVisible(false);
-
-        save.setWidth("100%");
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        save.addClickListener(e -> save());
-
-        delete.setWidth("100%");
-        delete.addThemeVariants(ButtonVariant.LUMO_ERROR,
-                ButtonVariant.LUMO_PRIMARY);
-        delete.addClickListener(e -> delete());
     }
 
     /**
@@ -120,7 +98,6 @@ public class SOULPatchForm extends Div {
         VerticalLayout content = new VerticalLayout();
         content.setSizeUndefined();
         content.addClassName("soulpatch-form-content");
-        content.add(upload);
         content.add(editSOULPatch);
         content.add(id);
         content.add(name);
@@ -129,8 +106,6 @@ public class SOULPatchForm extends Div {
         content.add(noServings);
         content.add(newSpFile);
         content.add(spFilesGrid);
-        content.add(fileEditorDialog);
-        content.add(save, delete);
         add(content);
     }
 
@@ -141,8 +116,8 @@ public class SOULPatchForm extends Div {
      */
     private void initSOULPatchBinder() {
         binder.forField(id).bind(it -> String.valueOf(it.getId()), null);
-        binder.forField(name).bind(SOULPatch::getName, SOULPatch::setName);
-        binder.forField(description).bind(SOULPatch::getDescription, SOULPatch::setDescription);
+        binder.forField(name).bind(SOULPatch::getName, null);
+        binder.forField(description).bind(SOULPatch::getDescription, null);
         binder.forField(author).bind(soulPatch -> soulPatch.getAuthor().getUserName(), null);
         binder.forField(noServings).bind(it -> String.valueOf(it.getNoViews()), null);
     }
@@ -208,26 +183,6 @@ public class SOULPatchForm extends Div {
 
     public void hideSOULPatchForm() {
         setVisible(false);
-    }
-
-    private void save() {
-        SOULPatch patch = binder.getBean();
-        soulPatchesView.service.save(patch);
-        soulPatchesView.updateList();
-        hideSOULPatchForm();
-        new Notification(String.format(
-                "soulpatch %s saved", patch.getName()),
-                3000).open();
-    }
-
-    private void delete() {
-        SOULPatch patch = binder.getBean();
-        soulPatchesView.service.delete(patch);
-        soulPatchesView.updateList();
-        hideSOULPatchForm();
-        new Notification(String.format(
-                "soulpatch %s removed", patch.getName()),
-                3000).open();
     }
 
     private Component createComponent(String mimeType, String fileName, InputStream stream) {
