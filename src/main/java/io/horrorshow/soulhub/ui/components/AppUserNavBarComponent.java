@@ -2,6 +2,7 @@ package io.horrorshow.soulhub.ui.components;
 
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import io.horrorshow.soulhub.ui.UIConst;
 
 public class AppUserNavBarComponent extends HorizontalLayout {
 
@@ -9,10 +10,10 @@ public class AppUserNavBarComponent extends HorizontalLayout {
 
     public AppUserNavBarComponent(String username) {
 
-        Anchor toUserInfoView = new Anchor("userinfo", username);
+        Anchor toUserInfoView = new Anchor(UIConst.ROUTE_USERINFO, username);
         add(toUserInfoView);
 
-        Anchor logout = new Anchor("logout", "Logout");
+        Anchor logout = new Anchor(UIConst.ROUTE_LOGOUT, UIConst.LINK_TEXT_LOGOUT);
         add(logout);
     }
 

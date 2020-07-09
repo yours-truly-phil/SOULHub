@@ -28,4 +28,3 @@ logging:
     io.horrorshow: DEBUG
     com.zaxxer: INFO
     root: INFO
-

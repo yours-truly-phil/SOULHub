@@ -21,12 +21,10 @@ import io.horrorshow.soulhub.ui.components.LoginNavBarComponent;
 import io.horrorshow.soulhub.ui.views.AboutView;
 import io.horrorshow.soulhub.ui.views.AdminView;
 import io.horrorshow.soulhub.ui.views.SOULPatchesView;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-@PWA(name = "SOULHub - SOUL-Patch Web UI",
-        shortName = "SOULHub-Web",
-        description = "Serves SOULPatches (SOUL files)",
+@PWA(name = UIConst.TITLE,
+        shortName = UIConst.TITLE,
+        description = UIConst.DESCRIPTION,
         enableInstallPrompt = false)
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css",
@@ -34,8 +32,6 @@ import org.slf4j.LoggerFactory;
 @Theme(value = Lumo.class, variant = Lumo.DARK)
 public class MainLayout extends AppLayout {
     private static final long serialVersionUID = -4791247729805265577L;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MainLayout.class);
 
     public MainLayout() {
         createHeader();
@@ -75,16 +71,20 @@ public class MainLayout extends AppLayout {
     private void createDrawer() {
         VerticalLayout drawerLayout = new VerticalLayout();
 
-        RouterLink soulPatchesLink = new RouterLink("SOULPatches", SOULPatchesView.class);
+        RouterLink soulPatchesLink =
+                new RouterLink(UIConst.LINK_TEXT_SOULPATCHES, SOULPatchesView.class);
         soulPatchesLink.addComponentAsFirst(VaadinIcon.CLUSTER.create());
         soulPatchesLink.setHighlightCondition(HighlightConditions.sameLocation());
         drawerLayout.add(soulPatchesLink);
-        RouterLink aboutLink = new RouterLink("About", AboutView.class);
+
+        RouterLink aboutLink =
+                new RouterLink(UIConst.LINK_TEXT_ABOUT, AboutView.class);
         aboutLink.setHighlightCondition(HighlightConditions.sameLocation());
         drawerLayout.add(aboutLink);
 
         if (SecurityUtils.isAccessGranted(AdminView.class)) {
-            RouterLink adminLink = new RouterLink("Administration", AdminView.class);
+            RouterLink adminLink =
+                    new RouterLink(UIConst.LINK_TEXT_ADMIN, AdminView.class);
             adminLink.setHighlightCondition(HighlightConditions.sameLocation());
             drawerLayout.add(adminLink);
         }

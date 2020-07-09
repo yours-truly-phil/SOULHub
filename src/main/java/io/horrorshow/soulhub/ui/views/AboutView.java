@@ -7,13 +7,18 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.MainLayout;
+import io.horrorshow.soulhub.ui.UIConst;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Route(value = "about", layout = MainLayout.class)
-@PageTitle("SOULHub | About")
+import static java.lang.String.format;
+
+@Route(value = UIConst.ROUTE_ABOUT, layout = MainLayout.class)
+@PageTitle(UIConst.TITLE_ABOUT)
 public class AboutView extends VerticalLayout {
 
-    private SOULPatchService soulPatchService;
+    private static final long serialVersionUID = -2584215264372639999L;
+
+    private final SOULPatchService soulPatchService;
 
     public AboutView(@Autowired SOULPatchService soulPatchService) {
         this.soulPatchService = soulPatchService;
@@ -28,11 +33,11 @@ public class AboutView extends VerticalLayout {
         H1 title = new H1("About SOULHub");
 
         Span noSOULPatches = new Span(
-                String.format("%s SOUL Patches stored",
+                format("%s SOUL Patches stored",
                         soulPatchService.countSOULPatches()));
 
         Span noSPFiles = new Span(
-                String.format("%s soul files attached",
+                format("%s soul files attached",
                         soulPatchService.countSPFiles()));
 
         add(title);

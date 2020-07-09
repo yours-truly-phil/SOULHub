@@ -9,9 +9,10 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import io.horrorshow.soulhub.ui.MainLayout;
+import io.horrorshow.soulhub.ui.UIConst;
 
-@Route(value = "login", layout = MainLayout.class)
-@PageTitle("SOULHub | Login")
+@Route(value = UIConst.ROUTE_LOGIN, layout = MainLayout.class)
+@PageTitle(UIConst.TITLE_LOGIN)
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
     private static final long serialVersionUID = 7631869443546476927L;
@@ -28,7 +29,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
             notification.open();
         });
 
-        loginForm.setAction("login");
+        loginForm.setAction(UIConst.ROUTE_LOGIN);
 
         add(new H1("SOULHub Login"), loginForm);
     }

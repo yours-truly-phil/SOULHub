@@ -21,6 +21,7 @@ import io.horrorshow.soulhub.security.SecurityUtils;
 import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.MainLayout;
+import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.SOULPatchForm;
 import io.horrorshow.soulhub.ui.components.SpFileEditorDialog;
 import lombok.Getter;
@@ -32,9 +33,9 @@ import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
-@Route(value = "", layout = MainLayout.class)
+@Route(value = UIConst.ROUTE_SOULPATCHES, layout = MainLayout.class)
 @Getter
-@PageTitle("SOULHub | SOUL Patches")
+@PageTitle(UIConst.TITLE_SOULPATCHES)
 public class SOULPatchesView extends VerticalLayout {
 
     private static final long serialVersionUID = 3981631233877217865L;
@@ -94,7 +95,11 @@ public class SOULPatchesView extends VerticalLayout {
     }
 
     private void initGreeting() {
-        userGreeting.setText("Hello " + SecurityUtils.getUsername());
+        if (SecurityUtils.isUserLoggedIn()) {
+            userGreeting.setText(format("Hello %s", SecurityUtils.getUsername()));
+        } else {
+            userGreeting.setVisible(false);
+        }
     }
 
     private void initSOULPatchForm() {
@@ -105,7 +110,7 @@ public class SOULPatchesView extends VerticalLayout {
         addSOULPatch.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         addSOULPatch.addClickListener(e -> {
             grid.asSingleSelect().clear();
-            UI.getCurrent().navigate(EditSOULPatchView.class);
+            UI.getCurrent().navigate(EditSOULPatchView.class, "new");
         });
     }
 

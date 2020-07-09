@@ -19,6 +19,7 @@ import io.horrorshow.soulhub.security.SecurityUtils;
 import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.MainLayout;
+import io.horrorshow.soulhub.ui.UIConst;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +28,9 @@ import org.springframework.security.access.annotation.Secured;
 
 import static java.lang.String.format;
 
-@Secured(value = "ROLE_USER")
-@Route(value = "editsoulpatch", layout = MainLayout.class)
-@PageTitle("SOULHub | Edit SOULPatch")
+@Secured(value = UIConst.ROLE_USER)
+@Route(value = UIConst.ROUTE_EDIT_SOULPATCH, layout = MainLayout.class)
+@PageTitle(UIConst.TITLE_EDIT_SOULPATCH)
 public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter<String> {
 
     private static final long serialVersionUID = -4704235426941430447L;
@@ -115,7 +116,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
             } else {
                 updateView(soulPatch);
             }
-        } else if (parameter.equals("new")) {
+        } else if (parameter != null && parameter.equals("new")) {
             updateView(newSOULPatch());
         } else {
             logger.debug("invalid access. parameter={} user={} event={}",
