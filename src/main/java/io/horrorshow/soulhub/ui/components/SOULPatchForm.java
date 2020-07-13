@@ -171,11 +171,8 @@ public class SOULPatchForm extends Div {
     }
 
     private void setupEditSOULPatchButton(SOULPatch soulPatch) {
-        if (soulPatchesView.userService.isCurrentUserOwnerOf(soulPatch)) {
-            editSOULPatch.setVisible(true);
-        } else {
-            editSOULPatch.setVisible(false);
-        }
+        editSOULPatch.setVisible(
+                soulPatchesView.userService.isCurrentUserOwnerOf(soulPatch));
     }
 
     public void gotoEditSOULPatch() {
