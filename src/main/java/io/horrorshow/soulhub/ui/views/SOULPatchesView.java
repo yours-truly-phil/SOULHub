@@ -7,6 +7,7 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.BrowserWindowResizeEvent;
@@ -52,13 +53,20 @@ public class SOULPatchesView extends VerticalLayout {
     private final Checkbox filterOwnedSoulpatches = new Checkbox("show only my soulpatches");
     private final Button addSOULPatch = new Button("add SOULPatch", VaadinIcon.FILE_ADD.create());
     private final SOULPatchForm form = new SOULPatchForm(this);
-    private final SpFileEditorDialog spFileEditorDialog = new SpFileEditorDialog(this);
+    private final SpFileEditorDialog spFileEditorDialog;
     private final Span userGreeting = new Span("Hello!");
 
     public SOULPatchesView(@Autowired SOULPatchService service, @Autowired SOULHubUserDetailsService userService) {
 
         this.service = service;
         this.userService = userService;
+
+        spFileEditorDialog = new SpFileEditorDialog(service, userService);
+        spFileEditorDialog.getEditor().addSpFileChangeListener(event -> {
+            new Notification(String.format("file %s changed", event.getSpFile().getName()),
+                    3000).open();
+            updateList();
+        });
 
         addClassName("soulpatches-view");
 
@@ -201,7 +209,7 @@ public class SOULPatchesView extends VerticalLayout {
     }
 
     public void showFileEditor(SPFile spFile) {
-        spFileEditorDialog.getEditor().showSpFile(spFile);
+        spFileEditorDialog.getEditor().setValue(spFile);
         spFileEditorDialog.open();
     }
 }

@@ -15,7 +15,6 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.internal.MessageDigestUtil;
 import com.vaadin.flow.server.StreamResource;
-import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.ui.views.EditSOULPatchView;

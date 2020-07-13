@@ -3,23 +3,32 @@ package io.horrorshow.soulhub.ui.components;
 import com.hilerio.ace.AceEditor;
 import com.hilerio.ace.AceMode;
 import com.hilerio.ace.AceTheme;
+import com.vaadin.flow.component.AbstractField;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.HasValueAndElement;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.internal.AbstractFieldSupport;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.SPFile;
-import io.horrorshow.soulhub.ui.views.SOULPatchesView;
+import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
+import io.horrorshow.soulhub.service.SOULPatchService;
+import io.horrorshow.soulhub.ui.events.SpFileChangeEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
-public class SOULFileEditor extends VerticalLayout {
+public class SOULFileEditor extends VerticalLayout
+        implements HasValueAndElement<AbstractField.ComponentValueChangeEvent<SOULFileEditor, SPFile>, SPFile> {
 
     private static final long serialVersionUID = -6950603059471911545L;
-    private final SOULPatchesView SOULPatchesView;
 
     private final TextField name = new TextField("filename");
     private final AceEditor aceEditor = new AceEditor();
@@ -33,10 +42,21 @@ public class SOULFileEditor extends VerticalLayout {
     private final Select<AceTheme> aceTheme = new Select<>();
 
     private final Binder<SPFile> binder = new Binder<>(SPFile.class);
+    private final SOULPatchService soulPatchService;
+    private final SOULHubUserDetailsService userDetailsService;
 
-    public SOULFileEditor(SOULPatchesView SOULPatchesView) {
+    private final AbstractFieldSupport<SOULFileEditor, SPFile> fieldSupport;
+
+    public SOULFileEditor(@Autowired SOULPatchService soulPatchService,
+                          @Autowired SOULHubUserDetailsService userDetailsService) {
         super();
-        this.SOULPatchesView = SOULPatchesView;
+        this.fieldSupport = new AbstractFieldSupport<>(this, null,
+                Objects::equals, spFile -> {
+        });
+
+        this.soulPatchService = soulPatchService;
+        this.userDetailsService = userDetailsService;
+
         setSizeFull();
 
         initFields();
@@ -136,17 +156,45 @@ public class SOULFileEditor extends VerticalLayout {
 
     private void save() {
         SPFile spFile = binder.getBean();
-        SOULPatchesView.service.saveSpFile(spFile);
-        SOULPatchesView.updateList();
+
+        soulPatchService.saveSpFile(spFile);
+
         new Notification(String.format("file %s saved", spFile.getName()),
                 3000).open();
+
+        fireEvent(new SpFileChangeEvent(this, spFile));
     }
 
     private void delete() {
         SPFile spFile = binder.getBean();
-        SOULPatchesView.service.deleteSpFile(spFile);
-        SOULPatchesView.updateList();
+
+        soulPatchService.deleteSpFile(spFile);
+
         new Notification(String.format("file %s removed", spFile.getName()),
                 3000).open();
+
+        fireEvent(new SpFileChangeEvent(this, spFile));
+    }
+
+    public Registration addSpFileChangeListener(ComponentEventListener<SpFileChangeEvent> listener) {
+        return addListener(SpFileChangeEvent.class, listener);
+    }
+
+    @Override
+    public SPFile getValue() {
+        return fieldSupport.getValue();
+    }
+
+    @Override
+    public void setValue(SPFile spFile) {
+        fieldSupport.setValue(spFile);
+        binder.setBean(spFile);
+        setVisible(true);
+        aceEditor.focus();
+    }
+
+    @Override
+    public Registration addValueChangeListener(ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<SOULFileEditor, SPFile>> listener) {
+        return fieldSupport.addValueChangeListener(listener);
     }
 }
