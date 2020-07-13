@@ -1,7 +1,6 @@
 package io.horrorshow.soulhub.controller;
 
 import io.horrorshow.soulhub.data.SOULPatch;
-import io.horrorshow.soulhub.data.records.RecordsConverter;
 import io.horrorshow.soulhub.data.records.SOULPatchRecord;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -32,14 +30,12 @@ public class SOULPatchController {
 
     @GetMapping(value = "/soulpatches")
     public List<SOULPatchRecord> getSOULPatches() {
-        return service.findAll().stream()
-                .map(RecordsConverter::newSoulPatchRecord)
-                .collect(Collectors.toList());
+        return service.getAllSOULPatchRecords();
     }
 
     @GetMapping("/soulpatches/{soulpatchId}")
     public SOULPatchRecord getSOULPatch(@PathVariable Long soulpatchId) {
-        return RecordsConverter.newSoulPatchRecord(service.findById(soulpatchId));
+        return service.getSOULPatchRecord(soulpatchId);
     }
 
     @PostMapping("/soulpatches")

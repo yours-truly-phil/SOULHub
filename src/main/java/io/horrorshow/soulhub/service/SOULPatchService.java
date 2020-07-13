@@ -3,6 +3,8 @@ package io.horrorshow.soulhub.service;
 import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
+import io.horrorshow.soulhub.data.records.RecordsConverter;
+import io.horrorshow.soulhub.data.records.SOULPatchRecord;
 import io.horrorshow.soulhub.data.repository.SOULPatchRepository;
 import io.horrorshow.soulhub.data.repository.SPFileRepository;
 import io.horrorshow.soulhub.exception.ResourceNotFound;
@@ -38,8 +40,18 @@ public class SOULPatchService {
         this.spFileRepository = spFileRepository;
     }
 
-    public synchronized List<SOULPatch> findAll() {
+    public List<SOULPatch> findAll() {
         return soulPatchRepository.findAll();
+    }
+
+    public List<SOULPatchRecord> getAllSOULPatchRecords() {
+        return findAll().stream()
+                .map(RecordsConverter::newSoulPatchRecord)
+                .collect(Collectors.toList());
+    }
+
+    public SOULPatchRecord getSOULPatchRecord(Long soulPatchId) {
+        return RecordsConverter.newSoulPatchRecord(findById(soulPatchId));
     }
 
     public List<SOULPatch> findAll(String searchTerm) {
@@ -54,7 +66,7 @@ public class SOULPatchService {
                 .collect(Collectors.toList());
     }
 
-    public synchronized List<SOULPatchXMLType> findAllXML() {
+    public List<SOULPatchXMLType> findAllXML() {
         List<SOULPatchXMLType> xmlPatches = new ArrayList<>();
         List<SOULPatch> soulPatches = soulPatchRepository.findAll();
         soulPatches.forEach(

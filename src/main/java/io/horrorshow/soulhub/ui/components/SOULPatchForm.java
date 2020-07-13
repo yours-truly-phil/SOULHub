@@ -46,7 +46,6 @@ public class SOULPatchForm extends Div {
     private final Button newSpFile = new Button("create soulpatch file");
     private final Binder<SOULPatch> binder = new Binder<>(SOULPatch.class);
     private final Button editSOULPatch = new Button("edit soulpatch", VaadinIcon.EDIT.create());
-    private Registration editSOULPatchListener;
 
     public SOULPatchForm(SOULPatchesView soulPatchesView) {
         this.soulPatchesView = soulPatchesView;
@@ -91,6 +90,7 @@ public class SOULPatchForm extends Div {
 
         editSOULPatch.setVisible(false);
         editSOULPatch.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        editSOULPatch.addClickListener(event -> gotoEditSOULPatch());
     }
 
     /**
@@ -172,15 +172,16 @@ public class SOULPatchForm extends Div {
     }
 
     private void setupEditSOULPatchButton(SOULPatch soulPatch) {
-        if (editSOULPatchListener != null)
-            editSOULPatchListener.remove();
         if (soulPatchesView.userService.isCurrentUserOwnerOf(soulPatch)) {
-            editSOULPatchListener = editSOULPatch.addClickListener(event ->
-                    UI.getCurrent().navigate(EditSOULPatchView.class, String.valueOf(soulPatch.getId())));
             editSOULPatch.setVisible(true);
         } else {
             editSOULPatch.setVisible(false);
         }
+    }
+
+    public void gotoEditSOULPatch() {
+        UI.getCurrent().navigate(EditSOULPatchView.class,
+                String.valueOf(binder.getBean().getId()));
     }
 
     public void hideSOULPatchForm() {
