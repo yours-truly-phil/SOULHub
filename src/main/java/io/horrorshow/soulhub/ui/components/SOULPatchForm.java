@@ -17,9 +17,12 @@ import com.vaadin.flow.internal.MessageDigestUtil;
 import com.vaadin.flow.server.StreamResource;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
+import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
+import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.views.EditSOULPatchView;
 import io.horrorshow.soulhub.ui.views.SOULPatchesView;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -36,6 +39,9 @@ public class SOULPatchForm extends Div {
     private static final long serialVersionUID = -7531039924193682445L;
     private final SOULPatchesView soulPatchesView;
 
+    private final SOULPatchService soulPatchService;
+    private final SOULHubUserDetailsService userDetailsService;
+
     private final TextField id = new TextField("id");
     private final TextField name = new TextField("name");
     private final TextArea description = new TextArea("description");
@@ -46,8 +52,12 @@ public class SOULPatchForm extends Div {
     private final Binder<SOULPatch> binder = new Binder<>(SOULPatch.class);
     private final Button editSOULPatch = new Button("edit soulpatch", VaadinIcon.EDIT.create());
 
-    public SOULPatchForm(SOULPatchesView soulPatchesView) {
+    public SOULPatchForm(SOULPatchesView soulPatchesView,
+                         @Autowired SOULPatchService soulPatchService,
+                         @Autowired SOULHubUserDetailsService userDetailsService) {
         this.soulPatchesView = soulPatchesView;
+        this.soulPatchService = soulPatchService;
+        this.userDetailsService = userDetailsService;
 
         setClassName("soulpatch-form");
 
@@ -58,10 +68,6 @@ public class SOULPatchForm extends Div {
         initSOULPatchBinder();
     }
 
-    /**
-     * sets the properties of all ui components of this
-     * editor, like their visual style, sizes, titles, listeners
-     */
     private void initFields() {
         id.setWidth("100%");
         id.setReadOnly(true);
@@ -92,10 +98,6 @@ public class SOULPatchForm extends Div {
         editSOULPatch.addClickListener(event -> gotoEditSOULPatch());
     }
 
-    /**
-     * position all components in the right order relative to each other
-     * into the gui
-     */
     private void arrangeComponents() {
         VerticalLayout content = new VerticalLayout();
         content.addClassName("soulpatch-form-content");
@@ -110,11 +112,6 @@ public class SOULPatchForm extends Div {
         add(content);
     }
 
-    /**
-     * binds SOULPatch values to the UI components
-     * <p>
-     * To change the values displayed in the UI, call binder.setBean(newSOULPatch)
-     */
     private void initSOULPatchBinder() {
         binder.forField(id).bind(it -> String.valueOf(it.getId()), null);
         binder.forField(name).bind(SOULPatch::getName, null);
@@ -172,7 +169,7 @@ public class SOULPatchForm extends Div {
 
     private void setupEditSOULPatchButton(SOULPatch soulPatch) {
         editSOULPatch.setVisible(
-                soulPatchesView.userService.isCurrentUserOwnerOf(soulPatch));
+                userDetailsService.isCurrentUserOwnerOf(soulPatch));
     }
 
     public void gotoEditSOULPatch() {

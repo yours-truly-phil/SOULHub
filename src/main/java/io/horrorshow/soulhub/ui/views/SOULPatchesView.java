@@ -45,13 +45,13 @@ public class SOULPatchesView extends VerticalLayout {
     private static final String COL_VIEWS = "views";
     private static final String COL_AUTHOR = "author";
     private static final Logger LOGGER = LoggerFactory.getLogger(SOULPatchesView.class);
-    public final SOULPatchService service;
-    public final SOULHubUserDetailsService userService;
+    private final SOULPatchService service;
+    private final SOULHubUserDetailsService userService;
     private final Grid<SOULPatch> grid = new Grid<>();
     private final TextField filterText = new TextField("filter by (regex)");
     private final Checkbox filterOwnedSoulpatches = new Checkbox("show only my soulpatches");
     private final Button addSOULPatch = new Button("add SOULPatch", VaadinIcon.FILE_ADD.create());
-    private final SOULPatchForm form = new SOULPatchForm(this);
+    private final SOULPatchForm form;
     private final SpFileEditorDialog spFileEditorDialog;
     private final Span userGreeting = new Span("Hello!");
 
@@ -61,6 +61,7 @@ public class SOULPatchesView extends VerticalLayout {
         this.userService = userService;
 
         spFileEditorDialog = new SpFileEditorDialog(service, userService);
+        form = new SOULPatchForm(this, service, userService);
 
         addClassName("soulpatches-view");
 
