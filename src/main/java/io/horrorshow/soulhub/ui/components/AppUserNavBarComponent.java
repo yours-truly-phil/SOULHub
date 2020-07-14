@@ -10,7 +10,7 @@ public class AppUserNavBarComponent extends HorizontalLayout {
 
     public AppUserNavBarComponent(String username) {
 
-        Anchor toUserInfoView = new Anchor(UIConst.ROUTE_USERINFO, username);
+        Anchor toUserInfoView = new Anchor(UIConst.ROUTE_USERINFO + "/" + username, username);
         add(toUserInfoView);
 
         Anchor logout = new Anchor(UIConst.ROUTE_LOGOUT, UIConst.LINK_TEXT_LOGOUT);

@@ -3,6 +3,7 @@ package io.horrorshow.soulhub.ui.views;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -33,6 +34,8 @@ public class RegistrationView extends VerticalLayout {
         username.setRequiredIndicatorVisible(true);
         password.setRequiredIndicatorVisible(true);
 
+        register.addClickListener(event -> register());
+
         FormLayout formLayout = new FormLayout();
 
         formLayout.addFormItem(username, "Username");
@@ -42,4 +45,8 @@ public class RegistrationView extends VerticalLayout {
         add(register);
     }
 
+    private void register() {
+        new Notification("user registration not implemented",
+                3000).open();
+    }
 }
