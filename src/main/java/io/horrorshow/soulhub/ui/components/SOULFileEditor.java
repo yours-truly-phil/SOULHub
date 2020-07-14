@@ -155,6 +155,7 @@ public class SOULFileEditor extends VerticalLayout
     }
 
     private void save() {
+        // TODO fire save event for presenter class instead
         SPFile spFile = binder.getBean();
 
         soulPatchService.saveSpFile(spFile);
@@ -166,6 +167,7 @@ public class SOULFileEditor extends VerticalLayout
     }
 
     private void delete() {
+        // TODO fire delete event for presenter class instead
         SPFile spFile = binder.getBean();
 
         soulPatchService.deleteSpFile(spFile);

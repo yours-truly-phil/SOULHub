@@ -10,6 +10,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.*;
 import io.horrorshow.soulhub.data.AppUser;
@@ -47,6 +48,8 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     private final Button delete = new Button("delete SOULPatch");
     private final Button addFile = new Button("add SOUL file");
     private final Binder<SOULPatch> binder = new Binder<>(SOULPatch.class);
+
+    private SOULPatch soulPatch;
 
     public EditSOULPatchView(@Autowired SOULPatchService soulPatchService, @Autowired SOULHubUserDetailsService userDetailsService) {
         this.soulPatchService = soulPatchService;
@@ -91,8 +94,19 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     }
 
     private void initBinder() {
-        binder.forField(name).bind(SOULPatch::getName, SOULPatch::setName);
-        binder.forField(description).bind(SOULPatch::getDescription, SOULPatch::setDescription);
+        binder.forField(name)
+                .asRequired("SOULPatch needs a name")
+                .bind(SOULPatch::getName, SOULPatch::setName);
+        binder.forField(description)
+                .asRequired("Description must not be empty")
+                .bind(SOULPatch::getDescription, SOULPatch::setDescription);
+        binder.addStatusChangeListener(event -> {
+            boolean isValid = event.getBinder().isValid();
+            boolean hasChanges = event.getBinder().hasChanges();
+            logger.debug("isValid: {} hasChanges: {}", isValid, hasChanges);
+
+            save.setEnabled(hasChanges && isValid);
+        });
     }
 
     private void arrangeComponents() {
@@ -132,7 +146,8 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     }
 
     private void updateView(SOULPatch soulPatch) {
-        binder.setBean(soulPatch);
+        this.soulPatch = soulPatch;
+        binder.readBean(soulPatch);
         files.setItems(soulPatch.getSpFiles());
         name.focus();
     }
@@ -148,8 +163,12 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     }
 
     private void saveSOULPatch() {
-        SOULPatch soulPatch = binder.getBean();
-        soulPatchService.save(soulPatch);
+        try {
+            binder.writeBean(soulPatch);
+            soulPatchService.save(soulPatch);
+        } catch (ValidationException e) {
+            logger.debug(e.getMessage());
+        }
         new Notification(format("soulpatch %s saved", soulPatch.getName()),
                 3000).open();
     }
