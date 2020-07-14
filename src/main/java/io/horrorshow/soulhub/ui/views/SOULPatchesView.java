@@ -7,7 +7,6 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.BrowserWindowResizeEvent;
@@ -62,11 +61,6 @@ public class SOULPatchesView extends VerticalLayout {
         this.userService = userService;
 
         spFileEditorDialog = new SpFileEditorDialog(service, userService);
-        spFileEditorDialog.getEditor().addSpFileChangeListener(event -> {
-            new Notification(String.format("file %s changed", event.getSpFile().getName()),
-                    3000).open();
-            updateList();
-        });
 
         addClassName("soulpatches-view");
 
@@ -100,6 +94,16 @@ public class SOULPatchesView extends VerticalLayout {
         initSOULPatchForm();
 
         initGreeting();
+
+        initSpFileEditorDialog();
+    }
+
+    private void initSpFileEditorDialog() {
+        spFileEditorDialog.getEditor().addSpFileChangeListener(event -> updateList());
+        spFileEditorDialog.getEditor().addSpFileDeleteListener(event -> {
+            spFileEditorDialog.close();
+            updateList();
+        });
     }
 
     private void initGreeting() {

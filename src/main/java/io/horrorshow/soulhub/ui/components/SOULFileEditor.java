@@ -15,11 +15,15 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
 import io.horrorshow.soulhub.service.SOULPatchService;
-import io.horrorshow.soulhub.ui.events.SpFileChangeEvent;
+import io.horrorshow.soulhub.ui.events.SPFileDeleteEvent;
+import io.horrorshow.soulhub.ui.events.SPFileSaveEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.format.DateTimeFormatter;
@@ -29,6 +33,8 @@ public class SOULFileEditor extends VerticalLayout
         implements HasValueAndElement<AbstractField.ComponentValueChangeEvent<SOULFileEditor, SPFile>, SPFile> {
 
     private static final long serialVersionUID = -6950603059471911545L;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final TextField name = new TextField("filename");
     private final AceEditor aceEditor = new AceEditor();
@@ -101,10 +107,6 @@ public class SOULFileEditor extends VerticalLayout
 
         aceEditor.setPlaceholder("SOULFile content");
 
-        aceEditor.addFocusListener(e ->
-                System.out.println("aceEditor focus listener bam"));
-
-
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         save.addClickListener(event -> save());
 
@@ -132,54 +134,69 @@ public class SOULFileEditor extends VerticalLayout
      * it's enough to call binder.setBean(newSpFile)
      */
     private void initSpFileBinder() {
-        binder.forField(name).bind(SPFile::getName, SPFile::setName);
-        binder.forField(aceEditor).bind(SPFile::getFileContent, SPFile::setFileContent);
-        binder.forField(createdAt).bind(it ->
-                it.getCreatedAt() != null
+        binder.forField(name)
+                .asRequired("File needs a filename")
+                .bind(SPFile::getName, SPFile::setName);
+        binder.forField(aceEditor)
+                .bind(SPFile::getFileContent, SPFile::setFileContent);
+        binder.forField(createdAt)
+                .bind(it -> it.getCreatedAt() != null
                         ? it.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
                         : "not persisted", null);
-        binder.forField(updatedAt).bind(it ->
-                it.getUpdatedAt() != null
+        binder.forField(updatedAt)
+                .bind(it -> it.getUpdatedAt() != null
                         ? it.getUpdatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
                         : "not persisted", null);
-        binder.forField(fileType).bind(it ->
-                it.getFileType() != null
+        binder.forField(fileType)
+                .bind(it -> it.getFileType() != null
                         ? it.getFileType().toString()
                         : "unknown", null);
-    }
 
-    public void showSpFile(SPFile spFile) {
-        binder.setBean(spFile);
-        setVisible(true);
-        aceEditor.focus();
+        binder.addValueChangeListener(event -> {
+            logger.debug("ValueChangeEvent oldValue: {} newValue: {}",
+                    event.getOldValue(), event.getValue());
+        });
+        binder.addStatusChangeListener(event -> {
+            boolean isValid = event.getBinder().isValid();
+            boolean hasChanges = event.getBinder().hasChanges();
+            logger.debug("StatusChangedEvent from {} isValid: {} hasChanges: {}",
+                    event.getSource(), isValid, hasChanges);
+            save.setEnabled(hasChanges && isValid);
+        });
     }
 
     private void save() {
-        // TODO fire save event for presenter class instead
-        SPFile spFile = binder.getBean();
+        try {
+            SPFile spFile = fieldSupport.getValue();
+            binder.writeBean(spFile);
+            soulPatchService.saveSpFile(spFile);
 
-        soulPatchService.saveSpFile(spFile);
+            new Notification(String.format("file %s saved", spFile.getName()),
+                    3000).open();
 
-        new Notification(String.format("file %s saved", spFile.getName()),
-                3000).open();
-
-        fireEvent(new SpFileChangeEvent(this, spFile));
+            fireEvent(new SPFileSaveEvent(this, spFile));
+        } catch (ValidationException e) {
+            logger.debug(e.getMessage());
+        }
     }
 
     private void delete() {
-        // TODO fire delete event for presenter class instead
-        SPFile spFile = binder.getBean();
+        SPFile spFile = fieldSupport.getValue();
 
         soulPatchService.deleteSpFile(spFile);
 
         new Notification(String.format("file %s removed", spFile.getName()),
                 3000).open();
 
-        fireEvent(new SpFileChangeEvent(this, spFile));
+        fireEvent(new SPFileDeleteEvent(this, spFile));
     }
 
-    public Registration addSpFileChangeListener(ComponentEventListener<SpFileChangeEvent> listener) {
-        return addListener(SpFileChangeEvent.class, listener);
+    public Registration addSpFileChangeListener(ComponentEventListener<SPFileSaveEvent> listener) {
+        return addListener(SPFileSaveEvent.class, listener);
+    }
+
+    public Registration addSpFileDeleteListener(ComponentEventListener<SPFileDeleteEvent> listener) {
+        return addListener(SPFileDeleteEvent.class, listener);
     }
 
     @Override
@@ -190,9 +207,11 @@ public class SOULFileEditor extends VerticalLayout
     @Override
     public void setValue(SPFile spFile) {
         fieldSupport.setValue(spFile);
-        binder.setBean(spFile);
+        binder.readBean(spFile);
         setVisible(true);
         aceEditor.focus();
+        logger.debug("end of setValue({}) isValid: {} hasChanges: {}",
+                spFile.getName(), binder.isValid(), binder.hasChanges());
     }
 
     @Override
