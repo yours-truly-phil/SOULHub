@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import static io.horrorshow.soulhub.data.SPFile.FileType.SOUL;
 import static io.horrorshow.soulhub.data.SPFile.FileType.SOULPATCH;
+import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -37,10 +38,15 @@ public class SOULPatchServiceTest {
     static SOULPatch createTestSoulPatch(Long no) {
         SOULPatch p = new SOULPatch();
         p.setId(no);
-        p.setName(String.format("name %s", no));
-        p.setDescription(String.format("description %s", no));
-        p.setAuthor(new AppUser(0L, String.format("author %s", no),
-                "$pw", AppUser.UserStatus.ACTIVE, Collections.emptySet()));
+        p.setName(format("name %s", no));
+        p.setDescription(format("description %s", no));
+        p.setAuthor(new AppUser(
+                0L,
+                format("author %s", no),
+                format("%s@mail.com", no),
+                "$pw",
+                AppUser.UserStatus.ACTIVE,
+                Collections.emptySet()));
         p.setNoViews(no);
 
         p.getSpFiles().add(createTestSPFile(2 * no, SOUL, p));
@@ -53,8 +59,8 @@ public class SOULPatchServiceTest {
         spFile.setId(id);
         spFile.setSoulPatch(soulPatch);
         spFile.setFileType(fileType);
-        spFile.setName(String.format("%s file %s", fileType.toString(), id));
-        spFile.setFileContent(String.format("%s file content %s", fileType.toString(), id));
+        spFile.setName(format("%s file %s", fileType.toString(), id));
+        spFile.setFileContent(format("%s file content %s", fileType.toString(), id));
         return spFile;
     }
 

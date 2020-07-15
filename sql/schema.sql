@@ -18,6 +18,7 @@ create table app_user
         constraint app_user_pkey
             primary key,
     user_name          varchar(255) not null unique,
+    email              varchar(255) not null unique,
     encrypted_password varchar(255) not null,
     status             varchar(255) not null
 );

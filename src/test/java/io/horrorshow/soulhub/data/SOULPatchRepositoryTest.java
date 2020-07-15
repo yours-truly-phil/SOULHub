@@ -28,7 +28,7 @@ class SOULPatchRepositoryTest {
     private static final HashMap<String, SOULPatch> soulPatches =
             new HashMap<>();
     private static final AppUser user1 =
-            new AppUser(0L, "user1", "$pw",
+            new AppUser(0L, "user1", "user1@mail.com", "$pw",
                     AppUser.UserStatus.ACTIVE, Collections.emptySet());
 
     @Autowired

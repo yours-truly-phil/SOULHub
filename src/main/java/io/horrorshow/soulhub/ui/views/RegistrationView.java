@@ -23,6 +23,7 @@ public class RegistrationView extends VerticalLayout {
     private final SOULHubUserDetailsService userDetailsService;
 
     private final TextField username = new TextField();
+    private final TextField email = new TextField();
     private final PasswordField password = new PasswordField();
     private final Button register = new Button("Register");
 
@@ -32,6 +33,7 @@ public class RegistrationView extends VerticalLayout {
         add(new Label("Registration"));
 
         username.setRequiredIndicatorVisible(true);
+        email.setRequiredIndicatorVisible(true);
         password.setRequiredIndicatorVisible(true);
 
         register.addClickListener(event -> register());
@@ -39,6 +41,7 @@ public class RegistrationView extends VerticalLayout {
         FormLayout formLayout = new FormLayout();
 
         formLayout.addFormItem(username, "Username");
+        formLayout.addFormItem(email, "Email");
         formLayout.addFormItem(password, "Password");
 
         add(formLayout);

@@ -9,12 +9,12 @@ from app_role;
 delete
 from app_user;
 
-insert into app_user (id, user_name, encrypted_password, status)
-values (nextval('hibernate_sequence'), 'dbuser1', '$2y$12$67cy20h5f8MJeb7y3FFtA.lW1wVooYQe.uKsvSYZQuxAkNoGOlWBy',
+insert into app_user (id, user_name, email, encrypted_password, status)
+values (nextval('hibernate_sequence'), 'dbuser1', 'dbuser1@mail.com', '$2y$12$67cy20h5f8MJeb7y3FFtA.lW1wVooYQe.uKsvSYZQuxAkNoGOlWBy',
         'ACTIVE');
 
-insert into app_user (id, user_name, encrypted_password, status)
-values (nextval('hibernate_sequence'), 'dbadmin1', '$2y$12$67cy20h5f8MJeb7y3FFtA.lW1wVooYQe.uKsvSYZQuxAkNoGOlWBy',
+insert into app_user (id, user_name, email, encrypted_password, status)
+values (nextval('hibernate_sequence'), 'dbadmin1', 'dbadmin1@mail.com', '$2y$12$67cy20h5f8MJeb7y3FFtA.lW1wVooYQe.uKsvSYZQuxAkNoGOlWBy',
         'ACTIVE');
 
 insert into app_role (id, role_name)

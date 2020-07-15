@@ -26,8 +26,11 @@ public class AppUser implements Serializable {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "user_name", nullable = false)
+    @Column(name = "user_name", nullable = false, unique = true)
     private String userName;
+
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
 
     @Column(name = "encrypted_password", nullable = false)
     private String encryptedPassword;

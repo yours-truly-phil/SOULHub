@@ -9,6 +9,8 @@ import com.vaadin.flow.component.internal.AbstractFieldSupport;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.validator.EmailValidator;
+import com.vaadin.flow.data.validator.StringLengthValidator;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.PageTitle;
@@ -39,6 +41,7 @@ public class UserInfoView extends VerticalLayout
     private final SOULHubUserDetailsService userDetailsService;
 
     private final TextField username = new TextField();
+    private final TextField email = new TextField();
 
     private final Binder<AppUser> binder = new Binder<>(AppUser.class);
 
@@ -67,13 +70,23 @@ public class UserInfoView extends VerticalLayout
                         ? "authenticated"
                         : "here?! hmm"));
 
+        username.setReadOnly(true);
+        email.setReadOnly(true);
+
         binder.forField(username)
-                .asRequired()
+                .withValidator(new StringLengthValidator(
+                        "Username must be between 3 and 129 characters long",
+                        3, 129))
                 .bind(AppUser::getUserName, null);
+        binder.forField(email)
+                .withValidator(new EmailValidator(
+                        "Invalid Email address"))
+                .bind(AppUser::getEmail, null);
 
         FormLayout formLayout = new FormLayout();
 
         formLayout.addFormItem(username, "Username");
+        formLayout.addFormItem(email, "Email");
 
         add(title, helloUser, isLoggedIn);
         add(formLayout);
