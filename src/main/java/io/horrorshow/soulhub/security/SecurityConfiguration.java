@@ -34,10 +34,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final AppUserRepository appUserRepository;
 
     @Autowired
-    public SecurityConfiguration(DataSource dataSource, AppRoleRepository appRoleRepository, AppUserRepository appUserRepository) {
+    public SecurityConfiguration(DataSource dataSource,
+                                 AppRoleRepository appRoleRepository,
+                                 AppUserRepository appUserRepository) {
         this.dataSource = dataSource;
         this.appRoleRepository = appRoleRepository;
-
         this.appUserRepository = appUserRepository;
     }
 
@@ -54,7 +55,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     /**
      * Require login to access internal pages and configure login form
      *
-     * @param http
+     * @param http HttpSecurity
      *
      * @throws Exception
      */
@@ -98,7 +99,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     /**
      * Allows access to static resources, bypassing Spring security
      *
-     * @param web
+     * @param web WebSecurity
      *
      * @throws Exception
      */

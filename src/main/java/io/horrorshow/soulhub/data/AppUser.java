@@ -6,6 +6,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -21,15 +23,19 @@ import java.util.Set;
 public class AppUser implements Serializable {
 
     private static final long serialVersionUID = -4675920971250068707L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
     @Column(name = "user_name", nullable = false, unique = true)
+    @Size(min = 3, max = 255, message = "Username must be between 3 and 255 chars")
     private String userName;
 
     @Column(name = "email", nullable = false, unique = true)
+    @Email(message = "Invalid Email address")
+    @Size(min = 5, max = 255, message = "Email address must be between 3 and 255 characters")
     private String email;
 
     @Column(name = "encrypted_password", nullable = false)

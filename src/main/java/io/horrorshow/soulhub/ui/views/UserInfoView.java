@@ -75,8 +75,8 @@ public class UserInfoView extends VerticalLayout
 
         binder.forField(username)
                 .withValidator(new StringLengthValidator(
-                        "Username must be between 3 and 129 characters long",
-                        3, 129))
+                        "Username must be between 3 and 255 characters long",
+                        3, 255))
                 .bind(AppUser::getUserName, null);
         binder.forField(email)
                 .withValidator(new EmailValidator(
