@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -25,8 +27,9 @@ public class AppUser implements Serializable {
     private static final long serialVersionUID = -4675920971250068707L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @SequenceGenerator(name = "seq_gen", sequenceName = "hibernate_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_gen")
+    @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
     @Column(name = "user_name", nullable = false, unique = true)
@@ -45,13 +48,14 @@ public class AppUser implements Serializable {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     @EqualsAndHashCode.Exclude
-    private Set<AppRole> roles;
+    private Set<AppRole> roles = new HashSet<>();
 
     public enum UserStatus {
         ACTIVE, INACTIVE

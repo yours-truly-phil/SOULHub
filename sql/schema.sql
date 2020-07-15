@@ -23,12 +23,18 @@ create table app_user
     status             varchar(255) not null
 );
 
+alter table app_user
+    owner to postgres;
+
 create table app_role
 (
     id        bigint       not null
         constraint app_role_pkey primary key,
     role_name varchar(255) not null unique
 );
+
+alter table app_role
+    owner to postgres;
 
 create table user_role
 (
@@ -41,6 +47,9 @@ create table user_role
     unique (user_id, role_id)
 );
 
+alter table user_role
+    owner to postgres;
+
 create table persistent_logins
 (
     username  varchar(255) not null,
@@ -49,6 +58,9 @@ create table persistent_logins
     last_used timestamp    not null,
     primary key (series)
 );
+
+alter table persistent_logins
+    owner to postgres;
 
 create table soulpatches
 (

@@ -66,7 +66,7 @@ public class SOULHubUserDetailsService implements UserDetailsService {
     }
 
     @Transactional
-    public AppUser registerAppUser(AppUser appUser) throws RoleNotFoundException {
+    public AppUser registerAppUser(AppUser appUser) throws RoleNotFoundException, ValidationException {
         LOGGER.debug("trying to register app user: {}", appUser.toString());
 
         AppUser user = new AppUser();
@@ -80,15 +80,17 @@ public class SOULHubUserDetailsService implements UserDetailsService {
             throw new ValidationException(violation.getMessage());
         });
 
-        Optional<AppRole> userRole = appRoleRepository.findByRoleName("USER");
-        userRole.ifPresent(
-                appRole -> user.setRoles(Set.of(appRole))
-        );
-        userRole.orElseThrow(RoleNotFoundException::new);
-
         user.setStatus(AppUser.UserStatus.ACTIVE);
 
         LOGGER.info("saving new user as: {}", user.toString());
+//        var newUser = appUserRepository.save(user);
+//
+//        Optional<AppRole> userRole = appRoleRepository.findByRoleName("USER");
+//        userRole.ifPresent(
+//                appRole -> newUser.getRoles().add(appRole)
+//        );
+//        userRole.orElseThrow(RoleNotFoundException::new);
+//        return appUserRepository.save(newUser);
         return appUserRepository.save(user);
     }
 
