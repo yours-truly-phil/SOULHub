@@ -82,15 +82,12 @@ public class SOULHubUserDetailsService implements UserDetailsService {
 
         user.setStatus(AppUser.UserStatus.ACTIVE);
 
+        Optional<AppRole> userRole = appRoleRepository.findByRoleName("USER");
+        userRole.ifPresent(
+                appRole -> user.getRoles().add(appRole)
+        );
+        userRole.orElseThrow(RoleNotFoundException::new);
         LOGGER.info("saving new user as: {}", user.toString());
-//        var newUser = appUserRepository.save(user);
-//
-//        Optional<AppRole> userRole = appRoleRepository.findByRoleName("USER");
-//        userRole.ifPresent(
-//                appRole -> newUser.getRoles().add(appRole)
-//        );
-//        userRole.orElseThrow(RoleNotFoundException::new);
-//        return appUserRepository.save(newUser);
         return appUserRepository.save(user);
     }
 

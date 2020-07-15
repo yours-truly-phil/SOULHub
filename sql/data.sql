@@ -10,11 +10,13 @@ delete
 from app_user;
 
 insert into app_user (id, user_name, email, encrypted_password, status)
-values (nextval('hibernate_sequence'), 'dbuser1', 'dbuser1@mail.com', '$2y$12$67cy20h5f8MJeb7y3FFtA.lW1wVooYQe.uKsvSYZQuxAkNoGOlWBy',
+values (nextval('hibernate_sequence'), 'dbuser1', 'dbuser1@mail.com',
+        '$2y$12$67cy20h5f8MJeb7y3FFtA.lW1wVooYQe.uKsvSYZQuxAkNoGOlWBy',
         'ACTIVE');
 
 insert into app_user (id, user_name, email, encrypted_password, status)
-values (nextval('hibernate_sequence'), 'dbadmin1', 'dbadmin1@mail.com', '$2y$12$67cy20h5f8MJeb7y3FFtA.lW1wVooYQe.uKsvSYZQuxAkNoGOlWBy',
+values (nextval('hibernate_sequence'), 'dbadmin1', 'dbadmin1@mail.com',
+        '$2y$12$67cy20h5f8MJeb7y3FFtA.lW1wVooYQe.uKsvSYZQuxAkNoGOlWBy',
         'ACTIVE');
 
 insert into app_role (id, role_name)
@@ -23,18 +25,21 @@ VALUES ((select id from app_user where user_name = 'dbadmin1'), 'ADMIN');
 insert into app_role (id, role_name)
 VALUES ((select id from app_user where user_name = 'dbuser1'), 'USER');
 
-insert into user_role (id, user_id, role_id)
-VALUES (nextval('hibernate_sequence'),
-        (select id from app_user where user_name = 'dbadmin1'),
-        (select id from app_role where role_name = 'USER'));
-insert into user_role (id, user_id, role_id)
-VALUES (nextval('hibernate_sequence'),
-        (select id from app_user where user_name = 'dbadmin1'),
-        (select id from app_role where role_name = 'ADMIN'));
-insert into user_role (id, user_id, role_id)
-values (nextval('hibernate_sequence'),
-        (select id from app_user where user_name = 'dbuser1'),
-        (select id from app_role where role_name = 'USER'));
+insert into user_role (user_id, role_id)
+VALUES (
+--         nextval('hibernate_sequence'),
+               (select id from app_user where user_name = 'dbadmin1'),
+               (select id from app_role where role_name = 'USER'));
+insert into user_role (user_id, role_id)
+VALUES (
+--         nextval('hibernate_sequence'),
+               (select id from app_user where user_name = 'dbadmin1'),
+               (select id from app_role where role_name = 'ADMIN'));
+insert into user_role (user_id, role_id)
+values (
+--         nextval('hibernate_sequence'),
+               (select id from app_user where user_name = 'dbuser1'),
+               (select id from app_role where role_name = 'USER'));
 
 
 insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)

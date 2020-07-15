@@ -38,13 +38,14 @@ alter table app_role
 
 create table user_role
 (
-    id      bigint not null
-        constraint user_role_pkey primary key,
+--     id      bigint not null
+--         constraint user_role_pkey primary key,
     user_id bigint not null
         constraint user_role_user_constraint references app_user,
     role_id bigint not null
         constraint user_role_role_constraint references app_role,
-    unique (user_id, role_id)
+--     unique (user_id, role_id)
+    constraint user_role_pkey primary key (user_id, role_id)
 );
 
 alter table user_role
