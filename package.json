@@ -46,7 +46,12 @@
       "@vaadin/vaadin-lumo-styles": "1.5.0",
       "@vaadin/vaadin-material-styles": "1.2.3",
       "@vaadin/vaadin-rich-text-editor": "1.1.1",
-      "@granite-elements/ace-widget": "2.2.7-b1"
+      "@granite-elements/ace-widget": "2.2.7-b1",
+      "@polymer/paper-icon-button": "^3.0.2",
+      "lit-element": "^2.2.1",
+      "@polymer/paper-button": "^3.0.1",
+      "@polymer/iron-iconset-svg": "^3.0.1",
+      "lit-html": "^1.1.2"
     },
     "devDependencies": {
       "webpack-babel-multi-target-plugin": "2.3.3",
@@ -60,7 +65,7 @@
       "webpack-merge": "4.2.2",
       "webpack-dev-server": "3.10.3"
     },
-    "hash": "08da58e102b715492084918e392afba02a5f4432b2a1d12d0c7ddbb70e341706"
+    "hash": "7837ea5204c57dd573199b4aa8efc53c7dbc74e2e3b34fa90b19f01533da39e1"
   },
   "dependencies": {
     "@polymer/polymer": "3.2.0",
@@ -106,7 +111,12 @@
     "@vaadin/vaadin-lumo-styles": "1.5.0",
     "@vaadin/vaadin-material-styles": "1.2.3",
     "@vaadin/vaadin-rich-text-editor": "1.1.1",
-    "@granite-elements/ace-widget": "2.2.7-b1"
+    "@granite-elements/ace-widget": "2.2.7-b1",
+    "@polymer/paper-icon-button": "^3.0.2",
+    "lit-element": "^2.2.1",
+    "@polymer/paper-button": "^3.0.1",
+    "@polymer/iron-iconset-svg": "^3.0.1",
+    "lit-html": "^1.1.2"
   },
   "devDependencies": {
     "chokidar": "^3.4.0",

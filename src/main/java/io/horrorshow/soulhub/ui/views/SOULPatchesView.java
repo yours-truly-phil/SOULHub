@@ -4,7 +4,6 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -28,6 +27,7 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.klaudeta.PaginatedGrid;
 
 import java.util.stream.Collectors;
 
@@ -39,6 +39,7 @@ import static java.lang.String.format;
 public class SOULPatchesView extends VerticalLayout {
 
     private static final long serialVersionUID = 3981631233877217865L;
+
     private static final String COL_NAME = "name";
     private static final String COL_DESCRIPTION = "description";
     private static final String COL_FILES = "files";
@@ -47,7 +48,7 @@ public class SOULPatchesView extends VerticalLayout {
     private static final Logger LOGGER = LoggerFactory.getLogger(SOULPatchesView.class);
     private final SOULPatchService service;
     private final SOULHubUserDetailsService userService;
-    private final Grid<SOULPatch> grid = new Grid<>();
+    private final PaginatedGrid<SOULPatch> grid = new PaginatedGrid<>();
     private final TextField filterText = new TextField("filter by (regex)");
     private final Checkbox filterOwnedSoulpatches = new Checkbox("show only my soulpatches");
     private final Button addSOULPatch = new Button("add SOULPatch", VaadinIcon.FILE_ADD.create());
@@ -77,12 +78,9 @@ public class SOULPatchesView extends VerticalLayout {
     }
 
     private void browserWindowResized(BrowserWindowResizeEvent event) {
-        // TODO: check out https://vaadin.com/directory/component/sizereporter/samples
-        // TODO: find way to get scaling (4k width on ipad feels different than 4k width on normal screen)
-        // TODO: this might already be "normalized" since I only got 2560 with window size pretty much fullscreen
-        grid.getColumnByKey(COL_VIEWS).setVisible(event.getWidth() >= 1300);
-        grid.getColumnByKey(COL_AUTHOR).setVisible(event.getWidth() >= 1100);
-        grid.getColumnByKey(COL_DESCRIPTION).setVisible(event.getWidth() >= 900);
+        grid.getColumnByKey(COL_VIEWS).setVisible(event.getWidth() >= 1050);
+        grid.getColumnByKey(COL_AUTHOR).setVisible(event.getWidth() >= 950);
+        grid.getColumnByKey(COL_DESCRIPTION).setVisible(event.getWidth() >= 600);
     }
 
     private void initFields() {
@@ -121,20 +119,20 @@ public class SOULPatchesView extends VerticalLayout {
 
     private void initAddSOULPatchLink() {
         addSOULPatch.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        addSOULPatch.addClickListener(e -> {
-            grid.asSingleSelect().clear();
-            UI.getCurrent().navigate(EditSOULPatchView.class, "new");
-        });
+        addSOULPatch.addClickListener(e -> UI.getCurrent().navigate(EditSOULPatchView.class, "new"));
     }
 
     private void initSOULPatchesGrid() {
-        grid.addThemeName("bordered");
-        grid.setHeightFull();
-        grid.setColumnReorderingAllowed(true);
 
         addSOULPatchesGridColumns();
 
-        grid.asSingleSelect().addValueChangeListener(e ->
+        grid.setColumnReorderingAllowed(true);
+
+        grid.setPageSize(5);
+
+        grid.setPaginatorSize(5);
+
+        grid.asSingleSelect().addValueChangeListener(event ->
                 grid.asSingleSelect().getOptionalValue()
                         .ifPresentOrElse(form::showSOULPatch, form::hideSOULPatchForm));
     }
@@ -194,7 +192,9 @@ public class SOULPatchesView extends VerticalLayout {
     private void arrangeComponents() {
         HorizontalLayout toolbar = new HorizontalLayout(filterText, filterOwnedSoulpatches, addSOULPatch);
 
-        HorizontalLayout mainContent = new HorizontalLayout(grid, form);
+        VerticalLayout gridLayout = new VerticalLayout(grid);
+
+        HorizontalLayout mainContent = new HorizontalLayout(gridLayout, form);
         mainContent.setSizeFull();
 
         add(userGreeting, toolbar, mainContent);

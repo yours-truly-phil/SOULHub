@@ -25,6 +25,7 @@
     <webdrivermanager.version>3.8.1</webdrivermanager.version>
     <hibernate-search.version>5.11.5.Final</hibernate-search.version>
     <acewidget.version>1.4-Beta</acewidget.version>
+    <vaadin-grid-pagination.version>2.0.7</vaadin-grid-pagination.version>
   </properties>
 
   <repositories>
@@ -187,6 +188,11 @@
       <artifactId>ace-widget</artifactId>
       <version>${acewidget.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.vaadin.klaudeta</groupId>
+      <artifactId>grid-pagination</artifactId>
+      <version>${vaadin-grid-pagination.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>com.vaadin</groupId>
@@ -278,15 +284,15 @@
           </sources>
         </configuration>
       </plugin>
-<!--      <plugin>-->
-<!--        <groupId>org.apache.maven.plugins</groupId>-->
-<!--        <artifactId>maven-compiler-plugin</artifactId>-->
-<!--        <configuration>-->
-<!--          <source>14</source>-->
-<!--          <target>14</target>-->
-<!--          <compilerArgs>&#45;&#45;enable-preview</compilerArgs>-->
-<!--        </configuration>-->
-<!--      </plugin>-->
+      <!--      <plugin>-->
+      <!--        <groupId>org.apache.maven.plugins</groupId>-->
+      <!--        <artifactId>maven-compiler-plugin</artifactId>-->
+      <!--        <configuration>-->
+      <!--          <source>14</source>-->
+      <!--          <target>14</target>-->
+      <!--          <compilerArgs>&#45;&#45;enable-preview</compilerArgs>-->
+      <!--        </configuration>-->
+      <!--      </plugin>-->
     </plugins>
   </build>
 
