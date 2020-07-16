@@ -21,6 +21,8 @@ import java.time.LocalDateTime;
 )
 public abstract class AuditModel implements Serializable {
 
+    private static final long serialVersionUID = -2400202160801517231L;
+
     @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "TIMESTAMP")
     @CreatedDate
     private LocalDateTime createdAt;

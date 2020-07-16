@@ -1,6 +1,6 @@
 package io.horrorshow.soulhub.security;
 
-import com.vaadin.flow.server.ServletHelper;
+import com.vaadin.flow.server.HandlerHelper;
 import com.vaadin.flow.shared.ApplicationConstants;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.security.access.annotation.Secured;
@@ -28,7 +28,7 @@ public class SecurityUtils {
         final String parameterValue = request.getParameter(
                 ApplicationConstants.REQUEST_TYPE_PARAMETER);
         return parameterValue != null
-                && Stream.of(ServletHelper.RequestType.values())
+                && Stream.of(HandlerHelper.RequestType.values())
                 .anyMatch(it -> it.getIdentifier().equals(parameterValue));
     }
 
