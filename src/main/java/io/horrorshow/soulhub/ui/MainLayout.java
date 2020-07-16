@@ -1,5 +1,6 @@
 package io.horrorshow.soulhub.ui;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -34,11 +35,11 @@ public class MainLayout extends AppLayout {
     private static final long serialVersionUID = -4791247729805265577L;
 
     public MainLayout() {
-        createHeader();
-        createDrawer();
+        addToNavbar(createNavbar());
+        addToDrawer(createDrawer());
     }
 
-    private void createHeader() {
+    private Component createNavbar() {
         Image logo = new Image("img/Logo.svg", "SOULHub logo");
         logo.addClickListener(event -> UI.getCurrent().navigate(SOULPatchesView.class));
 
@@ -65,10 +66,10 @@ public class MainLayout extends AppLayout {
         }
         header.add(appUserNavBar);
 
-        addToNavbar(header);
+        return header;
     }
 
-    private void createDrawer() {
+    private Component createDrawer() {
         VerticalLayout drawerLayout = new VerticalLayout();
 
         RouterLink soulPatchesLink =
@@ -89,6 +90,6 @@ public class MainLayout extends AppLayout {
             drawerLayout.add(adminLink);
         }
 
-        addToDrawer(drawerLayout);
+        return drawerLayout;
     }
 }
