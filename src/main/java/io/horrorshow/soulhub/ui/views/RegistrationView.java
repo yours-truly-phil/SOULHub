@@ -2,6 +2,7 @@ package io.horrorshow.soulhub.ui.views;
 
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.HasValueAndElement;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -60,6 +61,35 @@ public class RegistrationView extends VerticalLayout
 
         add(new H1("Registration"));
 
+        initBinder();
+
+        initFields();
+
+        arrangeComponents();
+    }
+
+    private void arrangeComponents() {
+        FormLayout formLayout = new FormLayout();
+
+        formLayout.addFormItem(username, "Username");
+        formLayout.addFormItem(email, "Email");
+        formLayout.addFormItem(password, "Password");
+
+        add(formLayout);
+        add(register);
+    }
+
+    private void initFields() {
+        username.setRequiredIndicatorVisible(true);
+        email.setRequiredIndicatorVisible(true);
+        password.setRequiredIndicatorVisible(true);
+
+        register.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        register.addClickListener(event -> register());
+        register.setDisableOnClick(true);
+    }
+
+    private void initBinder() {
         SerializablePredicate<String> stringNotBlankPredicate =
                 value -> !email.getValue().isBlank()
                         || !username.getValue().isBlank();
@@ -78,29 +108,17 @@ public class RegistrationView extends VerticalLayout
                 .withValidator(new EmailValidator("Invalid Email address"))
                 .bind(AppUser::getEmail, AppUser::setEmail);
 
+        initUsernameEmailCrossValidation(usernameBinding, emailBinding);
+
         binder.forField(password)
                 .asRequired()
                 .bind(AppUser::getEncryptedPassword, AppUser::setEncryptedPassword);
+    }
 
+    private void initUsernameEmailCrossValidation(Binder.Binding<AppUser, String> usernameBinding,
+                                                  Binder.Binding<AppUser, String> emailBinding) {
         email.addValueChangeListener(event -> usernameBinding.validate());
         username.addValueChangeListener(event -> emailBinding.validate());
-
-        username.setRequiredIndicatorVisible(true);
-        email.setRequiredIndicatorVisible(true);
-        password.setRequiredIndicatorVisible(true);
-
-        register.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        register.addClickListener(event -> register());
-        register.setDisableOnClick(true);
-
-        FormLayout formLayout = new FormLayout();
-
-        formLayout.addFormItem(username, "Username");
-        formLayout.addFormItem(email, "Email");
-        formLayout.addFormItem(password, "Password");
-
-        add(formLayout);
-        add(register);
     }
 
     private void register() {
@@ -109,6 +127,7 @@ public class RegistrationView extends VerticalLayout
             if (binder.writeBeanIfValid(appUser)) {
                 AppUser user = userDetailsService.registerAppUser(appUser);
                 new Notification(format("registered %s", user));
+                UI.getCurrent().navigate(UserInfoView.class, user.getUserName());
             } else {
                 BinderValidationStatus<AppUser> validate = binder.validate();
                 String errorText = validate.getFieldValidationStatuses()
@@ -131,16 +150,17 @@ public class RegistrationView extends VerticalLayout
 
     @Override
     public AppUser getValue() {
-        return null;
+        return fieldSupport.getValue();
     }
 
     @Override
     public void setValue(AppUser value) {
-
+        fieldSupport.setValue(value);
+        binder.readBean(value);
     }
 
     @Override
     public Registration addValueChangeListener(ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<RegistrationView, AppUser>> listener) {
-        return null;
+        return fieldSupport.addValueChangeListener(listener);
     }
 }

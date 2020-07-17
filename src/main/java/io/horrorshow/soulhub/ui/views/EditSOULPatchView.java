@@ -3,9 +3,11 @@ package io.horrorshow.soulhub.ui.views;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
@@ -41,17 +43,23 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     private final SOULPatchService soulPatchService;
     private final SOULHubUserDetailsService userDetailsService;
 
-    private final TextField name = new TextField("Name of the your SOULPatch");
-    private final TextArea description = new TextArea("Describe your SOULPatch");
+    private final RouterLink toSOULPatchesViewLink =
+            new RouterLink(format("navigate back to %s", UIConst.LINK_TEXT_SOULPATCHES),
+                    SOULPatchesView.class);
+
+    private final TextField name = new TextField();
+    private final TextArea description = new TextArea();
     private final Grid<SPFile> files = new Grid<>();
     private final Button save = new Button("save");
     private final Button delete = new Button("delete SOULPatch");
     private final Button addFile = new Button("add SOUL file");
+
     private final Binder<SOULPatch> binder = new Binder<>(SOULPatch.class);
 
     private SOULPatch soulPatch;
 
-    public EditSOULPatchView(@Autowired SOULPatchService soulPatchService, @Autowired SOULHubUserDetailsService userDetailsService) {
+    public EditSOULPatchView(@Autowired SOULPatchService soulPatchService,
+                             @Autowired SOULHubUserDetailsService userDetailsService) {
         this.soulPatchService = soulPatchService;
         this.userDetailsService = userDetailsService;
 
@@ -111,12 +119,25 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
 
     private void arrangeComponents() {
         setSizeFull();
-        add(name);
-        add(description);
+
+        add(toSOULPatchesViewLink);
+
+        FormLayout formLayout = new FormLayout();
+        formLayout.addFormItem(name, "SOULPatch Name");
+        formLayout.addFormItem(description, "Describe your SOULPatch to other users");
+        add(formLayout);
+
+        HorizontalLayout spButtons = new HorizontalLayout();
+        spButtons.add(save);
+        spButtons.add(delete);
+        add(spButtons);
+
+//        add(name);
+//        add(description);
         add(addFile);
         add(files);
-        add(save);
-        add(delete);
+//        add(save);
+//        add(delete);
     }
 
     @Override
