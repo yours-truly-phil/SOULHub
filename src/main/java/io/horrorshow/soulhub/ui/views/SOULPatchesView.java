@@ -144,7 +144,8 @@ public class SOULPatchesView extends VerticalLayout {
         grid.addColumn(SOULPatch::getName)
                 .setHeader(COL_NAME)
                 .setResizable(true).setAutoWidth(true).setFrozen(true)
-                .setKey(COL_NAME);
+                .setKey(COL_NAME)
+                .setSortable(true);
 
         grid.addColumn(SOULPatch::getDescription)
                 .setHeader(COL_DESCRIPTION)
@@ -156,7 +157,6 @@ public class SOULPatchesView extends VerticalLayout {
             if (!sp.getSpFiles().isEmpty()) {
                 sp.getSpFiles().forEach(spFile -> {
                     HorizontalLayout layout = new HorizontalLayout();
-                    layout.setSpacing(false);
                     layout.add(
                             new Button(
                                     format("%s [%s]", spFile.getName(),
@@ -175,11 +175,13 @@ public class SOULPatchesView extends VerticalLayout {
 
         grid.addColumn(soulPatch -> String.valueOf(soulPatch.getNoViews()))
                 .setHeader(COL_VIEWS).setResizable(true)
-                .setKey(COL_VIEWS);
+                .setKey(COL_VIEWS)
+                .setSortable(true);
 
         grid.addColumn(soulPatch -> soulPatch.getAuthor().getUserName())
                 .setHeader(COL_AUTHOR).setResizable(true)
-                .setKey(COL_AUTHOR);
+                .setKey(COL_AUTHOR)
+                .setSortable(true);
     }
 
     private void initFilters() {
