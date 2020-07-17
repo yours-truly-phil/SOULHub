@@ -8,6 +8,7 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasValueAndElement;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.internal.AbstractFieldSupport;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -36,11 +37,11 @@ public class SOULFileEditor extends VerticalLayout
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final TextField name = new TextField("filename");
+    private final TextField name = new TextField();
     private final AceEditor aceEditor = new AceEditor();
-    private final TextField createdAt = new TextField("created at");
-    private final TextField updatedAt = new TextField("updated at");
-    private final TextField fileType = new TextField("filetype");
+    private final TextField createdAt = new TextField();
+    private final TextField updatedAt = new TextField();
+    private final TextField fileType = new TextField();
 
     private final Button save = new Button("save");
     private final Button delete = new Button("delete");
@@ -120,8 +121,13 @@ public class SOULFileEditor extends VerticalLayout
      * into the gui
      */
     private void arrangeComponents() {
-        add(new HorizontalLayout(name, createdAt, updatedAt));
-        add(new HorizontalLayout(fileType, aceTheme));
+        FormLayout spFileAttributesLayout = new FormLayout();
+        spFileAttributesLayout.addFormItem(name, "Name");
+        spFileAttributesLayout.addFormItem(createdAt, "Created At");
+        spFileAttributesLayout.addFormItem(updatedAt, "Updated At");
+        spFileAttributesLayout.addFormItem(fileType, "File-Type");
+        spFileAttributesLayout.addFormItem(aceTheme, "Editor Theme");
+        add(spFileAttributesLayout);
         add(aceEditor);
         add(new HorizontalLayout(save, delete));
     }

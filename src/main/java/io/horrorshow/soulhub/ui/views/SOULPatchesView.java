@@ -215,6 +215,7 @@ public class SOULPatchesView extends VerticalLayout {
 
     public void showFileEditor(SPFile spFile) {
         spFileEditorDialog.getEditor().setValue(spFile);
+        spFileEditorDialog.setWidth("90%");
         spFileEditorDialog.open();
     }
 }
