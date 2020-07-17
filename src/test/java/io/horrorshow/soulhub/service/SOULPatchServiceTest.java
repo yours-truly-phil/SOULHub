@@ -40,18 +40,23 @@ public class SOULPatchServiceTest {
         p.setId(no);
         p.setName(format("name %s", no));
         p.setDescription(format("description %s", no));
-        p.setAuthor(new AppUser(
-                0L,
-                format("author %s", no),
-                format("%s@mail.com", no),
-                "$pw",
-                AppUser.UserStatus.ACTIVE,
-                Collections.emptySet()));
+        p.setAuthor(createAppUser());
+
         p.setNoViews(no);
 
         p.getSpFiles().add(createTestSPFile(2 * no, SOUL, p));
         p.getSpFiles().add(createTestSPFile(2 * no + 1, SOULPATCH, p));
         return p;
+    }
+
+    public static AppUser createAppUser() {
+        AppUser user = new AppUser();
+        user.setId(0L);
+        user.setUserName("user1");
+        user.setEmail("user1@mail.com");
+        user.setEncryptedPassword("$pw");
+        user.setStatus(AppUser.UserStatus.ACTIVE);
+        return user;
     }
 
     static SPFile createTestSPFile(Long id, SPFile.FileType fileType, SOULPatch soulPatch) {

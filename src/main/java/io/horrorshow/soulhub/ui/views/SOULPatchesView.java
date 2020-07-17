@@ -15,6 +15,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import io.horrorshow.soulhub.data.SOULPatch;
+import io.horrorshow.soulhub.data.SOULPatchRating;
 import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.security.SecurityUtils;
 import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
@@ -45,6 +46,7 @@ public class SOULPatchesView extends VerticalLayout {
     private static final String COL_FILES = "files";
     private static final String COL_VIEWS = "views";
     private static final String COL_AUTHOR = "author";
+    private static final String COL_RATINGS = "rating";
     private static final Logger LOGGER = LoggerFactory.getLogger(SOULPatchesView.class);
     private final SOULPatchService service;
     private final SOULHubUserDetailsService userService;
@@ -172,6 +174,13 @@ public class SOULPatchesView extends VerticalLayout {
             return spFilesLayout;
         })).setHeader(COL_FILES).setAutoWidth(true).setResizable(true)
                 .setKey(COL_FILES);
+
+        grid.addColumn(soulPatch -> soulPatch.getRatings().stream()
+                .mapToDouble(SOULPatchRating::getStars)
+                .average().orElse(Double.NaN))
+                .setHeader(COL_RATINGS)
+                .setKey(COL_RATINGS)
+                .setSortable(true);
 
         grid.addColumn(soulPatch -> String.valueOf(soulPatch.getNoViews()))
                 .setHeader(COL_VIEWS).setResizable(true)

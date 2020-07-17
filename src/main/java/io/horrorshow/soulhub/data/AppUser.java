@@ -1,9 +1,6 @@
 package io.horrorshow.soulhub.data;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
@@ -20,7 +17,8 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name = "app_user",
         uniqueConstraints = {
-                @UniqueConstraint(name = "app_user_user_name_key", columnNames = "user_name")
+                @UniqueConstraint(name = "app_user_user_name_key",
+                        columnNames = "user_name")
         })
 public class AppUser implements Serializable {
 
@@ -56,6 +54,11 @@ public class AppUser implements Serializable {
     @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     private Set<AppRole> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "appUser")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<SOULPatchRating> ratings = new HashSet<>();
 
     public enum UserStatus {
         ACTIVE, INACTIVE

@@ -2,6 +2,7 @@ package io.horrorshow.soulhub.data;
 
 import io.horrorshow.soulhub.data.repository.AppUserRepository;
 import io.horrorshow.soulhub.data.repository.SOULPatchRepository;
+import io.horrorshow.soulhub.service.SOULPatchServiceTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,9 +27,7 @@ class SOULPatchRepositoryTest {
 
     private static final HashMap<String, SOULPatch> soulPatches =
             new HashMap<>();
-    private static final AppUser user1 =
-            new AppUser(0L, "user1", "user1@mail.com", "$pw",
-                    AppUser.UserStatus.ACTIVE, Collections.emptySet());
+    private static final AppUser user1 = SOULPatchServiceTest.createAppUser();
 
     @Autowired
     private SOULPatchRepository soulPatchRepository;

@@ -4,6 +4,7 @@ drop table if exists spfiles;
 drop table if exists soulpatches;
 drop table if exists app_user;
 drop table if exists persistent_logins;
+drop table if exists soulpatch_ratings;
 
 drop sequence if exists hibernate_sequence;
 
@@ -38,13 +39,10 @@ alter table app_role
 
 create table user_role
 (
---     id      bigint not null
---         constraint user_role_pkey primary key,
     user_id bigint not null
         constraint user_role_user_constraint references app_user,
     role_id bigint not null
         constraint user_role_role_constraint references app_role,
---     unique (user_id, role_id)
     constraint user_role_pkey primary key (user_id, role_id)
 );
 
@@ -96,4 +94,24 @@ create table spfiles
 );
 
 alter table spfiles
+    owner to postgres;
+
+create table soulpatch_ratings
+(
+    id           bigint    not null
+        constraint soulpatch_ratings_pkey
+            primary key,
+    soulpatch_id bigint    not null
+        constraint ratings_soulpatch_constraint
+            references soulpatches,
+    app_user_id  bigint    not null
+        constraint ratings_app_user_constraint
+            references app_user,
+    stars        int       not null,
+    created_at   timestamp not null,
+    updated_at   timestamp not null,
+    unique (soulpatch_id, app_user_id)
+);
+
+alter table soulpatch_ratings
     owner to postgres;

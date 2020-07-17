@@ -54,6 +54,7 @@ public class SOULPatch extends AuditModel {
 
     @OneToMany(mappedBy = "soulPatch", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<SPFile> spFiles = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -64,6 +65,11 @@ public class SOULPatch extends AuditModel {
 
     @Column(name = "no_views")
     private Long noViews = 0L;
+
+    @OneToMany(mappedBy = "soulPatch", fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<SOULPatchRating> ratings = new HashSet<>();
 
     public List<SPFile> getSoulFiles() {
         return spFiles.stream().filter(

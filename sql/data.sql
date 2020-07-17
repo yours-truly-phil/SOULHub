@@ -86,6 +86,17 @@ values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
         'LatelyBass',
         0);
 
+insert into soulpatch_ratings(id, soulpatch_id, app_user_id, stars, created_at, updated_at)
+values (nextval('hibernate_sequence'),
+        (select id from soulpatches where name = 'clarinetMIDI'),
+        (select id from app_user where user_name = 'dbuser1'),
+        3, current_timestamp, current_timestamp);
+insert into soulpatch_ratings(id, soulpatch_id, app_user_id, stars, created_at, updated_at)
+values (nextval('hibernate_sequence'),
+        (select id from soulpatches where name = 'clarinetMIDI'),
+        (select id from app_user where user_name = 'dbadmin1'),
+        4, current_timestamp, current_timestamp);
+
 insert into spfiles (id, created_at, updated_at, filetype, content, name, soulpatch_id)
 VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'SOUL', '/* ------------------------------------------------------------
 copyright: "(c)Romain Michon, CCRMA (Stanford University), GRAME"
