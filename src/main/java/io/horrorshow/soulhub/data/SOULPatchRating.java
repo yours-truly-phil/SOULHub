@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@IdClass(RatingId.class)
 @Data
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
