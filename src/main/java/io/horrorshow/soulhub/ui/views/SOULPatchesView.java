@@ -126,6 +126,8 @@ public class SOULPatchesView extends VerticalLayout {
 
         addSOULPatchesGridColumns();
 
+        grid.setClassName("soulpatches-grid");
+
         grid.setColumnReorderingAllowed(true);
 
         grid.setPageSize(5);
@@ -154,6 +156,7 @@ public class SOULPatchesView extends VerticalLayout {
             if (!sp.getSpFiles().isEmpty()) {
                 sp.getSpFiles().forEach(spFile -> {
                     HorizontalLayout layout = new HorizontalLayout();
+                    layout.setSpacing(false);
                     layout.add(
                             new Button(
                                     format("%s [%s]", spFile.getName(),

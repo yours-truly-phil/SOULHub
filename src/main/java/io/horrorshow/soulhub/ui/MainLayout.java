@@ -5,6 +5,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -27,6 +28,7 @@ import io.horrorshow.soulhub.ui.views.SOULPatchesView;
         shortName = UIConst.TITLE,
         description = UIConst.DESCRIPTION,
         enableInstallPrompt = false)
+@JsModule("@vaadin/vaadin-lumo-styles/presets/compact.js")
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css",
         themeFor = "vaadin-text-field")
