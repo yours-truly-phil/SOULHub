@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.HashMap;
@@ -19,10 +20,12 @@ import java.util.List;
 import static io.horrorshow.soulhub.data.SPFile.FileType.SOUL;
 import static io.horrorshow.soulhub.data.SPFile.FileType.SOULPATCH;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @DisplayName("SOULHubRepository Tests")
+@EnableJpaAuditing
 class SOULPatchRepositoryTest {
 
     private static final HashMap<String, SOULPatch> soulPatches =
@@ -75,5 +78,22 @@ class SOULPatchRepositoryTest {
         for (SOULPatch patch : patches) {
             assertNotNull(patch.getId());
         }
+    }
+
+    @Test
+    void created_updated_at_on_save_of_soulpatches() {
+        var soulPatches = soulPatchRepository.findAll();
+        assertTrue(soulPatches.size() > 0, "Result contains items");
+
+        soulPatches.forEach(soulPatch -> {
+            assertNotNull(soulPatch.getCreatedAt(), "created at is set");
+            assertNotNull(soulPatch.getUpdatedAt(), "updated at is set");
+            soulPatch.setName("newname");
+        });
+
+        soulPatchRepository.saveAll(soulPatches);
+        soulPatchRepository.findAll().forEach(soulPatch ->
+                assertTrue(soulPatch.getUpdatedAt().isAfter(soulPatch.getCreatedAt()),
+                        "updated after created at date"));
     }
 }

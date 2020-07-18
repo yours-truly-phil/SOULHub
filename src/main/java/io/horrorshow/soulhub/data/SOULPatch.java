@@ -71,15 +71,9 @@ public class SOULPatch extends AuditModel {
     @EqualsAndHashCode.Exclude
     private Set<SOULPatchRating> ratings = new HashSet<>();
 
-    public List<SPFile> getSoulFiles() {
+    public List<SPFile> getSpFiles(SPFile.FileType fileType) {
         return spFiles.stream().filter(
                 spFile -> spFile.getFileType()
-                        .equals(SOUL)).collect(Collectors.toList());
-    }
-
-    public List<SPFile> getSoulpatchFiles() {
-        return spFiles.stream().filter(
-                spFile -> spFile.getFileType()
-                        .equals(SOULPATCH)).collect(Collectors.toList());
+                        .equals(fileType)).collect(Collectors.toList());
     }
 }

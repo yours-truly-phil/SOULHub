@@ -48,6 +48,9 @@ public class SOULPatchesView extends VerticalLayout {
     private static final String COL_AUTHOR = "author";
     private static final String COL_RATINGS = "rating";
     private static final Logger LOGGER = LoggerFactory.getLogger(SOULPatchesView.class);
+    private static final int PAGE_SIZE = 10;
+    private static final int PAGINATOR_SIZE = 5;
+
     private final SOULPatchService service;
     private final SOULHubUserDetailsService userService;
     private final PaginatedGrid<SOULPatch> grid = new PaginatedGrid<>();
@@ -132,9 +135,9 @@ public class SOULPatchesView extends VerticalLayout {
 
         grid.setColumnReorderingAllowed(true);
 
-        grid.setPageSize(5);
+        grid.setPageSize(PAGE_SIZE);
 
-        grid.setPaginatorSize(5);
+        grid.setPaginatorSize(PAGINATOR_SIZE);
 
         grid.asSingleSelect().addValueChangeListener(event ->
                 grid.asSingleSelect().getOptionalValue()
@@ -229,7 +232,6 @@ public class SOULPatchesView extends VerticalLayout {
 
     public void showFileEditor(SPFile spFile) {
         spFileEditorDialog.getEditor().setValue(spFile);
-        spFileEditorDialog.setWidth("90%");
         spFileEditorDialog.open();
     }
 }

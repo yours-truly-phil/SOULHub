@@ -74,7 +74,7 @@ public class SOULPatchService {
                     SOULPatchXMLType soulPatchXML = new SOULPatchXMLType();
                     soulPatchXML.setId(patch.getId().toString());
 
-                    patch.getSoulFiles().forEach(e -> {
+                    patch.getSpFiles(SPFile.FileType.SOUL).forEach(e -> {
                         SOULFileXMLType xml = new SOULFileXMLType();
                         xml.setId(String.valueOf(e.getId()));
                         xml.setFilename(e.getName());
@@ -82,7 +82,7 @@ public class SOULPatchService {
                         soulPatchXML.getSoulfile().add(xml);
                     });
 
-                    patch.getSoulpatchFiles().forEach(e -> {
+                    patch.getSpFiles(SPFile.FileType.SOULPATCH).forEach(e -> {
                         SOULPatchFileXMLType xml = new SOULPatchFileXMLType();
                         xml.setId(String.valueOf(e.getId()));
                         xml.setFilename(e.getName());

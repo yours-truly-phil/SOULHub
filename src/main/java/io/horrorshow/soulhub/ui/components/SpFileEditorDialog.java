@@ -16,6 +16,8 @@ public class SpFileEditorDialog extends Dialog {
 
     private final Button close = new Button("close file editor dialog");
 
+    private static final int DEFAULT_WIDTH_PERCENT = 90;
+
     public SpFileEditorDialog(SOULPatchService soulPatchService,
                               SOULHubUserDetailsService soulHubUserDetailsService) {
         super();
@@ -31,5 +33,8 @@ public class SpFileEditorDialog extends Dialog {
         content.add(editor);
         content.add(close);
         add(content);
+
+        setWidth(String.format("%d%%", DEFAULT_WIDTH_PERCENT));
+        setResizable(true);
     }
 }
