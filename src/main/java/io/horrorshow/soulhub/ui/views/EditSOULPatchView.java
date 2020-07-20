@@ -132,12 +132,8 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         spButtons.add(delete);
         add(spButtons);
 
-//        add(name);
-//        add(description);
         add(addFile);
         add(files);
-//        add(save);
-//        add(delete);
     }
 
     @Override

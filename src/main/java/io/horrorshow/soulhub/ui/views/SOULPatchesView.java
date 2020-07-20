@@ -14,6 +14,7 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SOULPatchRating;
 import io.horrorshow.soulhub.data.SPFile;
@@ -24,6 +25,7 @@ import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.SOULPatchForm;
 import io.horrorshow.soulhub.ui.components.SpFileEditorDialog;
+import io.horrorshow.soulhub.ui.components.StarsRating;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +52,8 @@ public class SOULPatchesView extends VerticalLayout {
     private static final Logger LOGGER = LoggerFactory.getLogger(SOULPatchesView.class);
     private static final int PAGE_SIZE = 10;
     private static final int PAGINATOR_SIZE = 5;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final SOULPatchService service;
     private final SOULHubUserDetailsService userService;
@@ -185,6 +189,17 @@ public class SOULPatchesView extends VerticalLayout {
                 .setKey(COL_RATINGS)
                 .setSortable(true);
 
+        grid.addColumn(new ComponentRenderer<>(sp -> {
+            StarsRating starsRating = new StarsRating();
+            starsRating.setValue((int) Math.round(sp.getRatings().stream()
+                    .mapToDouble(SOULPatchRating::getStars)
+                    .average().orElse(0d)));
+            starsRating.setNumstars(5);
+            starsRating.setManual(true);
+            starsRating.addValueChangeListener(ratingEvent -> currentUserSOULPatchRating(sp, ratingEvent.getValue()));
+            return starsRating;
+        })).setHeader(COL_RATINGS);
+
         grid.addColumn(soulPatch -> String.valueOf(soulPatch.getNoViews()))
                 .setHeader(COL_VIEWS).setResizable(true)
                 .setKey(COL_VIEWS)
@@ -194,6 +209,20 @@ public class SOULPatchesView extends VerticalLayout {
                 .setHeader(COL_AUTHOR).setResizable(true)
                 .setKey(COL_AUTHOR)
                 .setSortable(true);
+    }
+
+    private void currentUserSOULPatchRating(SOULPatch soulPatch, Integer stars) {
+        logger.debug("soulpatch rating event - rating: {} soulpatch: {}", stars, soulPatch);
+
+        if (SecurityUtils.isUserLoggedIn() && userService.getCurrentAppUser().isPresent()) {
+            AppUser currentUser = userService.getCurrentAppUser().get();
+            soulPatch.getRatings().stream()
+                    .filter(soulPatchRating ->
+                            soulPatchRating.getAppUser().equals(currentUser)).distinct().findAny()
+                    .ifPresentOrElse(soulPatchRating ->
+                                    logger.debug("rating by {} exists {}", currentUser.getUserName(), soulPatchRating.toString()),
+                            () -> logger.debug("no rating by {} exists", currentUser.getUserName()));
+        }
     }
 
     private void initFilters() {

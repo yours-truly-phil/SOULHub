@@ -40,6 +40,7 @@ public class AppUser implements Serializable {
     private String email;
 
     @Column(name = "encrypted_password", nullable = false)
+    @ToString.Exclude
     private String encryptedPassword;
 
     @Column(name = "status", nullable = false)
