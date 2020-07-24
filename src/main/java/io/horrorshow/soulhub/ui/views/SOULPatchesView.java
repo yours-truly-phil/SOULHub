@@ -170,7 +170,7 @@ public class SOULPatchesView extends VerticalLayout {
                     layout.add(
                             new Button(
                                     format("%s [%s]", spFile.getName(),
-                                            spFile.getFileType().toString()),
+                                            (spFile.getFileType() != null) ? spFile.getFileType().toString() : ""),
                                     VaadinIcon.FILE_CODE.create(),
                                     event -> showFileEditor(spFile)));
 
@@ -223,7 +223,7 @@ public class SOULPatchesView extends VerticalLayout {
                             soulPatchRating.getAppUser()
                                     .equals(currentUser)).distinct().findAny()
                     .ifPresentOrElse(soulPatchRating ->
-                            // user rating present
+                                    // user rating present
                                     logger.debug("rating by {} exists {}",
                                             currentUser.getUserName(),
                                             soulPatchRating.toString()),

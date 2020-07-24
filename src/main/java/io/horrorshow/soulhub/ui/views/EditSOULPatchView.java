@@ -89,7 +89,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
                 new Button(spFile.getName(), event ->
                         new Notification(format("%s clicked!", spFile.getName())))))
                 .setHeader("filename").setAutoWidth(true);
-        files.addColumn(spFile -> spFile.getFileType().toString())
+        files.addColumn(spFile -> (spFile.getFileType() != null) ? spFile.getFileType().toString() : "")
                 .setHeader("filetype").setAutoWidth(true);
 
         save.setWidthFull();
@@ -106,7 +106,10 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     }
 
     private void addFile(ClickEvent<Button> event) {
+        SPFile spFile = new SPFile();
+        spFile.setSoulPatch(soulPatch);
         SOULFileEditor soulFileEditor = new SOULFileEditor(soulPatchService, userDetailsService);
+        soulFileEditor.setValue(spFile);
         soulFileEditorsLayout.add(soulFileEditor);
         Button removeFileEditorButton = new Button("close file editor");
         removeFileEditorButton.addClickListener(event1 -> {
