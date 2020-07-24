@@ -1,5 +1,6 @@
 package io.horrorshow.soulhub.ui.views;
 
+import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -23,6 +24,7 @@ import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
+import io.horrorshow.soulhub.ui.components.SOULFileEditor;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +55,8 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     private final Button save = new Button("save");
     private final Button delete = new Button("delete SOULPatch");
     private final Button addFile = new Button("add SOUL file");
+
+    private final VerticalLayout soulFileEditorsLayout = new VerticalLayout();
 
     private final Binder<SOULPatch> binder = new Binder<>(SOULPatch.class);
 
@@ -98,7 +102,18 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         delete.addClickListener(event -> deleteSOULPatch());
 
         addFile.setWidthFull();
-        addFile.addClickListener(event -> new Notification("add file clicked").open());
+        addFile.addClickListener(this::addFile);
+    }
+
+    private void addFile(ClickEvent<Button> event) {
+        SOULFileEditor soulFileEditor = new SOULFileEditor(soulPatchService, userDetailsService);
+        soulFileEditorsLayout.add(soulFileEditor);
+        Button removeFileEditorButton = new Button("close file editor");
+        removeFileEditorButton.addClickListener(event1 -> {
+            soulFileEditorsLayout.remove(soulFileEditor);
+            soulFileEditorsLayout.remove(removeFileEditorButton);
+        });
+        soulFileEditorsLayout.add(removeFileEditorButton);
     }
 
     private void initBinder() {
@@ -133,6 +148,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         add(spButtons);
 
         add(addFile);
+        add(soulFileEditorsLayout);
         add(files);
     }
 

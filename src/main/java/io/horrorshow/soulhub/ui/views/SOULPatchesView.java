@@ -1,5 +1,6 @@
 package io.horrorshow.soulhub.ui.views;
 
+import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -196,7 +197,7 @@ public class SOULPatchesView extends VerticalLayout {
                     .average().orElse(0d)));
             starsRating.setNumstars(5);
             starsRating.setManual(true);
-            starsRating.addValueChangeListener(ratingEvent -> currentUserSOULPatchRating(sp, ratingEvent.getValue()));
+            starsRating.addValueChangeListener(ratingEvent -> currentUserSOULPatchRating(sp, ratingEvent));
             return starsRating;
         })).setHeader(COL_RATINGS);
 
@@ -211,17 +212,24 @@ public class SOULPatchesView extends VerticalLayout {
                 .setSortable(true);
     }
 
-    private void currentUserSOULPatchRating(SOULPatch soulPatch, Integer stars) {
-        logger.debug("soulpatch rating event - rating: {} soulpatch: {}", stars, soulPatch);
+    private void currentUserSOULPatchRating(SOULPatch soulPatch,
+                                            AbstractField.ComponentValueChangeEvent<StarsRating, Integer> event) {
+        logger.debug("soulpatch rating event {} for soulpatch {}", event, soulPatch);
 
         if (SecurityUtils.isUserLoggedIn() && userService.getCurrentAppUser().isPresent()) {
             AppUser currentUser = userService.getCurrentAppUser().get();
             soulPatch.getRatings().stream()
                     .filter(soulPatchRating ->
-                            soulPatchRating.getAppUser().equals(currentUser)).distinct().findAny()
+                            soulPatchRating.getAppUser()
+                                    .equals(currentUser)).distinct().findAny()
                     .ifPresentOrElse(soulPatchRating ->
-                                    logger.debug("rating by {} exists {}", currentUser.getUserName(), soulPatchRating.toString()),
-                            () -> logger.debug("no rating by {} exists", currentUser.getUserName()));
+                            // user rating present
+                                    logger.debug("rating by {} exists {}",
+                                            currentUser.getUserName(),
+                                            soulPatchRating.toString()),
+                            // no rating present
+                            () -> logger.debug("no rating by {} exists",
+                                    currentUser.getUserName()));
         }
     }
 
