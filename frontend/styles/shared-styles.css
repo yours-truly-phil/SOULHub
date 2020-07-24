@@ -12,6 +12,11 @@
     height: 5em;
 }
 
+.soulfile-editor {
+    background-color: var(--lumo-shade-5pct);
+    border: 1px solid var(--lumo-contrast-5pct);
+}
+
 /* Main Layout */
 a[highlight] {
     font-weight: bold;

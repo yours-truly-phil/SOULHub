@@ -109,17 +109,24 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     }
 
     private void addFile(ClickEvent<Button> event) {
+        // TODO clean up
+        VerticalLayout soulFileEditorLayout = new VerticalLayout();
+        soulFileEditorLayout.addClassName("soulfile-editor");
+
         SPFile spFile = new SPFile();
         spFile.setSoulPatch(soulPatch);
-        SOULFileEditor soulFileEditor = new SOULFileEditor(soulPatchService, userDetailsService);
+
+        SOULFileEditor soulFileEditor =
+                new SOULFileEditor(soulPatchService, userDetailsService);
         soulFileEditor.setValue(spFile);
-        soulFileEditorsLayout.add(soulFileEditor);
+
         Button removeFileEditorButton = new Button("close file editor");
-        removeFileEditorButton.addClickListener(event1 -> {
-            soulFileEditorsLayout.remove(soulFileEditor);
-            soulFileEditorsLayout.remove(removeFileEditorButton);
-        });
-        soulFileEditorsLayout.add(removeFileEditorButton);
+        removeFileEditorButton.addClickListener(event1 ->
+                soulFileEditorsLayout.remove(soulFileEditorLayout));
+
+        soulFileEditorLayout.add(soulFileEditor);
+        soulFileEditorLayout.add(removeFileEditorButton);
+        soulFileEditorsLayout.add(soulFileEditorLayout);
     }
 
     private void initBinder() {
