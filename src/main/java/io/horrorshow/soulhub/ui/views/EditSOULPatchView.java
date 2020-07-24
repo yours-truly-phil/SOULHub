@@ -25,6 +25,7 @@ import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.SOULFileEditor;
+import io.horrorshow.soulhub.ui.components.SOULFileUpload;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,11 +55,13 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     private final Grid<SPFile> files = new Grid<>();
     private final Button save = new Button("save");
     private final Button delete = new Button("delete SOULPatch");
-    private final Button addFile = new Button("add SOUL file");
+    private final Button addFile = new Button("open SOULFile-Editor with new empty file");
 
     private final VerticalLayout soulFileEditorsLayout = new VerticalLayout();
 
     private final Binder<SOULPatch> binder = new Binder<>(SOULPatch.class);
+
+    private final SOULFileUpload soulFileUpload = new SOULFileUpload();
 
     private SOULPatch soulPatch;
 
@@ -150,6 +153,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         spButtons.add(delete);
         add(spButtons);
 
+        add(soulFileUpload);
         add(addFile);
         add(soulFileEditorsLayout);
         add(files);
