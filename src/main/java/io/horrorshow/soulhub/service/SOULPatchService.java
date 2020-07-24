@@ -130,6 +130,13 @@ public class SOULPatchService {
         return spFileRepository.saveAndFlush(spFile);
     }
 
+    public SPFile createSPFile(SOULPatch soulPatch) {
+        SPFile spFile = new SPFile();
+        spFile.setSoulPatch(soulPatch);
+        soulPatch.getSpFiles().add(spFile);
+        return spFile;
+    }
+
     public void delete(SOULPatch soulPatch) {
         soulPatchRepository.delete(soulPatch);
     }

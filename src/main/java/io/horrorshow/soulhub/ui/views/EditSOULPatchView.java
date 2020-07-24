@@ -1,6 +1,5 @@
 package io.horrorshow.soulhub.ui.views;
 
-import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -32,6 +31,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static java.lang.String.format;
 
 @Secured(value = UIConst.ROLE_USER)
@@ -62,6 +64,8 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     private final Binder<SOULPatch> binder = new Binder<>(SOULPatch.class);
 
     private final SOULFileUpload soulFileUpload = new SOULFileUpload();
+
+    private final Set<SPFile> openSpFiles = new HashSet<>();
 
     private SOULPatch soulPatch;
 
@@ -95,6 +99,12 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         files.addColumn(spFile -> (spFile.getFileType() != null) ? spFile.getFileType().toString() : "")
                 .setHeader("filetype").setAutoWidth(true);
 
+        files.asSingleSelect().addValueChangeListener(event ->
+                files.asSingleSelect().getOptionalValue()
+                        .ifPresent(spFile -> {
+                            if (!openSpFiles.contains(spFile)) showSpFile(spFile);
+                        }));
+
         save.setWidthFull();
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         save.addClickListener(event -> saveSOULPatch());
@@ -105,29 +115,39 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         delete.addClickListener(event -> deleteSOULPatch());
 
         addFile.setWidthFull();
-        addFile.addClickListener(this::addSpFileListener);
+        addFile.addClickListener(event -> addSpFile());
     }
 
-    private void addSpFileListener(ClickEvent<Button> event) {
+    private void addSpFile() {
+        SPFile spFile = soulPatchService.createSPFile(soulPatch);
+        showSpFile(spFile);
+    }
+
+    private void showSpFile(final SPFile spFile) {
         // TODO clean up
         VerticalLayout soulFileEditorLayout = new VerticalLayout();
         soulFileEditorLayout.addClassName("soulfile-editor");
 
-        SPFile spFile = new SPFile();
-        spFile.setSoulPatch(soulPatch);
-
         SOULFileEditor soulFileEditor =
                 new SOULFileEditor(soulPatchService, userDetailsService);
         soulFileEditor.setValue(spFile);
-        soulFileEditor.addSpFileChangeListener(event1 -> updateView(this.soulPatch));
+        soulFileEditor.addSpFileChangeListener(event -> updateView(this.soulPatch));
+        soulFileEditor.addSpFileDeleteListener(event -> {
+            updateView(this.soulPatch);
+            soulFileEditorsLayout.remove(soulFileEditorLayout);
+            openSpFiles.remove(spFile);
+        });
 
         Button removeFileEditorButton = new Button("close file editor");
-        removeFileEditorButton.addClickListener(event1 ->
-                soulFileEditorsLayout.remove(soulFileEditorLayout));
+        removeFileEditorButton.addClickListener(event1 -> {
+            soulFileEditorsLayout.remove(soulFileEditorLayout);
+            openSpFiles.remove(spFile);
+        });
 
         soulFileEditorLayout.add(soulFileEditor);
         soulFileEditorLayout.add(removeFileEditorButton);
         soulFileEditorsLayout.add(soulFileEditorLayout);
+        openSpFiles.add(spFile);
     }
 
     private void initBinder() {
@@ -172,7 +192,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         if (isPossibleSOULPatchId(parameter)) {
             SOULPatch soulPatch = soulPatchService.findById(Long.valueOf(parameter));
             if (!userDetailsService.isCurrentUserOwnerOf(soulPatch)) {
-                logger.debug("user not authorized to edit username={} soulpatch={} urlparameter={} event={}",
+                logger.debug("user not authorized to edit username={} soulpatch={} url-parameter={} event={}",
                         SecurityUtils.getUsername(), soulPatch, parameter, event);
                 createErrorView(format("Insufficient rights to edit SOULPatch %s", parameter));
             } else {
