@@ -117,17 +117,17 @@ public class SOULPatchService {
             sp.setDescription(soulPatch.getDescription());
             sp.setNoViews(soulPatch.getNoViews());
             sp.setUpdatedAt(LocalDateTime.now());
-            return soulPatchRepository.save(soulPatch);
+            return soulPatchRepository.saveAndFlush(soulPatch);
         }).orElseThrow(() ->
                 new ResourceNotFound(String.format("%s id: %d", SOULPatch.class.getName(), id)));
     }
 
     public SOULPatch save(SOULPatch soulPatch) {
-        return soulPatchRepository.save(soulPatch);
+        return soulPatchRepository.saveAndFlush(soulPatch);
     }
 
     public SPFile saveSpFile(SPFile spFile) {
-        return spFileRepository.save(spFile);
+        return spFileRepository.saveAndFlush(spFile);
     }
 
     public void delete(SOULPatch soulPatch) {
