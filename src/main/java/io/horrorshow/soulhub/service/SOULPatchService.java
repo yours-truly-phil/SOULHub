@@ -22,6 +22,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -135,6 +136,10 @@ public class SOULPatchService {
         spFile.setSoulPatch(soulPatch);
         soulPatch.getSpFiles().add(spFile);
         return spFile;
+    }
+
+    public Optional<SPFile> findSpFile(Long id) {
+        return spFileRepository.findById(id);
     }
 
     public void delete(SOULPatch soulPatch) {

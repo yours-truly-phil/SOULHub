@@ -8,6 +8,7 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasValueAndElement;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.internal.AbstractFieldSupport;
 import com.vaadin.flow.component.notification.Notification;
@@ -29,6 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+
+import static java.lang.String.format;
 
 public class SOULFileEditor extends VerticalLayout
         implements HasValueAndElement<AbstractField.ComponentValueChangeEvent<SOULFileEditor, SPFile>, SPFile> {
@@ -53,6 +56,9 @@ public class SOULFileEditor extends VerticalLayout
     private final SOULHubUserDetailsService userDetailsService;
 
     private final AbstractFieldSupport<SOULFileEditor, SPFile> fieldSupport;
+
+    private final Checkbox isDirty = new Checkbox("is dirty", false);
+    private final Checkbox isPersisted = new Checkbox("is persisted", false);
 
     public SOULFileEditor(@Autowired SOULPatchService soulPatchService,
                           @Autowired SOULHubUserDetailsService userDetailsService) {
@@ -114,7 +120,11 @@ public class SOULFileEditor extends VerticalLayout
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR,
                 ButtonVariant.LUMO_PRIMARY);
         delete.addClickListener(event -> delete());
+
+        isPersisted.setReadOnly(true);
+        isDirty.setReadOnly(true);
     }
+
 
     /**
      * places the components at the right locations relative to each other
@@ -127,6 +137,8 @@ public class SOULFileEditor extends VerticalLayout
         spFileAttributesLayout.addFormItem(updatedAt, "Updated At");
         spFileAttributesLayout.addFormItem(fileType, "File-Type");
         spFileAttributesLayout.addFormItem(aceTheme, "Editor Theme");
+        HorizontalLayout spFileStateLayout = new HorizontalLayout(isPersisted, isDirty);
+        spFileAttributesLayout.addFormItem(spFileStateLayout, "State");
         add(spFileAttributesLayout);
         add(aceEditor);
         add(new HorizontalLayout(save, delete));
@@ -159,6 +171,7 @@ public class SOULFileEditor extends VerticalLayout
                         : "unknown", null);
 
         binder.addValueChangeListener(event -> {
+            isDirty.setValue(true);
             // TODO investigate: sets the value to new value, then empty, then value again initially
             //  firing change twice, fucking up display of save button on changes
             // TODO investigate: typing rapidly in the ace-editor causes the cursor to jump to end of script
@@ -178,12 +191,18 @@ public class SOULFileEditor extends VerticalLayout
         try {
             SPFile spFile = fieldSupport.getValue();
             binder.writeBean(spFile);
-            soulPatchService.saveSpFile(spFile);
-
-            new Notification(String.format("file %s saved", spFile.getName()),
-                    3000).open();
-
-            fireEvent(new SPFileSaveEvent(this, spFile));
+            SPFile savedSpFile = soulPatchService.saveSpFile(spFile);
+            if (savedSpFile != null) {
+                fieldSupport.setValue(savedSpFile);
+                binder.readBean(savedSpFile);
+                isPersisted.setValue(true);
+                isDirty.setValue(false);
+                new Notification(format("file %s saved", savedSpFile.getName()),
+                        3000).open();
+                fireEvent(new SPFileSaveEvent(this, spFile));
+            } else {
+                new Notification(format("Problem saving file %s", spFile.toString()));
+            }
         } catch (ValidationException e) {
             logger.debug(e.getMessage());
         }
@@ -194,7 +213,7 @@ public class SOULFileEditor extends VerticalLayout
 
         soulPatchService.deleteSpFile(spFile);
 
-        new Notification(String.format("file %s removed", spFile.getName()),
+        new Notification(format("file %s removed", spFile.getName()),
                 3000).open();
 
         fireEvent(new SPFileDeleteEvent(this, spFile));
@@ -215,6 +234,15 @@ public class SOULFileEditor extends VerticalLayout
 
     @Override
     public void setValue(SPFile spFile) {
+        if (spFile.getId() == null) {
+            isPersisted.setValue(false);
+            isDirty.setValue(true);
+        } else {
+            soulPatchService.findSpFile(spFile.getId())
+                    .ifPresentOrElse(
+                            it -> isPersisted.setValue(true),
+                            () -> isPersisted.setValue(false));
+        }
         fieldSupport.setValue(spFile);
         binder.readBean(spFile);
         setVisible(true);
