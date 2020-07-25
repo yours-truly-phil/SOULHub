@@ -199,7 +199,7 @@ public class SOULFileEditor extends VerticalLayout
                 isDirty.setValue(false);
                 new Notification(format("file %s saved", savedSpFile.getName()),
                         3000).open();
-                fireEvent(new SPFileSaveEvent(this, spFile));
+                fireEvent(new SPFileSaveEvent(this, savedSpFile, spFile));
             } else {
                 new Notification(format("Problem saving file %s", spFile.toString()));
             }

@@ -25,6 +25,7 @@ import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.SOULFileEditor;
 import io.horrorshow.soulhub.ui.components.SOULFileUpload;
+import io.horrorshow.soulhub.ui.events.SPFileSaveEvent;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +66,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
 
     private final SOULFileUpload soulFileUpload = new SOULFileUpload();
 
-    private final Set<SPFile> openSpFiles = new HashSet<>();
+    private final Set<Long> openSpFiles = new HashSet<>();
 
     private SOULPatch soulPatch;
 
@@ -102,7 +103,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         files.asSingleSelect().addValueChangeListener(event ->
                 files.asSingleSelect().getOptionalValue()
                         .ifPresent(spFile -> {
-                            if (!openSpFiles.contains(spFile)) showSpFile(spFile);
+                            if (!openSpFiles.contains(spFile.getId())) showSpFile(spFile);
                         }));
 
         save.setWidthFull();
@@ -131,23 +132,29 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         SOULFileEditor soulFileEditor =
                 new SOULFileEditor(soulPatchService, userDetailsService);
         soulFileEditor.setValue(spFile);
-        soulFileEditor.addSpFileChangeListener(event -> updateView(this.soulPatch));
+        soulFileEditor.addSpFileChangeListener(this::spFileChange);
         soulFileEditor.addSpFileDeleteListener(event -> {
             updateView(this.soulPatch);
             soulFileEditorsLayout.remove(soulFileEditorLayout);
-            openSpFiles.remove(spFile);
+            openSpFiles.remove(spFile.getId());
         });
 
         Button removeFileEditorButton = new Button("close file editor");
         removeFileEditorButton.addClickListener(event1 -> {
             soulFileEditorsLayout.remove(soulFileEditorLayout);
-            openSpFiles.remove(spFile);
+            openSpFiles.remove(spFile.getId());
         });
 
         soulFileEditorLayout.add(soulFileEditor);
         soulFileEditorLayout.add(removeFileEditorButton);
         soulFileEditorsLayout.add(soulFileEditorLayout);
-        openSpFiles.add(spFile);
+        openSpFiles.add(spFile.getId());
+    }
+
+    private void spFileChange(SPFileSaveEvent event) {
+        openSpFiles.remove(event.getOldSpFile().getId());
+        openSpFiles.add(event.getSpFile().getId());
+        updateView(soulPatch);
     }
 
     private void initBinder() {
