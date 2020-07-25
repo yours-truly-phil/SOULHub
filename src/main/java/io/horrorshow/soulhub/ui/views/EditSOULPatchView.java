@@ -13,7 +13,6 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.*;
 import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
@@ -93,9 +92,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
 
         files.setHeightByRows(true);
         files.setWidthFull();
-        files.addColumn(new ComponentRenderer<>(spFile ->
-                new Button(spFile.getName(), event ->
-                        new Notification(format("%s clicked!", spFile.getName())))))
+        files.addColumn(SPFile::getName)
                 .setHeader("filename").setAutoWidth(true);
         files.addColumn(spFile -> (spFile.getFileType() != null) ? spFile.getFileType().toString() : "")
                 .setHeader("filetype").setAutoWidth(true);
@@ -176,22 +173,25 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     private void arrangeComponents() {
         setSizeFull();
 
-        add(toSOULPatchesViewLink);
 
         FormLayout formLayout = new FormLayout();
         formLayout.addFormItem(name, "SOULPatch Name");
         formLayout.addFormItem(description, "Describe your SOULPatch to other users");
-        add(formLayout);
 
         HorizontalLayout spButtons = new HorizontalLayout();
         spButtons.add(save);
         spButtons.add(delete);
-        add(spButtons);
 
-        add(soulFileUpload);
-        add(addFile);
+        FormLayout spFilesOverviewSection = new FormLayout();
+        VerticalLayout createSpFileSection = new VerticalLayout();
+        createSpFileSection.add(addFile, soulFileUpload);
+        spFilesOverviewSection.add(createSpFileSection, files);
+
+        add(toSOULPatchesViewLink);
+        add(formLayout);
+        add(spButtons);
+        add(spFilesOverviewSection);
         add(soulFileEditorsLayout);
-        add(files);
     }
 
     @Override
