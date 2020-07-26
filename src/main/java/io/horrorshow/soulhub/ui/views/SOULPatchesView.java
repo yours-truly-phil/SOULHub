@@ -25,7 +25,7 @@ import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.SOULPatchForm;
-import io.horrorshow.soulhub.ui.components.SpFileEditorDialog;
+import io.horrorshow.soulhub.ui.components.SOULFilePreview;
 import io.horrorshow.soulhub.ui.components.StarsRating;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -63,7 +63,7 @@ public class SOULPatchesView extends VerticalLayout {
     private final Checkbox filterOwnedSoulpatches = new Checkbox("show only my soulpatches");
     private final Button addSOULPatch = new Button("add SOULPatch", VaadinIcon.FILE_ADD.create());
     private final SOULPatchForm form;
-    private final SpFileEditorDialog spFileEditorDialog;
+    private final SOULFilePreview SOULFilePreview = new SOULFilePreview();
     private final Span userGreeting = new Span("Hello!");
 
     public SOULPatchesView(@Autowired SOULPatchService service, @Autowired SOULHubUserDetailsService userService) {
@@ -71,7 +71,6 @@ public class SOULPatchesView extends VerticalLayout {
         this.service = service;
         this.userService = userService;
 
-        spFileEditorDialog = new SpFileEditorDialog(service, userService);
         form = new SOULPatchForm(this, service, userService);
 
         addClassName("soulpatches-view");
@@ -103,16 +102,6 @@ public class SOULPatchesView extends VerticalLayout {
         initSOULPatchForm();
 
         initGreeting();
-
-        initSpFileEditorDialog();
-    }
-
-    private void initSpFileEditorDialog() {
-        spFileEditorDialog.getEditor().addSpFileChangeListener(event -> updateList());
-        spFileEditorDialog.getEditor().addSpFileDeleteListener(event -> {
-            spFileEditorDialog.close();
-            updateList();
-        });
     }
 
     private void initGreeting() {
@@ -172,7 +161,7 @@ public class SOULPatchesView extends VerticalLayout {
                                     format("%s [%s]", spFile.getName(),
                                             (spFile.getFileType() != null) ? spFile.getFileType().toString() : ""),
                                     VaadinIcon.FILE_CODE.create(),
-                                    event -> showFileEditor(spFile)));
+                                    event -> previewSpFile(spFile)));
 
                     spFilesLayout.add(layout);
                 });
@@ -267,8 +256,7 @@ public class SOULPatchesView extends VerticalLayout {
                         .collect(Collectors.toList()));
     }
 
-    public void showFileEditor(SPFile spFile) {
-        spFileEditorDialog.getEditor().setValue(spFile);
-        spFileEditorDialog.open();
+    public void previewSpFile(SPFile spFile) {
+        SOULFilePreview.showSpFile(spFile);
     }
 }

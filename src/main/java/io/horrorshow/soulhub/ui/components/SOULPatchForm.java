@@ -88,7 +88,7 @@ public class SOULPatchForm extends Div {
         spFilesGrid.setWidth("200");
 
         spFilesGrid.addColumn(new ComponentRenderer<>(it ->
-                new Button(it.getName(), event -> soulPatchesView.showFileEditor(it))))
+                new Button(it.getName(), event -> soulPatchesView.previewSpFile(it))))
                 .setHeader("filename").setAutoWidth(true);
         spFilesGrid.addColumn(spFile -> (spFile.getFileType() != null) ? spFile.getFileType().toString() : "")
                 .setHeader("filetype").setAutoWidth(true);

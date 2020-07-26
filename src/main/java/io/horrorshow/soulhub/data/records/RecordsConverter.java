@@ -24,7 +24,7 @@ public class RecordsConverter {
     public static SPFileRecord newSPFileRecord(SPFile spFile) {
         return new SPFileRecord(
                 spFile.getId(),
-                spFile.getFileType().toString(),
+                (spFile.getFileType() != null) ? spFile.getFileType().toString() : "",
                 spFile.getName(),
                 spFile.getCreatedAt(),
                 spFile.getUpdatedAt(),
