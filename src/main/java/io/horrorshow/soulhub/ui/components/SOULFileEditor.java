@@ -119,7 +119,7 @@ public class SOULFileEditor extends VerticalLayout
 
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR,
                 ButtonVariant.LUMO_PRIMARY);
-        delete.addClickListener(event -> delete());
+        delete.addClickListener(event -> askToDeleteSpFile());
 
         isPersisted.setReadOnly(true);
         isDirty.setReadOnly(true);
@@ -208,9 +208,16 @@ public class SOULFileEditor extends VerticalLayout
         }
     }
 
-    private void delete() {
+    private void askToDeleteSpFile() {
         SPFile spFile = fieldSupport.getValue();
+        ConfirmationDialog confirmationDialog = new ConfirmationDialog();
+        confirmationDialog.setTitle("Delete " + spFile.getName());
+        confirmationDialog.setQuestion("Are you sure you want to delete this file?");
+        confirmationDialog.addConfirmationListener(event -> deleteSpFile(spFile));
+        confirmationDialog.open();
+    }
 
+    private void deleteSpFile(SPFile spFile) {
         soulPatchService.deleteSpFile(spFile);
 
         new Notification(format("file %s removed", spFile.getName()),
@@ -219,7 +226,7 @@ public class SOULFileEditor extends VerticalLayout
         fireEvent(new SPFileDeleteEvent(this, spFile));
     }
 
-    public Registration addSpFileChangeListener(ComponentEventListener<SPFileSaveEvent> listener) {
+    public Registration addSpFileSavedListener(ComponentEventListener<SPFileSaveEvent> listener) {
         return addListener(SPFileSaveEvent.class, listener);
     }
 

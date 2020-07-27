@@ -141,7 +141,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         SOULFileEditor soulFileEditor =
                 new SOULFileEditor(soulPatchService, userDetailsService);
         soulFileEditor.setValue(spFile);
-        soulFileEditor.addSpFileChangeListener(this::spFileChange);
+        soulFileEditor.addSpFileSavedListener(this::spFileChange);
         soulFileEditor.addSpFileDeleteListener(event -> {
             updateView(this.soulPatch);
             closeSpFileEditor(spFile.getId());
