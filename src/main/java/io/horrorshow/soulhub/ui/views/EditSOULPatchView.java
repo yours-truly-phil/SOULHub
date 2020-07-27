@@ -3,6 +3,7 @@ package io.horrorshow.soulhub.ui.views;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
@@ -31,8 +32,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.lang.String.format;
 
@@ -65,7 +66,9 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
 
     private final SOULFileUpload soulFileUpload = new SOULFileUpload();
 
-    private final Set<Long> openSpFiles = new HashSet<>();
+    private final Map<Long, Runnable> openSpFiles = new HashMap<>();
+
+    private final Checkbox isOpenMultipleFiles = new Checkbox();
 
     private SOULPatch soulPatch;
 
@@ -99,9 +102,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
 
         files.asSingleSelect().addValueChangeListener(event ->
                 files.asSingleSelect().getOptionalValue()
-                        .ifPresent(spFile -> {
-                            if (!openSpFiles.contains(spFile.getId())) showSpFile(spFile);
-                        }));
+                        .ifPresent(this::showSpFile));
 
         save.setWidthFull();
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -114,6 +115,18 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
 
         addFile.setWidthFull();
         addFile.addClickListener(event -> addSpFile());
+
+        isOpenMultipleFiles.setLabel("open multiple files");
+        isOpenMultipleFiles.setValue(true);
+        isOpenMultipleFiles.addValueChangeListener(event -> {
+            if (!event.getValue() && openSpFiles.size() > 1) {
+                isOpenMultipleFiles.setValue(true);
+                new Notification("close open soul file editors first",
+                        5000,
+                        Notification.Position.MIDDLE)
+                        .open();
+            }
+        });
     }
 
     private void addSpFile() {
@@ -122,7 +135,6 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     }
 
     private void showSpFile(final SPFile spFile) {
-        // TODO clean up
         VerticalLayout soulFileEditorLayout = new VerticalLayout();
         soulFileEditorLayout.addClassName("soulfile-editor");
 
@@ -132,25 +144,39 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         soulFileEditor.addSpFileChangeListener(this::spFileChange);
         soulFileEditor.addSpFileDeleteListener(event -> {
             updateView(this.soulPatch);
-            soulFileEditorsLayout.remove(soulFileEditorLayout);
-            openSpFiles.remove(spFile.getId());
+            closeSpFileEditor(spFile.getId());
         });
 
         Button removeFileEditorButton = new Button("close file editor");
-        removeFileEditorButton.addClickListener(event1 -> {
-            soulFileEditorsLayout.remove(soulFileEditorLayout);
-            openSpFiles.remove(spFile.getId());
-        });
+        removeFileEditorButton.addClickListener(event1 ->
+                closeSpFileEditor(spFile.getId()));
 
         soulFileEditorLayout.add(soulFileEditor);
         soulFileEditorLayout.add(removeFileEditorButton);
         soulFileEditorsLayout.add(soulFileEditorLayout);
-        openSpFiles.add(spFile.getId());
+
+        if (!isOpenMultipleFiles.getValue() && openSpFiles.size() > 0) {
+            openSpFiles.values().forEach(Runnable::run);
+            openSpFiles.clear();
+        }
+        if (openSpFiles.containsKey(spFile.getId())) {
+            closeSpFileEditor(spFile.getId());
+        }
+        openSpFiles.put(
+                spFile.getId(),
+                () -> soulFileEditorsLayout.remove(soulFileEditorLayout));
+    }
+
+    private void closeSpFileEditor(Long spFileId) {
+        openSpFiles.get(spFileId).run();
+        openSpFiles.remove(spFileId);
     }
 
     private void spFileChange(SPFileSaveEvent event) {
+        openSpFiles.put(
+                event.getSpFile().getId(),
+                openSpFiles.remove(event.getOldSpFile().getId()));
         openSpFiles.remove(event.getOldSpFile().getId());
-        openSpFiles.add(event.getSpFile().getId());
         updateView(soulPatch);
     }
 
@@ -182,10 +208,12 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         spButtons.add(save);
         spButtons.add(delete);
 
-        FormLayout spFilesOverviewSection = new FormLayout();
         VerticalLayout createSpFileSection = new VerticalLayout();
         createSpFileSection.add(addFile, soulFileUpload);
+
+        FormLayout spFilesOverviewSection = new FormLayout();
         spFilesOverviewSection.add(createSpFileSection, files);
+        spFilesOverviewSection.add(isOpenMultipleFiles);
 
         add(toSOULPatchesViewLink);
         add(formLayout);
