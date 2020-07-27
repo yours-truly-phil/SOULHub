@@ -11,6 +11,7 @@ import io.horrorshow.soulhub.exception.ResourceNotFound;
 import io.horrorshow.soulhub.xml.SOULFileXMLType;
 import io.horrorshow.soulhub.xml.SOULPatchFileXMLType;
 import io.horrorshow.soulhub.xml.SOULPatchXMLType;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,5 +184,19 @@ public class SOULPatchService {
 
     public boolean existsById(Long id) {
         return soulPatchRepository.existsById(id);
+    }
+
+    public boolean spFileExistsById(Long id) {
+        return spFileRepository.existsById(id);
+    }
+
+    public boolean isPossibleSOULPatchId(String parameter) {
+        return NumberUtils.isCreatable(parameter)
+                && existsById(Long.valueOf(parameter));
+    }
+
+    public boolean isPossibleSPFileId(String parameter) {
+        return NumberUtils.isCreatable(parameter)
+                && spFileExistsById(Long.valueOf(parameter));
     }
 }

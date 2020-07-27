@@ -37,7 +37,7 @@ public class SPFile extends AuditModel {
     @DocumentId
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "soulpatch_id", nullable = false)
     @EqualsAndHashCode.Exclude
     private SOULPatch soulPatch;

@@ -26,7 +26,6 @@ import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.SOULFileEditor;
 import io.horrorshow.soulhub.ui.components.SOULFileUpload;
 import io.horrorshow.soulhub.ui.events.SPFileSaveEvent;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,11 +147,17 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         });
 
         Button removeFileEditorButton = new Button("close file editor");
-        removeFileEditorButton.addClickListener(event1 ->
+        removeFileEditorButton.addClickListener(event ->
                 closeSpFileEditor(spFile.getId()));
 
+        if (spFile.getId() != null) {
+            soulFileEditorLayout.add(
+                    new RouterLink("show in edit soulpatch file view",
+                            EditSPFileView.class, spFile.getId().toString()));
+        }
         soulFileEditorLayout.add(soulFileEditor);
         soulFileEditorLayout.add(removeFileEditorButton);
+
         soulFileEditorsLayout.add(soulFileEditorLayout);
 
         if (!isOpenMultipleFiles.getValue() && openSpFiles.size() > 0) {
@@ -224,7 +229,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
 
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-        if (isPossibleSOULPatchId(parameter)) {
+        if (soulPatchService.isPossibleSOULPatchId(parameter)) {
             SOULPatch soulPatch = soulPatchService.findById(Long.valueOf(parameter));
             if (!userDetailsService.isCurrentUserOwnerOf(soulPatch)) {
                 logger.debug("user not authorized to edit username={} soulpatch={} url-parameter={} event={}",
@@ -234,7 +239,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
                 updateView(soulPatch);
             }
         } else if (parameter != null && parameter.equals("new")) {
-            updateView(newSOULPatch());
+            updateView(createSOULPatchForCurrentUser());
         } else {
             logger.debug("invalid access. parameter={} user={} event={}",
                     parameter, SecurityUtils.getUsername(), event);
@@ -255,12 +260,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         name.focus();
     }
 
-    private boolean isPossibleSOULPatchId(String parameter) {
-        return NumberUtils.isCreatable(parameter)
-                && soulPatchService.existsById(Long.valueOf(parameter));
-    }
-
-    private SOULPatch newSOULPatch() {
+    private SOULPatch createSOULPatchForCurrentUser() {
         AppUser currentUser = userDetailsService.loadAppUser(SecurityUtils.getUsername());
         return soulPatchService.createSOULPatch(currentUser);
     }

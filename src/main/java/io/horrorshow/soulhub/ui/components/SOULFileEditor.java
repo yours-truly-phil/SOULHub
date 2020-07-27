@@ -34,7 +34,9 @@ import java.util.Objects;
 import static java.lang.String.format;
 
 public class SOULFileEditor extends VerticalLayout
-        implements HasValueAndElement<AbstractField.ComponentValueChangeEvent<SOULFileEditor, SPFile>, SPFile> {
+        implements
+        HasValueAndElement<AbstractField.
+                ComponentValueChangeEvent<SOULFileEditor, SPFile>, SPFile> {
 
     private static final long serialVersionUID = -6950603059471911545L;
 
@@ -259,7 +261,13 @@ public class SOULFileEditor extends VerticalLayout
     }
 
     @Override
-    public Registration addValueChangeListener(ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<SOULFileEditor, SPFile>> listener) {
+    public Registration addValueChangeListener(
+            ValueChangeListener<? super AbstractField.
+                    ComponentValueChangeEvent<SOULFileEditor, SPFile>> listener) {
         return fieldSupport.addValueChangeListener(listener);
+    }
+
+    public AceEditor getEditor() {
+        return aceEditor;
     }
 }

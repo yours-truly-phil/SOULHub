@@ -8,6 +8,7 @@ public class UIConst {
     public static final String ROUTE_ABOUT = "about";
     public static final String ROUTE_ADMIN = "admin";
     public static final String ROUTE_EDIT_SOULPATCH = "edit";
+    public static final String ROUTE_EDIT_SPFILE = "spfile";
     public static final String ROUTE_LOGIN = "login";
     public static final String ROUTE_LOGOUT = "logout";
     public static final String ROUTE_REGISTER = "register";
@@ -17,6 +18,7 @@ public class UIConst {
     public static final String TITLE_ABOUT = TITLE + " | About";
     public static final String TITLE_ADMIN = TITLE + " | Admin";
     public static final String TITLE_EDIT_SOULPATCH = TITLE + " | Edit SOULPatch";
+    public static final String TITLE_EDIT_SPFILE = TITLE +  " | Edit SOULPatch file";
     public static final String TITLE_LOGIN = TITLE + " | Login";
     public static final String TITLE_REGISTER = TITLE + " | Register";
     public static final String TITLE_SOULPATCHES = TITLE + " | SOULPatches";

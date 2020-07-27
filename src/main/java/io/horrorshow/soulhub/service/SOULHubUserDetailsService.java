@@ -3,6 +3,7 @@ package io.horrorshow.soulhub.service;
 import io.horrorshow.soulhub.data.AppRole;
 import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
+import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.data.repository.AppRoleRepository;
 import io.horrorshow.soulhub.data.repository.AppUserRepository;
 import io.horrorshow.soulhub.security.SecurityUtils;
@@ -94,6 +95,10 @@ public class SOULHubUserDetailsService implements UserDetailsService {
     public boolean isCurrentUserOwnerOf(SOULPatch soulPatch) {
         Optional<AppUser> appUser = getCurrentAppUser();
         return appUser.filter(user -> soulPatch.getAuthor().equals(user)).isPresent();
+    }
+
+    public boolean isCurrentUserOwnerOf(SPFile spFile) {
+        return isCurrentUserOwnerOf(spFile.getSoulPatch());
     }
 
     public Optional<AppUser> getCurrentAppUser() {
