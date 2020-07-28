@@ -218,7 +218,8 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         createSpFileSection.add(addFile, soulFileUpload);
 
         FormLayout spFilesOverviewSection = new FormLayout();
-        spFilesOverviewSection.add(createSpFileSection, files);
+        spFilesOverviewSection.add(createSpFileSection);
+        spFilesOverviewSection.addFormItem(files, "click on file to open");
         spFilesOverviewSection.add(isOpenMultipleFiles);
 
         add(toSOULPatchesViewLink);
