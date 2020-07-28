@@ -5,6 +5,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -24,8 +25,8 @@ import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
-import io.horrorshow.soulhub.ui.components.SOULPatchForm;
 import io.horrorshow.soulhub.ui.components.SOULFilePreview;
+import io.horrorshow.soulhub.ui.components.SOULPatchForm;
 import io.horrorshow.soulhub.ui.components.StarsRating;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -62,6 +63,7 @@ public class SOULPatchesView extends VerticalLayout {
     private final TextField filterText = new TextField("filter by (regex)");
     private final Checkbox filterOwnedSoulpatches = new Checkbox("show only my soulpatches");
     private final Button addSOULPatch = new Button("add SOULPatch", VaadinIcon.FILE_ADD.create());
+    private final Dialog soulPatchFormDialog = new Dialog();
     private final SOULPatchForm form;
     private final SOULFilePreview SOULFilePreview = new SOULFilePreview();
     private final Span userGreeting = new Span("Hello!");
@@ -70,7 +72,6 @@ public class SOULPatchesView extends VerticalLayout {
 
         this.service = service;
         this.userService = userService;
-
         form = new SOULPatchForm(this, service, userService);
 
         addClassName("soulpatches-view");
@@ -80,8 +81,6 @@ public class SOULPatchesView extends VerticalLayout {
         initFields();
 
         arrangeComponents();
-
-        form.setVisible(false);
 
         updateList();
     }
@@ -99,7 +98,7 @@ public class SOULPatchesView extends VerticalLayout {
 
         initAddSOULPatchLink();
 
-        initSOULPatchForm();
+        initSOULPatchFormDialog();
 
         initGreeting();
     }
@@ -112,8 +111,9 @@ public class SOULPatchesView extends VerticalLayout {
         }
     }
 
-    private void initSOULPatchForm() {
+    private void initSOULPatchFormDialog() {
         form.setMinWidth("30em");
+        soulPatchFormDialog.add(form);
     }
 
     private void initAddSOULPatchLink() {
@@ -135,7 +135,18 @@ public class SOULPatchesView extends VerticalLayout {
 
         grid.asSingleSelect().addValueChangeListener(event ->
                 grid.asSingleSelect().getOptionalValue()
-                        .ifPresentOrElse(form::showSOULPatch, form::hideSOULPatchForm));
+                        .ifPresentOrElse(
+                                this::showSOULPatchDialog,
+                                this::hideSOULPatchDialog));
+    }
+
+    private void hideSOULPatchDialog() {
+        soulPatchFormDialog.close();
+    }
+
+    private void showSOULPatchDialog(SOULPatch soulPatch) {
+        form.showSOULPatch(soulPatch);
+        soulPatchFormDialog.open();
     }
 
     private void addSOULPatchesGridColumns() {
@@ -237,7 +248,7 @@ public class SOULPatchesView extends VerticalLayout {
 
         VerticalLayout gridLayout = new VerticalLayout(grid);
 
-        HorizontalLayout mainContent = new HorizontalLayout(gridLayout, form);
+        HorizontalLayout mainContent = new HorizontalLayout(gridLayout);//, form);
         mainContent.setSizeFull();
 
         add(userGreeting, toolbar, mainContent);

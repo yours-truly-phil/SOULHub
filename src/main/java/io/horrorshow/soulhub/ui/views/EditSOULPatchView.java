@@ -151,9 +151,10 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
                 closeSpFileEditor(spFile.getId()));
 
         if (spFile.getId() != null) {
-            soulFileEditorLayout.add(
+            RouterLink showFileInSPFileView =
                     new RouterLink("show in edit soulpatch file view",
-                            EditSPFileView.class, spFile.getId().toString()));
+                            EditSPFileView.class, spFile.getId().toString());
+            soulFileEditorLayout.add(showFileInSPFileView);
         }
         soulFileEditorLayout.add(soulFileEditor);
         soulFileEditorLayout.add(removeFileEditorButton);
