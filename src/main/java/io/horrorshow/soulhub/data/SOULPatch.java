@@ -15,9 +15,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static io.horrorshow.soulhub.data.SPFile.FileType.SOUL;
-import static io.horrorshow.soulhub.data.SPFile.FileType.SOULPATCH;
-
 @Entity
 @Indexed
 @Table(name = "soulpatches")
@@ -52,7 +49,7 @@ public class SOULPatch extends AuditModel {
     @Analyzer(definition = "soulpatch_analyzer")
     private String description;
 
-    @OneToMany(mappedBy = "soulPatch", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "soulPatch", fetch = FetchType.EAGER)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<SPFile> spFiles = new HashSet<>();

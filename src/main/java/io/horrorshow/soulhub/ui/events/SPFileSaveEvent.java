@@ -10,11 +10,13 @@ public class SPFileSaveEvent extends ComponentEvent<SOULFileEditor> {
 
     private final SPFile spFile;
     private final SPFile oldSpFile;
+    private final boolean isNew;
 
-    public SPFileSaveEvent(SOULFileEditor component, SPFile spFile, SPFile oldSpFile) {
+    public SPFileSaveEvent(SOULFileEditor component, SPFile spFile, SPFile oldSpFile, boolean isNew) {
         super(component, false);
         this.spFile = spFile;
         this.oldSpFile = oldSpFile;
+        this.isNew = isNew;
     }
 
     public SPFile getSpFile() {
@@ -23,5 +25,9 @@ public class SPFileSaveEvent extends ComponentEvent<SOULFileEditor> {
 
     public SPFile getOldSpFile() {
         return oldSpFile;
+    }
+
+    public boolean isNew() {
+        return isNew;
     }
 }

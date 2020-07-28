@@ -33,6 +33,7 @@ import org.springframework.security.access.annotation.Secured;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static java.lang.String.format;
 
@@ -142,7 +143,8 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         soulFileEditor.setValue(spFile);
         soulFileEditor.addSpFileSavedListener(this::spFileChange);
         soulFileEditor.addSpFileDeleteListener(event -> {
-            updateView(this.soulPatch);
+            logger.debug("spFile removed: {}", event.getSpFile());
+            updateView(event.getSpFile().getSoulPatch());
             closeSpFileEditor(spFile.getId());
         });
 
@@ -182,11 +184,17 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     }
 
     private void spFileChange(SPFileSaveEvent event) {
-        logger.debug("spFileChange:\nNew: {}\nOld: {}", event.getSpFile(), event.getOldSpFile());
+        logger.debug("spFileChange:IsNew: {}\nNew: {}\nOld: {}", event.isNew(), event.getSpFile(), event.getOldSpFile());
         logger.debug("spFileChange Before: {}", openSpFiles.toString());
-        openSpFiles.put(
-                event.getSpFile().getId(),
-                openSpFiles.remove(event.getOldSpFile().getId()));
+        if (event.isNew()) {
+            openSpFiles.put(event.getSpFile().getId(),
+                    openSpFiles.remove(null));
+        }
+        if (!Objects.equals(event.getOldSpFile().getId(), event.getSpFile().getId())) {
+            openSpFiles.put(
+                    event.getSpFile().getId(),
+                    openSpFiles.remove(event.getOldSpFile().getId()));
+        }
         logger.debug("spFileChange After: {}", openSpFiles.toString());
         updateView(event.getSpFile().getSoulPatch());
     }
@@ -262,8 +270,8 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
 
     private void updateView(SOULPatch soulPatch) {
         this.soulPatch = soulPatchService.findById(soulPatch.getId());
-        binder.readBean(soulPatch);
-        files.setItems(soulPatch.getSpFiles());
+        binder.readBean(this.soulPatch);
+        files.setItems(this.soulPatch.getSpFiles());
         name.focus();
     }
 

@@ -197,11 +197,11 @@ public class SOULFileEditor extends VerticalLayout
             if (savedSpFile != null) {
                 fieldSupport.setValue(savedSpFile);
                 binder.readBean(savedSpFile);
+                fireEvent(new SPFileSaveEvent(this, savedSpFile, spFile, !isPersisted.getValue()));
                 isPersisted.setValue(true);
                 isDirty.setValue(false);
                 new Notification(format("file %s saved", savedSpFile.getName()),
                         3000).open();
-                fireEvent(new SPFileSaveEvent(this, savedSpFile, spFile));
             } else {
                 new Notification(format("Problem saving file %s", spFile.toString()));
             }
@@ -220,7 +220,7 @@ public class SOULFileEditor extends VerticalLayout
     }
 
     private void deleteSpFile(SPFile spFile) {
-        soulPatchService.deleteSpFile(spFile);
+        soulPatchService.deleteSpFileById(spFile.getId());
 
         new Notification(format("file %s removed", spFile.getName()),
                 3000).open();

@@ -158,6 +158,10 @@ public class SOULPatchService {
         spFileRepository.delete(spFile);
     }
 
+    public void deleteSpFileById(Long id) {
+        spFileRepository.deleteById(id);
+    }
+
     public boolean isSPXmlMatchSPData(SOULPatch patch, SOULPatchXMLType xmlType) {
         try {
             return xmlType.getId().equals(String.valueOf(patch.getId()));
