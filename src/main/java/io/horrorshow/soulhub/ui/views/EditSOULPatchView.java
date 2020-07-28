@@ -162,8 +162,10 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         soulFileEditorsLayout.add(soulFileEditorLayout);
 
         if (!isOpenMultipleFiles.getValue() && openSpFiles.size() > 0) {
+            logger.debug("openSpFiles clearing before: {}", openSpFiles.toString());
             openSpFiles.values().forEach(Runnable::run);
             openSpFiles.clear();
+            logger.debug("openSpFiles clearing after: {}", openSpFiles.toString());
         }
         if (openSpFiles.containsKey(spFile.getId())) {
             closeSpFileEditor(spFile.getId());
@@ -171,19 +173,22 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         openSpFiles.put(
                 spFile.getId(),
                 () -> soulFileEditorsLayout.remove(soulFileEditorLayout));
+        logger.debug("openSpFiles: {}", openSpFiles.toString());
     }
 
     private void closeSpFileEditor(Long spFileId) {
-        openSpFiles.get(spFileId).run();
-        openSpFiles.remove(spFileId);
+        openSpFiles.remove(spFileId).run();
+        logger.debug("closeSpFileEditor: {}", openSpFiles);
     }
 
     private void spFileChange(SPFileSaveEvent event) {
+        logger.debug("spFileChange:\nNew: {}\nOld: {}", event.getSpFile(), event.getOldSpFile());
+        logger.debug("spFileChange Before: {}", openSpFiles.toString());
         openSpFiles.put(
                 event.getSpFile().getId(),
                 openSpFiles.remove(event.getOldSpFile().getId()));
-        openSpFiles.remove(event.getOldSpFile().getId());
-        updateView(soulPatch);
+        logger.debug("spFileChange After: {}", openSpFiles.toString());
+        updateView(event.getSpFile().getSoulPatch());
     }
 
     private void initBinder() {

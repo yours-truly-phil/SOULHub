@@ -76,7 +76,7 @@ public class SOULPatchesView
 
         this.service = service;
         this.userService = userService;
-        form = new SOULPatchForm(this, service, userService);
+        form = new SOULPatchForm(service, userService);
 
         addClassName("soulpatches-view");
 
@@ -117,6 +117,7 @@ public class SOULPatchesView
 
     private void initSOULPatchFormDialog() {
         form.setMinWidth("30em");
+        form.addSpFileSelectListener(event -> previewSpFile(event.getSpFile()));
         soulPatchFormDialog.add(form);
     }
 
@@ -149,7 +150,7 @@ public class SOULPatchesView
     }
 
     private void showSOULPatchDialog(SOULPatch soulPatch) {
-        form.showSOULPatch(soulPatch);
+        form.setValue(soulPatch);
         soulPatchFormDialog.open();
     }
 
