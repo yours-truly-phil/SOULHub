@@ -14,8 +14,7 @@ import com.vaadin.flow.component.page.BrowserWindowResizeEvent;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.*;
 import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SOULPatchRating;
@@ -34,14 +33,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.klaudeta.PaginatedGrid;
 
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
 @Route(value = UIConst.ROUTE_SOULPATCHES, layout = MainLayout.class)
+@RouteAlias(value = UIConst.ROUTE_EMPTY, layout = MainLayout.class)
 @Getter
 @PageTitle(UIConst.TITLE_SOULPATCHES)
-public class SOULPatchesView extends VerticalLayout {
+public class SOULPatchesView
+        extends VerticalLayout
+        implements HasUrlParameter<String> {
 
     private static final long serialVersionUID = 3981631233877217865L;
 
@@ -269,5 +273,22 @@ public class SOULPatchesView extends VerticalLayout {
 
     public void previewSpFile(SPFile spFile) {
         SOULFilePreview.showSpFile(spFile);
+    }
+
+    @Override
+    public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
+        Location location = event.getLocation();
+        QueryParameters locationQueryParameters
+                = location.getQueryParameters();
+        logger.debug("parameter: {}", parameter);
+        Map<String, List<String>> parametersMap
+                = locationQueryParameters.getParameters();
+        logger.debug("parametersMap: {}", parametersMap.toString());
+
+        if (parametersMap.containsKey(UIConst.PARAM_SHOW_BY_CURRENT_USER)
+                && parametersMap.get(UIConst.PARAM_SHOW_BY_CURRENT_USER)
+                .stream().anyMatch(Boolean.TRUE.toString()::equalsIgnoreCase)) {
+            filterOwnedSoulpatches.setValue(Boolean.TRUE);
+        }
     }
 }

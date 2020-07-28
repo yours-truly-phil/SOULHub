@@ -152,7 +152,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
 
         if (spFile.getId() != null) {
             RouterLink showFileInSPFileView =
-                    new RouterLink("show in edit soulpatch file view",
+                    new RouterLink("maximize editor",
                             EditSPFileView.class, spFile.getId().toString());
             soulFileEditorLayout.add(showFileInSPFileView);
         }

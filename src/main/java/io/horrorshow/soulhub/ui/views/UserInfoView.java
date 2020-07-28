@@ -11,10 +11,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.data.validator.StringLengthValidator;
-import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.HasUrlParameter;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.*;
 import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.security.SecurityUtils;
@@ -24,6 +21,7 @@ import io.horrorshow.soulhub.ui.UIConst;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -87,9 +85,22 @@ public class UserInfoView extends VerticalLayout
 
         formLayout.addFormItem(username, "Username");
         formLayout.addFormItem(email, "Email");
+        formLayout.add(createShowSoulPatchesByUserLink());
 
         add(title, helloUser, isLoggedIn);
         add(formLayout);
+    }
+
+    private RouterLink createShowSoulPatchesByUserLink() {
+        QueryParameters queryParameters =
+                QueryParameters.simple(
+                        Map.of(UIConst.PARAM_SHOW_BY_CURRENT_USER, Boolean.TRUE.toString()));
+
+        RouterLink link = new RouterLink(
+                "show my soulpatches",
+                SOULPatchesView.class);
+        link.setQueryParameters(queryParameters);
+        return link;
     }
 
     @Override

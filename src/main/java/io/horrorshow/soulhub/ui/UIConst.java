@@ -5,6 +5,7 @@ public class UIConst {
     public static final String TITLE = "SOULHub";
     public static final String DESCRIPTION = "SOULPatches Exchange";
 
+    public static final String ROUTE_EMPTY = "";
     public static final String ROUTE_ABOUT = "about";
     public static final String ROUTE_ADMIN = "admin";
     public static final String ROUTE_EDIT_SOULPATCH = "edit";
@@ -12,13 +13,13 @@ public class UIConst {
     public static final String ROUTE_LOGIN = "login";
     public static final String ROUTE_LOGOUT = "logout";
     public static final String ROUTE_REGISTER = "register";
-    public static final String ROUTE_SOULPATCHES = "";
+    public static final String ROUTE_SOULPATCHES = "soulpatches";
     public static final String ROUTE_USERINFO = "user";
 
     public static final String TITLE_ABOUT = TITLE + " | About";
     public static final String TITLE_ADMIN = TITLE + " | Admin";
     public static final String TITLE_EDIT_SOULPATCH = TITLE + " | Edit SOULPatch";
-    public static final String TITLE_EDIT_SPFILE = TITLE +  " | Edit SOULPatch file";
+    public static final String TITLE_EDIT_SPFILE = TITLE + " | Edit SOULPatch file";
     public static final String TITLE_LOGIN = TITLE + " | Login";
     public static final String TITLE_REGISTER = TITLE + " | Register";
     public static final String TITLE_SOULPATCHES = TITLE + " | SOULPatches";
@@ -33,5 +34,7 @@ public class UIConst {
 
     public static final String ROLE_USER = "ROLE_USER";
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
+
+    public static final String PARAM_SHOW_BY_CURRENT_USER = "curuser";
 
 }
