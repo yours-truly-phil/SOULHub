@@ -35,7 +35,7 @@ public class SPFile extends AuditModel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false, nullable = false)
     @DocumentId
-    private Long id;
+    private Long id = -1L;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "soulpatch_id", nullable = false)

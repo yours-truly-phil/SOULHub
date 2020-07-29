@@ -25,6 +25,7 @@ import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.SOULFileEditor;
 import io.horrorshow.soulhub.ui.components.SOULFileUpload;
+import io.horrorshow.soulhub.ui.events.SPFileDeleteEvent;
 import io.horrorshow.soulhub.ui.events.SPFileSaveEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,7 @@ import org.springframework.security.access.annotation.Secured;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import static java.lang.String.format;
 
@@ -142,11 +144,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
                 new SOULFileEditor(soulPatchService, userDetailsService);
         soulFileEditor.setValue(spFile);
         soulFileEditor.addSpFileSavedListener(this::spFileChange);
-        soulFileEditor.addSpFileDeleteListener(event -> {
-            logger.debug("spFile removed: {}", event.getSpFile());
-            updateView(event.getSpFile().getSoulPatch());
-            closeSpFileEditor(spFile.getId());
-        });
+        soulFileEditor.addSpFileDeleteListener(this::spFileDeleted);
 
         Button removeFileEditorButton = new Button("close file editor");
         removeFileEditorButton.addClickListener(event ->
@@ -178,6 +176,12 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         logger.debug("openSpFiles: {}", openSpFiles.toString());
     }
 
+    private void spFileDeleted(SPFileDeleteEvent event) {
+        logger.debug("spFile removed:; {}", event.getSpFile());
+        updateSpFiles(event.getSpFile().getSoulPatch().getSpFiles());
+        closeSpFileEditor(event.getSpFile().getId());
+    }
+
     private void closeSpFileEditor(Long spFileId) {
         openSpFiles.remove(spFileId).run();
         logger.debug("closeSpFileEditor: {}", openSpFiles);
@@ -196,7 +200,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
                     openSpFiles.remove(event.getOldSpFile().getId()));
         }
         logger.debug("spFileChange After: {}", openSpFiles.toString());
-        updateView(event.getSpFile().getSoulPatch());
+        updateSpFiles(event.getSpFile().getSoulPatch().getSpFiles());
     }
 
     private void initBinder() {
@@ -268,10 +272,18 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         add(new RouterLink("to SOULPatches view", SOULPatchesView.class));
     }
 
+    private void updateSpFiles(Set<SPFile> fileSet) {
+        files.setItems(fileSet);
+    }
+
+    private void updateSOULPatch(SOULPatch soulPatch) {
+        binder.readBean(soulPatch);
+    }
+
     private void updateView(SOULPatch soulPatch) {
-        this.soulPatch = soulPatchService.findById(soulPatch.getId());
-        binder.readBean(this.soulPatch);
-        files.setItems(this.soulPatch.getSpFiles());
+        this.soulPatch = soulPatch;
+        updateSOULPatch(soulPatch);
+        updateSpFiles(soulPatch.getSpFiles());
         name.focus();
     }
 
