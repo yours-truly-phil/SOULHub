@@ -136,7 +136,7 @@ public class SOULPatchService {
         SPFile spFile = new SPFile();
         spFile.setSoulPatch(soulPatch);
         soulPatch.getSpFiles().add(spFile);
-        return spFile;
+        return saveSpFile(spFile);
     }
 
     public Optional<SPFile> findSpFile(Long id) {

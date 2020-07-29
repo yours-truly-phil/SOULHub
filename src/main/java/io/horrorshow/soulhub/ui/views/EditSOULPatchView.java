@@ -110,10 +110,8 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         addFile.setWidthFull();
         addFile.addClickListener(event -> addSpFile());
 
-        spFilesLayout.addSpFileDeleteListener(event -> {
-            soulPatch.getSpFiles().remove(event.getSpFile());
-            updateSpFiles(soulPatch.getSpFiles());
-        });
+        spFilesLayout.addSpFileDeleteListener(event ->
+                updateView(event.getSpFile().getSoulPatch()));
         spFilesLayout.addSpFileSavedListener(event ->
                 updateSpFiles(event.getSpFile().getSoulPatch().getSpFiles()));
     }

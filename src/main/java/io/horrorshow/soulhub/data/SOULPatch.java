@@ -49,7 +49,7 @@ public class SOULPatch extends AuditModel {
     @Analyzer(definition = "soulpatch_analyzer")
     private String description;
 
-    @OneToMany(mappedBy = "soulPatch", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "soulPatch", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<SPFile> spFiles = new HashSet<>();
