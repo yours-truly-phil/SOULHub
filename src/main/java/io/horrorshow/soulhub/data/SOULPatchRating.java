@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "soulpatch_ratings",
@@ -24,6 +24,7 @@ public class SOULPatchRating extends AuditModel {
     @SequenceGenerator(name = "seq_gen", sequenceName = "hibernate_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_gen")
     @Column(name = "id", nullable = false, updatable = false)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @ManyToOne

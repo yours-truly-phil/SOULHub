@@ -2,6 +2,7 @@ package io.horrorshow.soulhub.data;
 
 import lombok.*;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -12,7 +13,7 @@ import java.util.Set;
 
 @Entity
 @Data
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "app_user",
@@ -32,11 +33,15 @@ public class AppUser implements Serializable {
 
     @Column(name = "user_name", nullable = false, unique = true)
     @Size(min = 3, max = 255, message = "Username must be between 3 and 255 chars")
+    @NaturalId
+    @EqualsAndHashCode.Include
     private String userName;
 
     @Column(name = "email", nullable = false, unique = true)
     @Email(message = "Invalid Email address")
     @Size(min = 5, max = 255, message = "Email address must be between 3 and 255 characters")
+    @NaturalId
+    @EqualsAndHashCode.Include
     private String email;
 
     @Column(name = "encrypted_password", nullable = false)

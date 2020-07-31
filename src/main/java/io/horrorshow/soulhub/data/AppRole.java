@@ -18,6 +18,7 @@ import java.util.Set;
 public class AppRole implements Serializable {
 
     private static final long serialVersionUID = 4509957085203232948L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)

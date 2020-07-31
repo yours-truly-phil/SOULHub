@@ -12,5 +12,6 @@ import lombok.ToString;
 public class UserRecord {
 
     private final String username;
+    private final String email;
 
 }

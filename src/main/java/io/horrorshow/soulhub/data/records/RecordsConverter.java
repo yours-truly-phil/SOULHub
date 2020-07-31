@@ -4,10 +4,11 @@ import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
 
+import java.io.Serializable;
 import java.util.Base64;
 import java.util.stream.Collectors;
 
-public class RecordsConverter {
+public class RecordsConverter implements Serializable {
 
     public static SOULPatchRecord newSoulPatchRecord(SOULPatch soulPatch) {
         return new SOULPatchRecord(
@@ -15,7 +16,9 @@ public class RecordsConverter {
                 soulPatch.getName(),
                 soulPatch.getDescription(),
                 soulPatch.getSpFiles().stream().map(RecordsConverter::newSPFileRecord).collect(Collectors.toSet()),
-                new UserRecord(soulPatch.getAuthor().getUserName()),
+                new UserRecord(
+                        soulPatch.getAuthor().getUserName(),
+                        soulPatch.getAuthor().getEmail()),
                 soulPatch.getCreatedAt(),
                 soulPatch.getUpdatedAt()
         );
@@ -33,7 +36,9 @@ public class RecordsConverter {
     }
 
     public static UserRecord newUserRecord(AppUser user) {
-        return new UserRecord(user.getUserName());
+        return new UserRecord(
+                user.getUserName(),
+                user.getEmail());
     }
 
 }

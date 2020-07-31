@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Indexed
 @Table(name = "soulpatches")
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @AnalyzerDef(name = "soulpatch_analyzer",
@@ -33,10 +33,12 @@ import java.util.stream.Collectors;
 public class SOULPatch extends AuditModel {
 
     private static final long serialVersionUID = -6746949290547828924L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false, nullable = false)
     @DocumentId
+    @EqualsAndHashCode.Include
     private Long id;
 
     @NotBlank
@@ -51,11 +53,9 @@ public class SOULPatch extends AuditModel {
 
     @OneToMany(mappedBy = "soulPatch", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private Set<SPFile> spFiles = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JoinColumn(name = "author", nullable = false)
     private AppUser author;

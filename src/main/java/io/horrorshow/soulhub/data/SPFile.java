@@ -17,7 +17,7 @@ import javax.persistence.*;
 @Indexed
 @Table(name = "spfiles")
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
 @AnalyzerDef(name = "soulfile_analyzer",
@@ -31,15 +31,16 @@ import javax.persistence.*;
 public class SPFile extends AuditModel {
 
     private static final long serialVersionUID = -4509227070431094816L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false, nullable = false)
     @DocumentId
+    @EqualsAndHashCode.Include
     private Long id = -1L;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "soulpatch_id", nullable = false)
-    @EqualsAndHashCode.Exclude
     private SOULPatch soulPatch;
 
     @Enumerated(EnumType.STRING)
