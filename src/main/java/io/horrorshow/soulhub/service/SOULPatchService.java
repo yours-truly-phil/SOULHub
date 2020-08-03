@@ -3,6 +3,7 @@ package io.horrorshow.soulhub.service;
 import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
+import io.horrorshow.soulhub.data.api.SOULPatchParser;
 import io.horrorshow.soulhub.data.records.RecordsConverter;
 import io.horrorshow.soulhub.data.records.SOULPatchRecord;
 import io.horrorshow.soulhub.data.repository.SOULPatchRepository;
@@ -84,7 +85,7 @@ public class SOULPatchService {
                         soulPatchXML.getSoulfile().add(xml);
                     });
 
-                    patch.getSpFiles(SPFile.FileType.SOULPATCH).forEach(e -> {
+                    patch.getSpFiles(SPFile.FileType.MANIFEST).forEach(e -> {
                         SOULPatchFileXMLType xml = new SOULPatchFileXMLType();
                         xml.setId(String.valueOf(e.getId()));
                         xml.setFilename(e.getName());
@@ -137,6 +138,7 @@ public class SOULPatchService {
         SPFile spFile = new SPFile();
         spFile.setSoulPatch(soulPatch);
         soulPatch.getSpFiles().add(spFile);
+        spFile.setFileType(SOULPatchParser.guessFileType(spFile));
         return saveSpFile(spFile);
     }
 

@@ -1,4 +1,6 @@
 delete
+from soulpatch_ratings;
+delete
 from spfiles;
 delete
 from soulpatches;
@@ -619,7 +621,7 @@ graph clarinetMIDI_poly [[ main ]]
 ', 'clarinetMIDI.soul',
         (select id from soulpatches where name = 'clarinetMIDI'));
 insert into spfiles (id, created_at, updated_at, filetype, content, name, soulpatch_id)
-VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'SOULPATCH', '{
+VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'MANIFEST', '{
 	"soulPatchV1":
 	{
 		"ID": "grame.soul.clarinetMIDI",
@@ -677,7 +679,7 @@ processor ClassicRingtone
 ', 'ClassicRingtone.soul',
         (select id from soulpatches where name = 'ClassicRingtone'));
 insert into spfiles (id, created_at, updated_at, filetype, content, name, soulpatch_id)
-VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'SOULPATCH', '{
+VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'MANIFEST', '{
     "soulPatchV1":
     {
         "ID":               "dev.soul.examples.classicringtone",
@@ -747,7 +749,7 @@ processor Delay  [[ main ]]
 ', 'Delay.soul',
         (select id from soulpatches where name = 'Delay'));
 insert into spfiles (id, created_at, updated_at, filetype, content, name, soulpatch_id)
-VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'SOULPATCH', '{
+VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'MANIFEST', '{
   "soulPatchV1": {
     "ID": "dev.soul.examples.delay",
     "version": "1.0",
@@ -881,7 +883,7 @@ processor DiodeClipper
 ', 'DiodeClipper.soul',
         (select id from soulpatches where name = 'DiodeClipper'));
 insert into spfiles (id, created_at, updated_at, filetype, content, name, soulpatch_id)
-VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'SOULPATCH', '{
+VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'MANIFEST', '{
     "soulPatchV1":
     {
         "ID":               "dev.soul.examples.diodeclipper",
@@ -1095,7 +1097,7 @@ processor GainParameterRamp (float slewRate)
 ', 'MinimumViablePiano.soul',
         (select id from soulpatches where name = 'MinimumViablePiano'));
 insert into spfiles (id, created_at, updated_at, filetype, content, name, soulpatch_id)
-VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'SOULPATCH', '{
+VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'MANIFEST', '{
     "soulPatchV1":
     {
         "ID":               "dev.soul.examples.MinimumViablePiano",
@@ -1981,7 +1983,7 @@ graph Oscillators
 ', 'PadSynth.soul',
         (select id from soulpatches where name = 'PadSynth'));
 insert into spfiles (id, created_at, updated_at, filetype, content, name, soulpatch_id)
-VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'SOULPATCH', '{
+VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'MANIFEST', '{
     "soulPatchV1":
     {
         "ID":               "dev.soul.examples.padsynth",
@@ -2315,7 +2317,7 @@ graph ReverbChannel (int offset)
 ', 'Reverb.soul',
         (select id from soulpatches where name = 'Reverb'));
 insert into spfiles (id, created_at, updated_at, filetype, content, name, soulpatch_id)
-VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'SOULPATCH', '{
+VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'MANIFEST', '{
     "soulPatchV1":
     {
         "ID":               "dev.soul.examples.reverb",
@@ -2454,7 +2456,7 @@ graph Voice
 ', 'SineSynth.soul',
         (select id from soulpatches where name = 'SineSynth'));
 insert into spfiles (id, created_at, updated_at, filetype, content, name, soulpatch_id)
-VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'SOULPATCH', '{
+VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'MANIFEST', '{
     "soulPatchV1":
     {
         "ID":               "dev.soul.examples.sinesynth",
@@ -2576,7 +2578,7 @@ processor DrumHitPlayer
 ', 'SOUL909.soul',
         (select id from soulpatches where name = 'SOUL909'));
 insert into spfiles (id, created_at, updated_at, filetype, content, name, soulpatch_id)
-VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'SOULPATCH', '{
+VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'MANIFEST', '{
     "soulPatchV1":
     {
         "ID":               "dev.soul.examples.SOUL909",
@@ -2703,7 +2705,7 @@ graph ElecBass1Voice
 }', 'ElecBass1.soul',
         (select id from soulpatches where name = 'ElecBass1'));
 insert into spfiles (id, created_at, updated_at, filetype, content, name, soulpatch_id)
-VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'SOULPATCH', '{
+VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'MANIFEST', '{
     "soulPatchV1":
     {
         "ID":               "dev.soul.examples.tx.elecbass1",
@@ -3237,7 +3239,7 @@ graph ElectroPiano
 ', 'ElectroPiano.soul',
         (select id from soulpatches where name = 'ElectroPiano'));
 insert into spfiles (id, created_at, updated_at, filetype, content, name, soulpatch_id)
-VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'SOULPATCH', '{
+VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'MANIFEST', '{
     "soulPatchV1":
     {
         "ID":               "dev.soul.examples.tx.electropiano",
@@ -3774,7 +3776,7 @@ graph LatelyBassVoice
 ', 'LatelyBass.soul',
         (select id from soulpatches where name = 'LatelyBass'));
 insert into spfiles (id, created_at, updated_at, filetype, content, name, soulpatch_id)
-VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'SOULPATCH', '{
+VALUES (nextval('hibernate_sequence'), current_timestamp, current_timestamp, 'MANIFEST', '{
     "soulPatchV1":
     {
         "ID":               "dev.soul.examples.tx.latelybass",

@@ -35,11 +35,11 @@ public class SOULFileUpload extends VerticalLayout {
         upload.setDropLabelIcon(new Span("¸¸.•*♫♪*\uD83C\uDFB6¨*•♫♪"));
 
         upload.addSucceededListener(event -> {
-            LOGGER.debug("fileuploadsucceeded - MimeType: {} FileName: {}",
+            LOGGER.debug("file upload succeeded - MimeType: {} FileName: {}",
                     event.getMIMEType(), event.getFileName());
         });
         upload.addFileRejectedListener(event -> {
-            LOGGER.debug("filerejected - {}", event.getErrorMessage());
+            LOGGER.debug("file rejected - {}", event.getErrorMessage());
         });
 
         return upload;

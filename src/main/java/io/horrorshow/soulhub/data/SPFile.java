@@ -57,6 +57,6 @@ public class SPFile extends AuditModel {
     private String fileContent;
 
     public enum FileType {
-        SOUL, SOULPATCH, OTHER
+        SOUL, MANIFEST, OTHER, UNKNOWN
     }
 }

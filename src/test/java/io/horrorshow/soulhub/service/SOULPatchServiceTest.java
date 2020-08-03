@@ -14,11 +14,14 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import static io.horrorshow.soulhub.data.SPFile.FileType.MANIFEST;
 import static io.horrorshow.soulhub.data.SPFile.FileType.SOUL;
-import static io.horrorshow.soulhub.data.SPFile.FileType.SOULPATCH;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -45,7 +48,7 @@ public class SOULPatchServiceTest {
         p.setNoViews(no);
 
         p.getSpFiles().add(createTestSPFile(2 * no, SOUL, p));
-        p.getSpFiles().add(createTestSPFile(2 * no + 1, SOULPATCH, p));
+        p.getSpFiles().add(createTestSPFile(2 * no + 1, MANIFEST, p));
         return p;
     }
 

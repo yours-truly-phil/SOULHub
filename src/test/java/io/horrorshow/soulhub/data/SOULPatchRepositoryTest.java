@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import static io.horrorshow.soulhub.data.SPFile.FileType.MANIFEST;
 import static io.horrorshow.soulhub.data.SPFile.FileType.SOUL;
-import static io.horrorshow.soulhub.data.SPFile.FileType.SOULPATCH;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -51,7 +51,7 @@ class SOULPatchRepositoryTest {
         SPFile file2 = new SPFile();
         file2.setName("soulpatch manifest 1");
         file2.setFileContent("soulpatch manifest content");
-        file2.setFileType(SOULPATCH);
+        file2.setFileType(MANIFEST);
         file2.setSoulPatch(soulPatch1);
 
         soulPatch1.getSpFiles().add(file1);
@@ -88,7 +88,7 @@ class SOULPatchRepositoryTest {
         soulPatches.forEach(soulPatch -> {
             assertNotNull(soulPatch.getCreatedAt(), "created at is set");
             assertNotNull(soulPatch.getUpdatedAt(), "updated at is set");
-            soulPatch.setName("newname");
+            soulPatch.setName("new name");
         });
 
         soulPatchRepository.saveAll(soulPatches);
