@@ -130,7 +130,8 @@ public class SOULPatchService {
         return soulPatchRepository.saveAndFlush(soulPatch);
     }
 
-    public SPFile saveSpFile(SPFile spFile) {
+    public SPFile saveSPFile(SPFile spFile) {
+        spFile.setFileType(SOULPatchParser.guessFileType(spFile));
         return spFileRepository.saveAndFlush(spFile);
     }
 
@@ -138,8 +139,7 @@ public class SOULPatchService {
         SPFile spFile = new SPFile();
         spFile.setSoulPatch(soulPatch);
         soulPatch.getSpFiles().add(spFile);
-        spFile.setFileType(SOULPatchParser.guessFileType(spFile));
-        return saveSpFile(spFile);
+        return saveSPFile(spFile);
     }
 
     public Optional<SPFile> findSpFile(Long id) {

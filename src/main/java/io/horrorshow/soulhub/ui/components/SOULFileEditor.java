@@ -193,7 +193,7 @@ public class SOULFileEditor extends VerticalLayout
         try {
             SPFile spFile = fieldSupport.getValue();
             binder.writeBean(spFile);
-            SPFile savedSpFile = soulPatchService.saveSpFile(spFile);
+            SPFile savedSpFile = soulPatchService.saveSPFile(spFile);
             if (savedSpFile != null) {
                 fieldSupport.setValue(savedSpFile);
                 binder.readBean(savedSpFile);
