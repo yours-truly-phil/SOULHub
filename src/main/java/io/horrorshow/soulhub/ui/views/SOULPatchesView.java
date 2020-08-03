@@ -49,17 +49,17 @@ public class SOULPatchesView
 
     private static final long serialVersionUID = 3981631233877217865L;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SOULPatchesView.class);
+
     private static final String COL_NAME = "name";
     private static final String COL_DESCRIPTION = "description";
     private static final String COL_FILES = "files";
     private static final String COL_VIEWS = "views";
     private static final String COL_AUTHOR = "author";
     private static final String COL_RATINGS = "rating";
-    private static final Logger LOGGER = LoggerFactory.getLogger(SOULPatchesView.class);
+
     private static final int PAGE_SIZE = 10;
     private static final int PAGINATOR_SIZE = 5;
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final SOULPatchService service;
     private final SOULHubUserDetailsService userService;
@@ -219,7 +219,7 @@ public class SOULPatchesView
 
     private void currentUserSOULPatchRating(SOULPatch soulPatch,
                                             AbstractField.ComponentValueChangeEvent<StarsRating, Integer> event) {
-        logger.debug("soulpatch rating event {} for soulpatch {}", event, soulPatch);
+        LOGGER.debug("soulpatch rating event {} for soulpatch {}", event, soulPatch);
 
         if (SecurityUtils.isUserLoggedIn() && userService.getCurrentAppUser().isPresent()) {
             AppUser currentUser = userService.getCurrentAppUser().get();
@@ -229,11 +229,11 @@ public class SOULPatchesView
                                     .equals(currentUser)).distinct().findAny()
                     .ifPresentOrElse(soulPatchRating ->
                                     // user rating present
-                                    logger.debug("rating by {} exists {}",
+                                    LOGGER.debug("rating by {} exists {}",
                                             currentUser.getUserName(),
                                             soulPatchRating.toString()),
                             // no rating present
-                            () -> logger.debug("no rating by {} exists",
+                            () -> LOGGER.debug("no rating by {} exists",
                                     currentUser.getUserName()));
         }
     }
@@ -281,10 +281,10 @@ public class SOULPatchesView
         Location location = event.getLocation();
         QueryParameters locationQueryParameters
                 = location.getQueryParameters();
-        logger.debug("parameter: {}", parameter);
+        LOGGER.debug("parameter: {}", parameter);
         Map<String, List<String>> parametersMap
                 = locationQueryParameters.getParameters();
-        logger.debug("parametersMap: {}", parametersMap.toString());
+        LOGGER.debug("parametersMap: {}", parametersMap.toString());
 
         if (parametersMap.containsKey(UIConst.PARAM_SHOW_BY_CURRENT_USER)
                 && parametersMap.get(UIConst.PARAM_SHOW_BY_CURRENT_USER)

@@ -13,8 +13,6 @@ import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.events.SPFileDeleteEvent;
 import io.horrorshow.soulhub.ui.events.SPFileSaveEvent;
 import io.horrorshow.soulhub.ui.views.EditSPFileView;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
@@ -24,8 +22,6 @@ import java.util.Objects;
 public class MultipleSPFileLayoutManager extends VerticalLayout {
 
     private static final long serialVersionUID = 2456720596209534505L;
-
-    private static final Logger logger = LoggerFactory.getLogger(MultipleSPFileLayoutManager.class);
 
     private final SOULPatchService soulPatchService;
     private final SOULHubUserDetailsService userDetailsService;

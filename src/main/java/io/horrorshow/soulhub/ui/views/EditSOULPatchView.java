@@ -46,7 +46,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
 
     private static final long serialVersionUID = -4704235426941430447L;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(EditSOULPatchView.class);
 
     private final SOULPatchService soulPatchService;
     private final SOULHubUserDetailsService userDetailsService;
@@ -142,7 +142,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         binder.addStatusChangeListener(event -> {
             boolean isValid = event.getBinder().isValid();
             boolean hasChanges = event.getBinder().hasChanges();
-            logger.debug("isValid: {} hasChanges: {}", isValid, hasChanges);
+            LOGGER.debug("isValid: {} hasChanges: {}", isValid, hasChanges);
 
             save.setEnabled(hasChanges && isValid);
         });
@@ -179,7 +179,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         if (soulPatchService.isPossibleSOULPatchId(parameter)) {
             SOULPatch soulPatch = soulPatchService.findById(Long.valueOf(parameter));
             if (!userDetailsService.isCurrentUserOwnerOf(soulPatch)) {
-                logger.debug("user not authorized to edit username={} soulpatch={} url-parameter={} event={}",
+                LOGGER.debug("user not authorized to edit username={} soulpatch={} url-parameter={} event={}",
                         SecurityUtils.getUsername(), soulPatch, parameter, event);
                 createErrorView(format("Insufficient rights to edit SOULPatch %s", parameter));
             } else {
@@ -188,7 +188,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         } else if (parameter != null && parameter.equals("new")) {
             reloadSOULPatch(createSOULPatchForCurrentUser());
         } else {
-            logger.debug("invalid access. parameter={} user={} event={}",
+            LOGGER.debug("invalid access. parameter={} user={} event={}",
                     parameter, SecurityUtils.getUsername(), event);
             createErrorView(format("Unable to serve request to edit SOULPatch %s", parameter));
         }
@@ -223,7 +223,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
                 new Notification(format("problem saving soulpatch %s", soulPatch.toString()));
             }
         } catch (ValidationException e) {
-            logger.debug(e.getMessage());
+            LOGGER.debug(e.getMessage());
         }
     }
 

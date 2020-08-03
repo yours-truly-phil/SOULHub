@@ -40,7 +40,7 @@ public class SOULFileEditor extends VerticalLayout
 
     private static final long serialVersionUID = -6950603059471911545L;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(SOULFileEditor.class);
 
     private final TextField name = new TextField();
     private final AceEditor aceEditor = new AceEditor();
@@ -177,13 +177,13 @@ public class SOULFileEditor extends VerticalLayout
             // TODO investigate: sets the value to new value, then empty, then value again initially
             //  firing change twice, fucking up display of save button on changes
             // TODO investigate: typing rapidly in the ace-editor causes the cursor to jump to end of script
-            logger.debug("ValueChangeEvent oldValue: {} newValue: {}",
+            LOGGER.debug("ValueChangeEvent oldValue: {} newValue: {}",
                     event.getOldValue(), event.getValue());
         });
         binder.addStatusChangeListener(event -> {
             boolean isValid = event.getBinder().isValid();
             boolean hasChanges = event.getBinder().hasChanges();
-            logger.debug("StatusChangedEvent from {} isValid: {} hasChanges: {}",
+            LOGGER.debug("StatusChangedEvent from {} isValid: {} hasChanges: {}",
                     event.getSource(), isValid, hasChanges);
             save.setEnabled(hasChanges && isValid);
         });
@@ -206,7 +206,7 @@ public class SOULFileEditor extends VerticalLayout
                 new Notification(format("Problem saving file %s", spFile.toString()));
             }
         } catch (ValidationException e) {
-            logger.debug(e.getMessage());
+            LOGGER.debug(e.getMessage());
         }
     }
 
@@ -256,7 +256,7 @@ public class SOULFileEditor extends VerticalLayout
         binder.readBean(spFile);
         setVisible(true);
         aceEditor.focus();
-        logger.debug("end of setValue({}) isValid: {} hasChanges: {}",
+        LOGGER.debug("end of setValue({}) isValid: {} hasChanges: {}",
                 spFile.getName(), binder.isValid(), binder.hasChanges());
     }
 

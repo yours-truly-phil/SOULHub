@@ -8,7 +8,6 @@ import org.springframework.context.ApplicationContext;
 @SpringBootApplication(exclude = ErrorMvcAutoConfiguration.class)
 public class SOULHubApplication {
 
-
     public static void main(final String[] args) {
         ApplicationContext context = SpringApplication.run(SOULHubApplication.class, args);
 

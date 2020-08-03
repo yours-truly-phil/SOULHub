@@ -59,6 +59,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      *         HttpSecurity
      *
      * @throws Exception
+     *         if http security can't be configured
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -102,11 +103,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      *
      * @param web
      *         WebSecurity
-     *
-     * @throws Exception
      */
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring().antMatchers(
                 // Vaadin Flow static resources
                 "/VAADIN/**",
@@ -128,7 +127,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // ace-editor
                 "/ace-builds/**",
                 // (production mode) static resources
-                "/fontend-es5/**", "/frontend-es6/**"
+                "/frontend-es5/**", "/frontend-es6/**"
         );
     }
 

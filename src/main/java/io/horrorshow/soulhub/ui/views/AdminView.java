@@ -13,6 +13,7 @@ import org.springframework.security.access.annotation.Secured;
 @Secured(UIConst.ROLE_ADMIN)
 @PageTitle(UIConst.TITLE_ADMIN)
 public class AdminView extends VerticalLayout {
+
     private static final long serialVersionUID = -4744767698452492047L;
 
     public AdminView() {

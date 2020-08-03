@@ -34,6 +34,7 @@ import io.horrorshow.soulhub.ui.views.SOULPatchesView;
         themeFor = "vaadin-text-field")
 @Theme(value = Lumo.class, variant = Lumo.DARK)
 public class MainLayout extends AppLayout {
+
     private static final long serialVersionUID = -4791247729805265577L;
 
     public MainLayout() {

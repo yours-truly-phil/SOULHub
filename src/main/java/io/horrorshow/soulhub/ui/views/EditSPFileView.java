@@ -10,8 +10,6 @@ import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.SOULFileEditor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
@@ -25,8 +23,6 @@ public class EditSPFileView
         implements HasUrlParameter<String> {
 
     private static final long serialVersionUID = 3028744874949379358L;
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final SOULFileEditor fileEditor;
     private final SOULPatchService soulPatchService;

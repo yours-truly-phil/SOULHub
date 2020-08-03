@@ -16,6 +16,7 @@ import io.horrorshow.soulhub.ui.UIConst;
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
     private static final long serialVersionUID = 7631869443546476927L;
+
     private final LoginForm loginForm = new LoginForm();
 
     public LoginView() {

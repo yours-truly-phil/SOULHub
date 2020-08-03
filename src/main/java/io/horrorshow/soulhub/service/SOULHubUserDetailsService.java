@@ -25,9 +25,11 @@ import java.util.stream.Collectors;
 
 public class SOULHubUserDetailsService implements UserDetailsService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SOULHubUserDetailsService.class);
+
     public static final String USER_ROLE = "USER";
     public static final String ADMIN_ROLE = "ADMIN";
-    private static final Logger LOGGER = LoggerFactory.getLogger(SOULHubUserDetailsService.class);
+
     private final AppRoleRepository appRoleRepository;
     private final AppUserRepository appUserRepository;
 
