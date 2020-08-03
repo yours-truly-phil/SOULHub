@@ -10,15 +10,15 @@ import java.util.stream.Collectors;
 
 public class RecordsConverter implements Serializable {
 
+    private static final long serialVersionUID = 8750084355540746031L;
+
     public static SOULPatchRecord newSoulPatchRecord(SOULPatch soulPatch) {
         return new SOULPatchRecord(
                 soulPatch.getId(),
                 soulPatch.getName(),
                 soulPatch.getDescription(),
                 soulPatch.getSpFiles().stream().map(RecordsConverter::newSPFileRecord).collect(Collectors.toSet()),
-                new UserRecord(
-                        soulPatch.getAuthor().getUserName(),
-                        soulPatch.getAuthor().getEmail()),
+                newUserRecord(soulPatch.getAuthor()),
                 soulPatch.getCreatedAt(),
                 soulPatch.getUpdatedAt()
         );

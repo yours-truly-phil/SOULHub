@@ -55,7 +55,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     /**
      * Require login to access internal pages and configure login form
      *
-     * @param http HttpSecurity
+     * @param http
+     *         HttpSecurity
      *
      * @throws Exception
      */
@@ -99,7 +100,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     /**
      * Allows access to static resources, bypassing Spring security
      *
-     * @param web WebSecurity
+     * @param web
+     *         WebSecurity
      *
      * @throws Exception
      */
