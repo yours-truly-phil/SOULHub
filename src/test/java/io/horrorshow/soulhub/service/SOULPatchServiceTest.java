@@ -14,11 +14,15 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static io.horrorshow.soulhub.data.SPFile.FileType.MANIFEST;
 import static io.horrorshow.soulhub.data.SPFile.FileType.SOUL;
@@ -122,5 +126,34 @@ public class SOULPatchServiceTest {
         assertEquals(6, service.findAll("name 1").size());
         assertEquals(24, service.findAll("name \\d").size());
         assertEquals(2, service.findAll("name 1$").size());
+    }
+
+    @Test
+    void soulpatch_to_zip_file() throws IOException {
+        SOULPatch soulPatch = createTestSoulPatch(4711L);
+
+        byte[] zip = service.zipSOULPatchFiles(soulPatch);
+        ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(zip));
+        ZipEntry zipEntry = zis.getNextEntry();
+        byte[] buffer = new byte[1024];
+        int len;
+        while (zipEntry != null) {
+            String name = zipEntry.getName();
+            StringBuilder sb = new StringBuilder();
+            while ((len = zis.read(buffer, 0, buffer.length)) != -1) {
+                sb.append(new String(buffer, 0, len));
+            }
+
+            assertTrue(soulPatch.getSpFiles().stream()
+                    .map(SPFile::getFileContent)
+                    .anyMatch(s -> s.equals(sb.toString())));
+            assertTrue(soulPatch.getSpFiles().stream()
+                    .map(SPFile::getName)
+                    .anyMatch(s -> s.equals(name)));
+
+            zipEntry = zis.getNextEntry();
+        }
+        zis.closeEntry();
+        zis.close();
     }
 }
