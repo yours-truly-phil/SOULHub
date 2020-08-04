@@ -21,11 +21,15 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Service
 public class SOULPatchService {
@@ -205,5 +209,23 @@ public class SOULPatchService {
     public boolean isPossibleSPFileId(String parameter) {
         return NumberUtils.isCreatable(parameter)
                 && spFileExistsById(Long.valueOf(parameter));
+    }
+
+    public byte[] zipSOULPatchFiles(SOULPatch soulPatch) throws IOException {
+        try (final var baos = new ByteArrayOutputStream();
+             final var zos = new ZipOutputStream(baos)) {
+
+            for (SPFile spFile : soulPatch.getSpFiles()) {
+                ZipEntry entry = new ZipEntry(spFile.getName());
+                entry.setSize(spFile.getFileContent().getBytes().length);
+                zos.putNextEntry(entry);
+                zos.write(spFile.getFileContent().getBytes());
+                zos.closeEntry();
+            }
+            zos.finish();
+            zos.flush();
+            zos.close();
+            return baos.toByteArray();
+        }
     }
 }

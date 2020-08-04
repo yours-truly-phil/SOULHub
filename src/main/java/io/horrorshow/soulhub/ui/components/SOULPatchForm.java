@@ -7,6 +7,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.internal.AbstractFieldSupport;
@@ -15,6 +16,7 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
@@ -22,8 +24,12 @@ import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.events.SPFileSelectEvent;
 import io.horrorshow.soulhub.ui.views.EditSOULPatchView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Objects;
 
 public class SOULPatchForm extends Div
@@ -31,6 +37,8 @@ public class SOULPatchForm extends Div
         ComponentValueChangeEvent<SOULPatchForm, SOULPatch>, SOULPatch> {
 
     private static final long serialVersionUID = -7531039924193682445L;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SOULPatchForm.class);
 
     private final SOULPatchService soulPatchService;
     private final SOULHubUserDetailsService userDetailsService;
@@ -43,6 +51,7 @@ public class SOULPatchForm extends Div
     private final Grid<SPFile> spFilesGrid = new Grid<>();
     private final Button newSpFile = new Button("create soulpatch file");
     private final Button editSOULPatch = new Button("edit soulpatch", VaadinIcon.EDIT.create());
+    private final Anchor downloadLink = new Anchor();
 
     private final Binder<SOULPatch> binder = new Binder<>(SOULPatch.class);
     private final AbstractFieldSupport<SOULPatchForm, SOULPatch> fieldSupport;
@@ -106,6 +115,7 @@ public class SOULPatchForm extends Div
         content.add(noServings);
         content.add(newSpFile);
         content.add(spFilesGrid);
+        content.add(downloadLink);
         add(content);
     }
 
@@ -120,6 +130,22 @@ public class SOULPatchForm extends Div
     private void setupEditSOULPatchButton(SOULPatch soulPatch) {
         editSOULPatch.setVisible(
                 userDetailsService.isCurrentUserOwnerOf(soulPatch));
+    }
+
+    private void setupDownloadLink(SOULPatch soulPatch) {
+        try {
+            final var byteArrayInputStream =
+                    new ByteArrayInputStream(soulPatchService.zipSOULPatchFiles(soulPatch));
+
+            StreamResource streamResource =
+                    new StreamResource(
+                            String.format("%s.zip", soulPatch.getName()),
+                            () -> byteArrayInputStream);
+            downloadLink.setHref(streamResource);
+            downloadLink.setText(String.format("Download full %s", soulPatch.getName()));
+        } catch (IOException e) {
+            LOGGER.debug("Problem zipping soulpatch: {}", soulPatch, e);
+        }
     }
 
     public void gotoEditSOULPatch() {
@@ -148,6 +174,7 @@ public class SOULPatchForm extends Div
         spFilesGrid.setItems(soulPatch.getSpFiles());
 
         setupEditSOULPatchButton(soulPatch);
+        setupDownloadLink(soulPatch);
         setVisible(true);
         name.focus();
     }
