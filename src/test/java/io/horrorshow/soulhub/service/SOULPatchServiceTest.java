@@ -16,10 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -131,29 +128,47 @@ public class SOULPatchServiceTest {
     @Test
     void soulpatch_to_zip_file() throws IOException {
         SOULPatch soulPatch = createTestSoulPatch(4711L);
+        byte[] zipped = service.zipSOULPatchFiles(soulPatch);
+        List<String[]> unzipped = unzipSOULPatchZip(zipped);
+        evaluateUnzipResult(unzipped, soulPatch);
 
-        byte[] zip = service.zipSOULPatchFiles(soulPatch);
-        ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(zip));
-        ZipEntry zipEntry = zis.getNextEntry();
+        Set<SPFile> emptySet = new HashSet<>();
+        soulPatch.setSpFiles(emptySet);
+        zipped = service.zipSOULPatchFiles(soulPatch);
+        unzipped = unzipSOULPatchZip(zipped);
+        evaluateUnzipResult(unzipped, soulPatch);
+    }
+
+    private void evaluateUnzipResult(List<String[]> unzipped, SOULPatch soulPatch) {
+        unzipped.forEach(strings -> {
+            assertTrue(soulPatch.getSpFiles().stream()
+                    .map(SPFile::getFileContent)
+                    .anyMatch(s -> s.equals(strings[1])));
+            assertTrue(soulPatch.getSpFiles().stream()
+                    .map(SPFile::getName)
+                    .anyMatch(s -> s.equals(strings[0])));
+        });
+    }
+
+    private List<String[]> unzipSOULPatchZip(byte[] bytes) throws IOException {
+        List<String[]> result = new ArrayList<>();
+        ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(bytes));
         byte[] buffer = new byte[1024];
         int len;
+        ZipEntry zipEntry = zis.getNextEntry();
         while (zipEntry != null) {
-            String name = zipEntry.getName();
+            String[] spFileStrings = new String[2];
+            spFileStrings[0] = zipEntry.getName();
             StringBuilder sb = new StringBuilder();
             while ((len = zis.read(buffer, 0, buffer.length)) != -1) {
                 sb.append(new String(buffer, 0, len));
             }
-
-            assertTrue(soulPatch.getSpFiles().stream()
-                    .map(SPFile::getFileContent)
-                    .anyMatch(s -> s.equals(sb.toString())));
-            assertTrue(soulPatch.getSpFiles().stream()
-                    .map(SPFile::getName)
-                    .anyMatch(s -> s.equals(name)));
-
+            spFileStrings[1] = sb.toString();
+            result.add(spFileStrings);
             zipEntry = zis.getNextEntry();
         }
         zis.closeEntry();
         zis.close();
+        return result;
     }
 }

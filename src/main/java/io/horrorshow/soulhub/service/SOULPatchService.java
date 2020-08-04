@@ -15,6 +15,8 @@ import io.horrorshow.soulhub.xml.SOULPatchXMLType;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +35,8 @@ import java.util.zip.ZipOutputStream;
 
 @Service
 public class SOULPatchService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SOULPatchService.class);
 
     private final SOULPatchRepository soulPatchRepository;
     private final SPFileRepository spFileRepository;
@@ -211,7 +215,7 @@ public class SOULPatchService {
                 && spFileExistsById(Long.valueOf(parameter));
     }
 
-    public byte[] zipSOULPatchFiles(SOULPatch soulPatch) throws IOException {
+    public byte[] zipSOULPatchFiles(SOULPatch soulPatch) {
         try (final var baos = new ByteArrayOutputStream();
              final var zos = new ZipOutputStream(baos)) {
 
@@ -226,6 +230,9 @@ public class SOULPatchService {
             zos.flush();
             zos.close();
             return baos.toByteArray();
+        } catch (IOException e) {
+            LOGGER.error("error zipping soulpatch {}", soulPatch, e);
+            return null;
         }
     }
 }

@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.Objects;
 
 public class SOULPatchForm extends Div
@@ -133,19 +132,12 @@ public class SOULPatchForm extends Div
     }
 
     private void setupDownloadLink(SOULPatch soulPatch) {
-        try {
-            final var byteArrayInputStream =
-                    new ByteArrayInputStream(soulPatchService.zipSOULPatchFiles(soulPatch));
-
-            StreamResource streamResource =
-                    new StreamResource(
-                            String.format("%s.zip", soulPatch.getName()),
-                            () -> byteArrayInputStream);
-            downloadLink.setHref(streamResource);
-            downloadLink.setText(String.format("Download full %s", soulPatch.getName()));
-        } catch (IOException e) {
-            LOGGER.debug("Problem zipping soulpatch: {}", soulPatch, e);
-        }
+        StreamResource streamResource =
+                new StreamResource(
+                        String.format("%s.zip", soulPatch.getName()),
+                        () -> new ByteArrayInputStream(soulPatchService.zipSOULPatchFiles(soulPatch)));
+        downloadLink.setHref(streamResource);
+        downloadLink.setText(String.format("Download full %s", soulPatch.getName()));
     }
 
     public void gotoEditSOULPatch() {
