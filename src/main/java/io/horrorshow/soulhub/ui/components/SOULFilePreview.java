@@ -6,12 +6,15 @@ import com.hilerio.ace.AceTheme;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.server.StreamResource;
 import io.horrorshow.soulhub.data.SPFile;
 
+import java.io.ByteArrayInputStream;
 import java.time.format.DateTimeFormatter;
 
 public class SOULFilePreview extends Dialog {
@@ -25,6 +28,7 @@ public class SOULFilePreview extends Dialog {
     private final Span updatedAt = new Span();
     private final Span fileType = new Span();
     private final Button close = new Button("close dialog");
+    private final Anchor downloadLink = new Anchor();
 
     public SOULFilePreview() {
         initComponents();
@@ -73,6 +77,7 @@ public class SOULFilePreview extends Dialog {
         content.add(attributesLayout);
 
         content.add(aceEditor);
+        content.add(downloadLink);
         content.add(close);
         add(content);
 
@@ -90,6 +95,11 @@ public class SOULFilePreview extends Dialog {
                 ? spFile.getFileType().toString()
                 : "");
         aceEditor.setValue(spFile.getFileContent());
+
+        StreamResource streamResource = new StreamResource(spFile.getName(),
+                () -> new ByteArrayInputStream(spFile.getFileContent().getBytes()));
+        downloadLink.setHref(streamResource);
+        downloadLink.setText(String.format("Download %s", spFile.getName()));
 
         open();
     }
