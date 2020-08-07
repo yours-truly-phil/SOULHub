@@ -58,12 +58,10 @@ public class AppUser implements Serializable {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
-    @EqualsAndHashCode.Exclude
     private Set<AppRole> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "appUser")
     @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private Set<SOULPatchRating> ratings = new HashSet<>();
 
     public enum UserStatus {

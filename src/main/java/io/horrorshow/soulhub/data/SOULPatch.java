@@ -65,7 +65,6 @@ public class SOULPatch extends AuditModel {
 
     @OneToMany(mappedBy = "soulPatch", fetch = FetchType.EAGER)
     @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private Set<SOULPatchRating> ratings = new HashSet<>();
 
     public List<SPFile> getSpFiles(SPFile.FileType fileType) {

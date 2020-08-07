@@ -1,11 +1,9 @@
 package io.horrorshow.soulhub.service;
 
-import io.horrorshow.soulhub.data.AppRole;
-import io.horrorshow.soulhub.data.AppUser;
-import io.horrorshow.soulhub.data.SOULPatch;
-import io.horrorshow.soulhub.data.SPFile;
+import io.horrorshow.soulhub.data.*;
 import io.horrorshow.soulhub.data.repository.AppRoleRepository;
 import io.horrorshow.soulhub.data.repository.AppUserRepository;
+import io.horrorshow.soulhub.data.repository.VerificationTokenRepository;
 import io.horrorshow.soulhub.security.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,24 +19,28 @@ import javax.transaction.Transactional;
 import javax.validation.*;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class SOULHubUserDetailsService implements UserDetailsService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SOULHubUserDetailsService.class);
-
     public static final String USER_ROLE = "USER";
     public static final String ADMIN_ROLE = "ADMIN";
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SOULHubUserDetailsService.class);
+
     private final AppRoleRepository appRoleRepository;
     private final AppUserRepository appUserRepository;
+    private final VerificationTokenRepository verificationTokenRepository;
 
     private final Validator validator;
 
     public SOULHubUserDetailsService(@Autowired AppRoleRepository appRoleRepository,
-                                     @Autowired AppUserRepository appUserRepository) {
+                                     @Autowired AppUserRepository appUserRepository,
+                                     @Autowired VerificationTokenRepository verificationTokenRepository) {
         this.appRoleRepository = appRoleRepository;
         this.appUserRepository = appUserRepository;
+        this.verificationTokenRepository = verificationTokenRepository;
 
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
@@ -83,7 +85,7 @@ public class SOULHubUserDetailsService implements UserDetailsService {
             throw new ValidationException(violation.getMessage());
         });
 
-        user.setStatus(AppUser.UserStatus.ACTIVE);
+        user.setStatus(AppUser.UserStatus.UNCONFIRMED);
 
         Optional<AppRole> userRole = appRoleRepository.findByRoleName("USER");
         userRole.ifPresent(
@@ -91,7 +93,22 @@ public class SOULHubUserDetailsService implements UserDetailsService {
         );
         userRole.orElseThrow(RoleNotFoundException::new);
         LOGGER.info("saving new user as: {}", user.toString());
-        return appUserRepository.save(user);
+
+        AppUser savedUser = appUserRepository.save(user);
+        LOGGER.info("user registered {}", savedUser);
+
+        String token = UUID.randomUUID().toString();
+        VerificationToken verificationToken = createVerificationToken(savedUser, token);
+        LOGGER.info("verificationToken created {}", verificationToken);
+
+        return savedUser;
+    }
+
+    public VerificationToken createVerificationToken(AppUser appUser, String token) {
+        VerificationToken verificationToken = new VerificationToken();
+        verificationToken.setUser(appUser);
+        verificationToken.setToken(token);
+        return verificationTokenRepository.save(verificationToken);
     }
 
     public boolean isCurrentUserOwnerOf(SOULPatch soulPatch) {

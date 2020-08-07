@@ -4,6 +4,7 @@ import io.horrorshow.soulhub.data.AppRole;
 import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.repository.AppRoleRepository;
 import io.horrorshow.soulhub.data.repository.AppUserRepository;
+import io.horrorshow.soulhub.data.repository.VerificationTokenRepository;
 import io.horrorshow.soulhub.security.SecurityUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,12 +31,15 @@ public class SOULHubUserDetailsServiceTest {
     @Mock
     AppRoleRepository roleRepository;
 
+    @Mock
+    VerificationTokenRepository verificationTokenRepository;
+
     SOULHubUserDetailsService userDetailsService;
 
     @BeforeEach
     void init() {
         MockitoAnnotations.initMocks(this);
-        userDetailsService = new SOULHubUserDetailsService(roleRepository, userRepository);
+        userDetailsService = new SOULHubUserDetailsService(roleRepository, userRepository, verificationTokenRepository);
     }
 
     @Test
@@ -50,7 +54,7 @@ public class SOULHubUserDetailsServiceTest {
         newUser.setEncryptedPassword(userClearPassword);
         newUser.setEmail(email);
 
-        Mockito.doReturn(Optional.of(newRole("USER")))
+        Mockito.doReturn(Optional.of(newRole()))
                 .when(roleRepository)
                 .findByRoleName("USER");
 
@@ -72,7 +76,7 @@ public class SOULHubUserDetailsServiceTest {
                 .getRoles().stream().map(AppRole::getRoleName)
                 .allMatch(s -> s.equals("USER")));
         // user status
-        assertEquals(AppUser.UserStatus.ACTIVE, userAccount.getStatus());
+        assertEquals(AppUser.UserStatus.UNCONFIRMED, userAccount.getStatus());
     }
 
     @Test
@@ -134,9 +138,9 @@ public class SOULHubUserDetailsServiceTest {
         });
     }
 
-    private AppRole newRole(String role) {
+    private AppRole newRole() {
         AppRole userRole = new AppRole();
-        userRole.setRoleName(role);
+        userRole.setRoleName("USER");
         return userRole;
     }
 

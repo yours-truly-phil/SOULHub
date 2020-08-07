@@ -57,7 +57,7 @@ create table verification_tokens
     token       varchar(255) not null,
     user_id     bigint       not null
         constraint verification_tokens_user_constraint references app_user,
-    expiry_data timestamp    not null
+    expiry_date timestamp    not null
 );
 
 alter table verification_tokens
