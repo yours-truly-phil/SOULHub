@@ -37,7 +37,7 @@ public class ConfirmRegistrationView
     }
 
     @Override
-    public void setParameter(BeforeEvent event, String parameter) {
+    public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
         LOGGER.debug("confirm registration with param {}", parameter);
         Location location = event.getLocation();
         QueryParameters queryParameters = location.getQueryParameters();

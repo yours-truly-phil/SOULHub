@@ -24,6 +24,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String LOGIN_URL = "/login";
     private static final String LOGOUT_SUCCESS_URL = "/login";
 
+    private static final String[] PERMIT_URLS = {"/", "/confirm", "/about", "/soulpatches", "/register"};
+
     private final UserDetailsService userDetailsService;
 
     private final DataSource dataSource;
@@ -62,6 +64,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 // Allow all flow internal requests.
                 .requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll() //
+
+                .antMatchers(PERMIT_URLS).permitAll()
 
                 // Allow all requests by logged in users.
                 .anyRequest().authenticated() //
