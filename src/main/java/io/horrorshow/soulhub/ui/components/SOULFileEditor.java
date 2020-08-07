@@ -20,7 +20,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.SPFile;
-import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
+import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.events.SPFileDeleteEvent;
 import io.horrorshow.soulhub.ui.events.SPFileSaveEvent;
@@ -55,7 +55,7 @@ public class SOULFileEditor extends VerticalLayout
 
     private final Binder<SPFile> binder = new Binder<>(SPFile.class);
     private final SOULPatchService soulPatchService;
-    private final SOULHubUserDetailsService userDetailsService;
+    private final UserService userDetailsService;
 
     private final AbstractFieldSupport<SOULFileEditor, SPFile> fieldSupport;
 
@@ -63,7 +63,7 @@ public class SOULFileEditor extends VerticalLayout
     private final Checkbox isPersisted = new Checkbox("is persisted", false);
 
     public SOULFileEditor(@Autowired SOULPatchService soulPatchService,
-                          @Autowired SOULHubUserDetailsService userDetailsService) {
+                          @Autowired UserService userDetailsService) {
         super();
         this.fieldSupport = new AbstractFieldSupport<>(this, null,
                 Objects::equals, spFile -> {

@@ -22,7 +22,7 @@ import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.security.SecurityUtils;
-import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
+import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
@@ -51,7 +51,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     private static final Logger LOGGER = LoggerFactory.getLogger(EditSOULPatchView.class);
 
     private final SOULPatchService soulPatchService;
-    private final SOULHubUserDetailsService userDetailsService;
+    private final UserService userDetailsService;
 
     private final RouterLink toSOULPatchesViewLink =
             new RouterLink(format("navigate back to %s", UIConst.LINK_TEXT_SOULPATCHES),
@@ -73,7 +73,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     private final AbstractFieldSupport<EditSOULPatchView, SOULPatch> fieldSupport;
 
     public EditSOULPatchView(@Autowired SOULPatchService soulPatchService,
-                             @Autowired SOULHubUserDetailsService userDetailsService) {
+                             @Autowired UserService userDetailsService) {
         this.soulPatchService = soulPatchService;
         this.userDetailsService = userDetailsService;
 

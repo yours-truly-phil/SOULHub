@@ -22,7 +22,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.AppUser;
-import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
+import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class RegistrationView extends VerticalLayout
 
     private static final long serialVersionUID = -5002067867566531052L;
 
-    private final SOULHubUserDetailsService userDetailsService;
+    private final UserService userDetailsService;
 
     private final TextField username = new TextField();
     private final TextField email = new TextField();
@@ -52,7 +52,7 @@ public class RegistrationView extends VerticalLayout
 
     private final AbstractFieldSupport<RegistrationView, AppUser> fieldSupport;
 
-    public RegistrationView(@Autowired SOULHubUserDetailsService userDetailsService) {
+    public RegistrationView(@Autowired UserService userDetailsService) {
         this.userDetailsService = userDetailsService;
 
         fieldSupport = new AbstractFieldSupport<>(this, new AppUser(),

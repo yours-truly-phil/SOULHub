@@ -6,7 +6,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.VerificationToken;
-import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
+import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
 import org.slf4j.Logger;
@@ -28,9 +28,9 @@ public class ConfirmRegistrationView
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfirmRegistrationView.class);
 
-    private final SOULHubUserDetailsService userDetailsService;
+    private final UserService userDetailsService;
 
-    public ConfirmRegistrationView(@Autowired SOULHubUserDetailsService userDetailsService) {
+    public ConfirmRegistrationView(@Autowired UserService userDetailsService) {
         this.userDetailsService = userDetailsService;
 
         add(new H1("Confirm registration"));

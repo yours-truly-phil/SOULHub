@@ -1,14 +1,8 @@
 package io.horrorshow.soulhub.security;
 
-import io.horrorshow.soulhub.data.repository.AppRoleRepository;
-import io.horrorshow.soulhub.data.repository.AppUserRepository;
-import io.horrorshow.soulhub.data.repository.VerificationTokenRepository;
-import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -30,37 +24,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String LOGIN_URL = "/login";
     private static final String LOGOUT_SUCCESS_URL = "/login";
 
+    private final UserDetailsService userDetailsService;
+
     private final DataSource dataSource;
 
-    private final AppRoleRepository appRoleRepository;
-
-    private final AppUserRepository appUserRepository;
-
-    private final VerificationTokenRepository verificationTokenRepository;
-
-    private final JavaMailSender mailSender;
-
-    @Autowired
-    public SecurityConfiguration(DataSource dataSource,
-                                 AppRoleRepository appRoleRepository,
-                                 AppUserRepository appUserRepository,
-                                 VerificationTokenRepository verificationTokenRepository,
-                                 JavaMailSender mailSender) {
+    public SecurityConfiguration(@Autowired UserDetailsService userDetailsService,
+                                 @Autowired DataSource dataSource) {
+        this.userDetailsService = userDetailsService;
         this.dataSource = dataSource;
-        this.appRoleRepository = appRoleRepository;
-        this.appUserRepository = appUserRepository;
-        this.verificationTokenRepository = verificationTokenRepository;
-        this.mailSender = mailSender;
-    }
-
-    // TODO extract from UserDetailsService everything none spring security in new UserService
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new SOULHubUserDetailsService(
-                appRoleRepository,
-                appUserRepository,
-                verificationTokenRepository,
-                mailSender);
     }
 
     @Bean
@@ -149,7 +120,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Bean

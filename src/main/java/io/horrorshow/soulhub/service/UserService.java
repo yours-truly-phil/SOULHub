@@ -12,10 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import javax.management.relation.RoleNotFoundException;
 import javax.transaction.Transactional;
@@ -23,14 +21,15 @@ import javax.validation.*;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-public class SOULHubUserDetailsService implements UserDetailsService {
+@Service
+@Transactional
+public class UserService {
 
     public static final String USER_ROLE = "USER";
     public static final String ADMIN_ROLE = "ADMIN";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SOULHubUserDetailsService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     private final AppRoleRepository appRoleRepository;
     private final AppUserRepository appUserRepository;
@@ -39,10 +38,10 @@ public class SOULHubUserDetailsService implements UserDetailsService {
 
     private final Validator validator;
 
-    public SOULHubUserDetailsService(@Autowired AppRoleRepository appRoleRepository,
-                                     @Autowired AppUserRepository appUserRepository,
-                                     @Autowired VerificationTokenRepository verificationTokenRepository,
-                                     @Autowired JavaMailSender mailSender) {
+    public UserService(@Autowired AppRoleRepository appRoleRepository,
+                       @Autowired AppUserRepository appUserRepository,
+                       @Autowired VerificationTokenRepository verificationTokenRepository,
+                       @Autowired JavaMailSender mailSender) {
         this.appRoleRepository = appRoleRepository;
         this.appUserRepository = appUserRepository;
         this.verificationTokenRepository = verificationTokenRepository;
@@ -52,26 +51,12 @@ public class SOULHubUserDetailsService implements UserDetailsService {
         validator = validatorFactory.getValidator();
     }
 
-    @Override
-    @Transactional
-    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        return getUserDetails(loadAppUser(userName).get());
-    }
-
     public Optional<AppUser> loadAppUser(String username) {
         return appUserRepository.findByUserName(username);
     }
 
     public Optional<AppUser> loadAppUserByEmail(String email) throws UsernameNotFoundException {
         return appUserRepository.findAppUserByEmail(email);
-    }
-
-    private UserDetails getUserDetails(AppUser appUser) {
-        User.UserBuilder builder = User.withUsername(appUser.getUserName());
-        builder.password(appUser.getEncryptedPassword());
-        builder.roles(appUser.getRoles().stream().map(AppRole::getRoleName)
-                .collect(Collectors.toSet()).toArray(String[]::new));
-        return builder.build();
     }
 
     public boolean isAuthenticated() {

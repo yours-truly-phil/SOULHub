@@ -20,7 +20,7 @@ import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
-import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
+import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.events.SPFileSelectEvent;
 import io.horrorshow.soulhub.ui.views.EditSOULPatchView;
@@ -40,7 +40,7 @@ public class SOULPatchForm extends Div
     private static final Logger LOGGER = LoggerFactory.getLogger(SOULPatchForm.class);
 
     private final SOULPatchService soulPatchService;
-    private final SOULHubUserDetailsService userDetailsService;
+    private final UserService userDetailsService;
 
     private final TextField id = new TextField("id");
     private final TextField name = new TextField("name");
@@ -56,7 +56,7 @@ public class SOULPatchForm extends Div
     private final AbstractFieldSupport<SOULPatchForm, SOULPatch> fieldSupport;
 
     public SOULPatchForm(@Autowired SOULPatchService soulPatchService,
-                         @Autowired SOULHubUserDetailsService userDetailsService) {
+                         @Autowired UserService userDetailsService) {
         this.soulPatchService = soulPatchService;
         this.userDetailsService = userDetailsService;
 

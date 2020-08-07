@@ -20,7 +20,7 @@ import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SOULPatchRating;
 import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.security.SecurityUtils;
-import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
+import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
@@ -62,7 +62,7 @@ public class SOULPatchesView
     private static final int PAGINATOR_SIZE = 5;
 
     private final SOULPatchService service;
-    private final SOULHubUserDetailsService userService;
+    private final UserService userService;
     private final PaginatedGrid<SOULPatch> grid = new PaginatedGrid<>();
     private final TextField filterText = new TextField("filter by (regex)");
     private final Checkbox filterOwnedSoulpatches = new Checkbox("show only my soulpatches");
@@ -72,7 +72,7 @@ public class SOULPatchesView
     private final SOULFilePreview SOULFilePreview = new SOULFilePreview();
     private final Span userGreeting = new Span("Hello!");
 
-    public SOULPatchesView(@Autowired SOULPatchService service, @Autowired SOULHubUserDetailsService userService) {
+    public SOULPatchesView(@Autowired SOULPatchService service, @Autowired UserService userService) {
 
         this.service = service;
         this.userService = userService;

@@ -1,16 +1,17 @@
-#spring:
-#  flyway:
-#    enabled: false
-#  jpa:
-#    hibernate:
-#      ddl-auto: create-drop
-#    database-platform: org.hibernate.dialect.PostgreSQLDialect
-#zonky:
-#  test:
-#    database:
-#      postgres:
-#        docker:
-#          image: postgres:latest
-#          tmpfs:
-#            enabled: false
-#            options: rw,noexec,nosuid
+spring:
+  mail:
+    host: host.host.com
+    port: 587
+    protocol: smtp
+    username: USERNAME
+    password: PASSWORD
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          timeout: 8000

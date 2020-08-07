@@ -2,30 +2,29 @@ package io.horrorshow.soulhub.service;
 
 import io.horrorshow.soulhub.data.AppRole;
 import io.horrorshow.soulhub.data.AppUser;
+import io.horrorshow.soulhub.data.VerificationToken;
 import io.horrorshow.soulhub.data.repository.AppRoleRepository;
 import io.horrorshow.soulhub.data.repository.AppUserRepository;
 import io.horrorshow.soulhub.data.repository.VerificationTokenRepository;
-import io.horrorshow.soulhub.security.SecurityConfiguration;
 import io.horrorshow.soulhub.security.SecurityUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.AdditionalAnswers;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import javax.management.relation.RoleNotFoundException;
 import javax.validation.ValidationException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-public class SOULHubUserDetailsServiceTest {
+public class UserServiceTest {
 
     @Mock
     AppUserRepository userRepository;
@@ -39,13 +38,14 @@ public class SOULHubUserDetailsServiceTest {
     @Mock
     JavaMailSender mailSender;
 
-    SOULHubUserDetailsService userDetailsService;
+    UserService userDetailsService;
 
     @BeforeEach
     void init() {
         MockitoAnnotations.initMocks(this);
+
         userDetailsService =
-                new SOULHubUserDetailsService(
+                new UserService(
                         roleRepository,
                         userRepository,
                         verificationTokenRepository,
@@ -71,6 +71,9 @@ public class SOULHubUserDetailsServiceTest {
         Mockito.when(userRepository.save(Mockito.any(AppUser.class)))
                 .thenAnswer(AdditionalAnswers.returnsFirstArg());
 
+        Mockito.when(verificationTokenRepository.save(Mockito.any(VerificationToken.class)))
+                .thenAnswer(AdditionalAnswers.returnsFirstArg());
+
         AppUser userAccount = userDetailsService.registerAppUser(newUser);
         System.out.println(userAccount);
         // user name
@@ -87,6 +90,17 @@ public class SOULHubUserDetailsServiceTest {
                 .allMatch(s -> s.equals("USER")));
         // user status
         assertEquals(AppUser.UserStatus.UNCONFIRMED, userAccount.getStatus());
+        // try to send the confirmation mail
+        ArgumentCaptor<VerificationToken> tokenCaptor = ArgumentCaptor.forClass(VerificationToken.class);
+        ArgumentCaptor<SimpleMailMessage> emailCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
+        Mockito.verify(verificationTokenRepository).save(tokenCaptor.capture());
+        Mockito.verify(mailSender).send(emailCaptor.capture());
+
+        List<SimpleMailMessage> sentMails = emailCaptor.getAllValues();
+        assertEquals(sentMails.size(), 1);
+        List<VerificationToken> tokensSaved = tokenCaptor.getAllValues();
+        assertEquals(tokensSaved.size(), 1);
+        assertTrue(sentMails.get(0).getText().contains(tokensSaved.get(0).getToken()));
     }
 
     @Test

@@ -5,7 +5,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 import io.horrorshow.soulhub.data.SPFile;
-import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
+import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
@@ -26,10 +26,10 @@ public class EditSPFileView
 
     private final SOULFileEditor fileEditor;
     private final SOULPatchService soulPatchService;
-    private final SOULHubUserDetailsService userDetailsService;
+    private final UserService userDetailsService;
 
     public EditSPFileView(@Autowired SOULPatchService soulPatchService,
-                          @Autowired SOULHubUserDetailsService userDetailsService) {
+                          @Autowired UserService userDetailsService) {
         this.soulPatchService = soulPatchService;
         this.userDetailsService = userDetailsService;
 
