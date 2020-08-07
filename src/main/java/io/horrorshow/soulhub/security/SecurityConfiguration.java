@@ -5,8 +5,10 @@ import io.horrorshow.soulhub.data.repository.AppUserRepository;
 import io.horrorshow.soulhub.data.repository.VerificationTokenRepository;
 import io.horrorshow.soulhub.service.SOULHubUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -36,20 +38,29 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final VerificationTokenRepository verificationTokenRepository;
 
+    private final JavaMailSender mailSender;
+
     @Autowired
     public SecurityConfiguration(DataSource dataSource,
                                  AppRoleRepository appRoleRepository,
                                  AppUserRepository appUserRepository,
-                                 VerificationTokenRepository verificationTokenRepository) {
+                                 VerificationTokenRepository verificationTokenRepository,
+                                 JavaMailSender mailSender) {
         this.dataSource = dataSource;
         this.appRoleRepository = appRoleRepository;
         this.appUserRepository = appUserRepository;
         this.verificationTokenRepository = verificationTokenRepository;
+        this.mailSender = mailSender;
     }
+
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new SOULHubUserDetailsService(appRoleRepository, appUserRepository, verificationTokenRepository);
+        return new SOULHubUserDetailsService(
+                appRoleRepository,
+                appUserRepository,
+                verificationTokenRepository,
+                mailSender);
     }
 
     @Bean

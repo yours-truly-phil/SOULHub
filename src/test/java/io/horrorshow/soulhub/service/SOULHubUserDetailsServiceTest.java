@@ -14,6 +14,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import javax.management.relation.RoleNotFoundException;
 import javax.validation.ValidationException;
@@ -34,12 +36,20 @@ public class SOULHubUserDetailsServiceTest {
     @Mock
     VerificationTokenRepository verificationTokenRepository;
 
+    @Mock
+    JavaMailSender mailSender;
+
     SOULHubUserDetailsService userDetailsService;
 
     @BeforeEach
     void init() {
         MockitoAnnotations.initMocks(this);
-        userDetailsService = new SOULHubUserDetailsService(roleRepository, userRepository, verificationTokenRepository);
+        userDetailsService =
+                new SOULHubUserDetailsService(
+                        roleRepository,
+                        userRepository,
+                        verificationTokenRepository,
+                        mailSender);
     }
 
     @Test

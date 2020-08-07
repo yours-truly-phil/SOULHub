@@ -18,6 +18,22 @@ spring:
     restart:
       poll-interval: 2s
       quiet-period: 1s
+  mail:
+    host: host.host.com
+    port: 587
+    protocol: smtp
+    username: USERNAME
+    password: PASSWORD
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          timeout: 8000
 # Ensure application is run in Vaadin 14/npm mode
 vaadin:
   compatibilityMode: false

@@ -123,7 +123,7 @@ public class UserInfoView extends VerticalLayout
 
     @Override
     public void setParameter(BeforeEvent event, String parameter) {
-        Optional<AppUser> appUser = Optional.ofNullable(userDetailsService.loadAppUser(parameter));
+        Optional<AppUser> appUser = userDetailsService.loadAppUser(parameter);
         appUser.ifPresent(this::setValue);
     }
 }

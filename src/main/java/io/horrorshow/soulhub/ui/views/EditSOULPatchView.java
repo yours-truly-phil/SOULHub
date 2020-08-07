@@ -32,8 +32,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.lang.String.format;
 
@@ -206,8 +208,13 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     }
 
     private SOULPatch createSOULPatchForCurrentUser() {
-        AppUser currentUser = userDetailsService.loadAppUser(SecurityUtils.getUsername());
-        return soulPatchService.createSOULPatch(currentUser);
+        Optional<AppUser> appUser = userDetailsService.loadAppUser(SecurityUtils.getUsername());
+        if (appUser.isPresent()) {
+            AppUser currentUser = appUser.get();
+            return soulPatchService.createSOULPatch(currentUser);
+        } else {
+            throw new UsernameNotFoundException("unable to load user to create soulpatch for");
+        }
     }
 
     private void saveSOULPatch() {

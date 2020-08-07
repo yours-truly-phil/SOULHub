@@ -135,16 +135,18 @@ public class RegistrationView extends VerticalLayout
                         .map(BindingValidationStatus::getMessage)
                         .map(java.util.Optional::get).distinct()
                         .collect(Collectors.joining(", "));
-                new Notification(errorText, 3000).open();
+                new Notification(errorText, 3000, Notification.Position.MIDDLE).open();
             }
-
         } catch (RoleNotFoundException e) {
+            setValue(new AppUser());
             new Notification("something went wrong, " +
                     "something might have been informed about this, " +
                     "something might be done about that",
-                    5000).open();
+                    5000,
+                    Notification.Position.MIDDLE).open();
         } catch (ValidationException e) {
-            new Notification(e.getMessage(), 5000).open();
+            setValue(new AppUser());
+            new Notification(e.getMessage(), 5000, Notification.Position.MIDDLE).open();
         }
     }
 
@@ -155,6 +157,7 @@ public class RegistrationView extends VerticalLayout
 
     @Override
     public void setValue(AppUser value) {
+        register.setEnabled(true);
         fieldSupport.setValue(value);
         binder.readBean(value);
     }
