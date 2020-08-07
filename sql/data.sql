@@ -1,4 +1,6 @@
 delete
+from verification_tokens;
+delete
 from soulpatch_ratings;
 delete
 from spfiles;

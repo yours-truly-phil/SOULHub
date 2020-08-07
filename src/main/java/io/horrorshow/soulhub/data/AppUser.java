@@ -67,6 +67,6 @@ public class AppUser implements Serializable {
     private Set<SOULPatchRating> ratings = new HashSet<>();
 
     public enum UserStatus {
-        ACTIVE, INACTIVE
+        ACTIVE, UNCONFIRMED
     }
 }

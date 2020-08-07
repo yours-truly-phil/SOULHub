@@ -1,10 +1,11 @@
+drop table if exists verification_tokens;
 drop table if exists user_role;
 drop table if exists app_role;
+drop table if exists soulpatch_ratings;
 drop table if exists spfiles;
 drop table if exists soulpatches;
 drop table if exists app_user;
 drop table if exists persistent_logins;
-drop table if exists soulpatch_ratings;
 
 drop sequence if exists hibernate_sequence;
 
@@ -47,6 +48,19 @@ create table user_role
 );
 
 alter table user_role
+    owner to postgres;
+
+create table verification_tokens
+(
+    id          bigint       not null
+        constraint verification_tokens_pkey primary key,
+    token       varchar(255) not null,
+    user_id     bigint       not null
+        constraint verification_tokens_user_constraint references app_user,
+    expiry_data timestamp    not null
+);
+
+alter table verification_tokens
     owner to postgres;
 
 create table persistent_logins
