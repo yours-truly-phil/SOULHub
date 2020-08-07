@@ -133,7 +133,7 @@ public class SOULHubUserDetailsService implements UserDetailsService {
         final String recipientAddress = user.getEmail();
         final String subject = String.format("%s Registration Confirmation", UIConst.TITLE);
         final String url = "localhost:8080"; // TODO setup environment config
-        final String confirmationUrl = String.format("%s/confirm?token=%s", url, token.getToken());
+        final String confirmationUrl = String.format("%s/confirm?%s=%s", url, UIConst.PARAM_TOKEN, token.getToken());
         final String message = String.format("You registered successfully. To confirm your registration, please click on the below link.\r\n%s", confirmationUrl);
 
         final SimpleMailMessage email = new SimpleMailMessage();
@@ -164,4 +164,11 @@ public class SOULHubUserDetailsService implements UserDetailsService {
         return loadAppUser(SecurityUtils.getUsername());
     }
 
+    public Optional<VerificationToken> getVerificationToken(String token) {
+        return verificationTokenRepository.findByToken(token);
+    }
+
+    public AppUser updateUser(AppUser user) {
+        return appUserRepository.saveAndFlush(user);
+    }
 }

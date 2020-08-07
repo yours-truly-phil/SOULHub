@@ -15,6 +15,7 @@ public class UIConst {
     public static final String ROUTE_REGISTER = "register";
     public static final String ROUTE_SOULPATCHES = "soulpatches";
     public static final String ROUTE_USERINFO = "user";
+    public static final String ROUTE_CONFIRM_REGISTER = "confirm";
 
     public static final String TITLE_ABOUT = TITLE + " | About";
     public static final String TITLE_ADMIN = TITLE + " | Admin";
@@ -24,6 +25,7 @@ public class UIConst {
     public static final String TITLE_REGISTER = TITLE + " | Register";
     public static final String TITLE_SOULPATCHES = TITLE + " | SOULPatches";
     public static final String TITLE_USERINFO = TITLE + " | Userinfo";
+    public static final String TITLE_CONFIRM_REGISTER = TITLE + " | Confirm Registration";
 
     public static final String LINK_TEXT_LOGOUT = "Logout";
     public static final String LINK_TEXT_SOULPATCHES = "SOULPatches";
@@ -31,10 +33,12 @@ public class UIConst {
     public static final String LINK_TEXT_ADMIN = "Administration";
     public static final String LINK_TEXT_REGISTER = "Registration";
     public static final String LINK_TEXT_LOGIN = "Login";
+    public static final String LINK_TEXT_CONFIRM_REGISTER = "confirm registration";
 
     public static final String ROLE_USER = "ROLE_USER";
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
     public static final String PARAM_SHOW_BY_CURRENT_USER = "curuser";
+    public static final String PARAM_TOKEN = "token";
 
 }

@@ -5,6 +5,7 @@ import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.repository.AppRoleRepository;
 import io.horrorshow.soulhub.data.repository.AppUserRepository;
 import io.horrorshow.soulhub.data.repository.VerificationTokenRepository;
+import io.horrorshow.soulhub.security.SecurityConfiguration;
 import io.horrorshow.soulhub.security.SecurityUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import javax.management.relation.RoleNotFoundException;

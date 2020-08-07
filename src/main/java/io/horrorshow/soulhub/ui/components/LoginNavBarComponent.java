@@ -13,6 +13,7 @@ public class LoginNavBarComponent extends HorizontalLayout {
     private static final long serialVersionUID = 7056111594761246275L;
 
     private final Anchor login = new Anchor(UIConst.ROUTE_LOGIN, UIConst.LINK_TEXT_LOGIN);
+    private final Anchor confirm = new Anchor(UIConst.ROUTE_CONFIRM_REGISTER, UIConst.LINK_TEXT_CONFIRM_REGISTER);
     private final RouterLink registration =
             new RouterLink(UIConst.LINK_TEXT_REGISTER, RegistrationView.class);
 
@@ -31,6 +32,7 @@ public class LoginNavBarComponent extends HorizontalLayout {
     }
 
     private void arrangeComponents() {
+        add(confirm);
         add(login);
         add(registration);
     }

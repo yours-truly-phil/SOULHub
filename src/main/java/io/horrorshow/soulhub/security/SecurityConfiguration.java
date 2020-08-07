@@ -53,7 +53,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.mailSender = mailSender;
     }
 
-
+    // TODO extract from UserDetailsService everything none spring security in new UserService
     @Bean
     public UserDetailsService userDetailsService() {
         return new SOULHubUserDetailsService(
