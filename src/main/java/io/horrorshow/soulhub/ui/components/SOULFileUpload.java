@@ -3,10 +3,18 @@ package io.horrorshow.soulhub.ui.components;
 import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.upload.FileRejectedEvent;
+import com.vaadin.flow.component.upload.SucceededEvent;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 public class SOULFileUpload extends VerticalLayout {
 
@@ -18,30 +26,41 @@ public class SOULFileUpload extends VerticalLayout {
 
     private final MultiFileMemoryBuffer buffer = new MultiFileMemoryBuffer();
 
-    private final Upload upload;
-
-
     public SOULFileUpload() {
-        upload = createFileUpload(buffer);
+        Upload upload = createFileUpload(buffer);
 
         add(upload);
     }
 
-    private static Upload createFileUpload(MultiFileMemoryBuffer buffer) {
+    private Upload createFileUpload(MultiFileMemoryBuffer buffer) {
         Upload upload = new Upload(buffer);
         upload.setAcceptedFileTypes(ACCEPTED_FILETYPE);
         upload.setUploadButton(new NativeButton("Upload"));
         upload.setDropLabel(new Span("Drag soul and soulpatch files here"));
         upload.setDropLabelIcon(new Span("¸¸.•*♫♪*\uD83C\uDFB6¨*•♫♪"));
 
-        upload.addSucceededListener(event -> {
-            LOGGER.debug("file upload succeeded - MimeType: {} FileName: {}",
-                    event.getMIMEType(), event.getFileName());
-        });
-        upload.addFileRejectedListener(event -> {
-            LOGGER.debug("file rejected - {}", event.getErrorMessage());
-        });
+        upload.addSucceededListener(this::fileUploaded);
+        upload.addFileRejectedListener(this::fileRejected);
 
         return upload;
+    }
+
+    private void fileRejected(FileRejectedEvent event) {
+        LOGGER.debug(event.getErrorMessage());
+    }
+
+    private void fileUploaded(SucceededEvent event) {
+        InputStream is = buffer.getInputStream(event.getFileName());
+
+        String content = new BufferedReader(
+                new InputStreamReader(is, StandardCharsets.UTF_8))
+                .lines().collect(Collectors.joining("\n"));
+
+        LOGGER.debug("Filename [{}] MIMEType [{}] Length [{}] toString [{}]",
+                event.getFileName(),
+                event.getMIMEType(),
+                event.getContentLength(),
+                content);
+
     }
 }
