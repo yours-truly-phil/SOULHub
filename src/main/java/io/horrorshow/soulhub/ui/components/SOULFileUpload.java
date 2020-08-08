@@ -1,12 +1,18 @@
 package io.horrorshow.soulhub.ui.components;
 
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.upload.FileRejectedEvent;
 import com.vaadin.flow.component.upload.SucceededEvent;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
+import com.vaadin.flow.shared.Registration;
+import io.horrorshow.soulhub.data.SPFile;
+import io.horrorshow.soulhub.data.api.SOULPatchParser;
+import io.horrorshow.soulhub.ui.events.SPFileUploadedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,9 +33,15 @@ public class SOULFileUpload extends VerticalLayout {
     private final MultiFileMemoryBuffer buffer = new MultiFileMemoryBuffer();
 
     public SOULFileUpload() {
+
         Upload upload = createFileUpload(buffer);
 
         add(upload);
+    }
+
+    public Registration addSpFileUploadedListener(
+            ComponentEventListener<SPFileUploadedEvent> listener) {
+        return addListener(SPFileUploadedEvent.class, listener);
     }
 
     private Upload createFileUpload(MultiFileMemoryBuffer buffer) {
@@ -46,12 +58,15 @@ public class SOULFileUpload extends VerticalLayout {
     }
 
     private void fileRejected(FileRejectedEvent event) {
+        new Notification(event.getErrorMessage(), 3000,
+                Notification.Position.MIDDLE).open();
         LOGGER.debug(event.getErrorMessage());
     }
 
     private void fileUploaded(SucceededEvent event) {
         InputStream is = buffer.getInputStream(event.getFileName());
 
+        String filename = event.getFileName();
         String content = new BufferedReader(
                 new InputStreamReader(is, StandardCharsets.UTF_8))
                 .lines().collect(Collectors.joining("\n"));
@@ -62,5 +77,10 @@ public class SOULFileUpload extends VerticalLayout {
                 event.getContentLength(),
                 content);
 
+        SPFile spFile = new SPFile();
+        spFile.setName(filename);
+        spFile.setFileContent(content);
+        spFile.setFileType(SOULPatchParser.guessFileType(spFile));
+        fireEvent(new SPFileUploadedEvent(this, spFile));
     }
 }

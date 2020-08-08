@@ -220,7 +220,8 @@ public class SOULFileEditor extends VerticalLayout
     }
 
     private void deleteSpFile(SPFile spFile) {
-        soulPatchService.deleteSpFileById(spFile.getId());
+        soulPatchService.deleteSpFile(spFile);
+//        soulPatchService.deleteSpFileById(spFile.getId());
 
         new Notification(format("file %s removed", spFile.getName()),
                 3000).open();

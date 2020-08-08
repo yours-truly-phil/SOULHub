@@ -145,6 +145,10 @@ public class SOULPatchService {
 
     public SPFile createSPFile(SOULPatch soulPatch) {
         SPFile spFile = new SPFile();
+        return saveSPFileToSOULPatch(soulPatch, spFile);
+    }
+
+    public SPFile saveSPFileToSOULPatch(SOULPatch soulPatch, SPFile spFile) {
         spFile.setSoulPatch(soulPatch);
         soulPatch.getSpFiles().add(spFile);
         return saveSPFile(spFile);
@@ -166,11 +170,9 @@ public class SOULPatchService {
     }
 
     public void deleteSpFile(SPFile spFile) {
-        spFileRepository.delete(spFile);
-    }
-
-    public void deleteSpFileById(Long id) {
-        spFileRepository.deleteById(id);
+        SOULPatch soulPatch = spFile.getSoulPatch();
+        soulPatch.getSpFiles().remove(spFile);
+        soulPatchRepository.save(soulPatch);
     }
 
     public boolean isSPXmlMatchSPData(SOULPatch patch, SOULPatchXMLType xmlType) {

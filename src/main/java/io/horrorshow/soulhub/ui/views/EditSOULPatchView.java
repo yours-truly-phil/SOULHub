@@ -22,12 +22,13 @@ import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.security.SecurityUtils;
-import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.service.SOULPatchService;
+import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.MultipleSPFileLayoutManager;
 import io.horrorshow.soulhub.ui.components.SOULFileUpload;
+import io.horrorshow.soulhub.ui.events.SPFileUploadedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
 
     private final Binder<SOULPatch> binder = new Binder<>(SOULPatch.class);
 
-    private final SOULFileUpload soulFileUpload = new SOULFileUpload();
+    private final SOULFileUpload soulFileUpload;
 
     private final MultipleSPFileLayoutManager spFilesLayout;
 
@@ -81,6 +82,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         });
 
         spFilesLayout = new MultipleSPFileLayoutManager(soulPatchService, userDetailsService);
+        soulFileUpload = new SOULFileUpload();
 
         setClassName("edit-soulpatch-view");
 
@@ -123,6 +125,14 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
 
         spFilesLayout.addSpFileDeleteListener(event -> reloadSOULPatch(fieldSupport.getValue()));
         spFilesLayout.addSpFileSavedListener(event -> reloadSOULPatch(fieldSupport.getValue()));
+
+        soulFileUpload.addSpFileUploadedListener(this::addSpFile);
+    }
+
+    private void addSpFile(SPFileUploadedEvent upload) {
+        SPFile spFile = soulPatchService.saveSPFileToSOULPatch(fieldSupport.getValue(), upload.getSpFile());
+        reloadSOULPatch(fieldSupport.getValue());
+        showSpFile(spFile);
     }
 
     private void addSpFile() {
