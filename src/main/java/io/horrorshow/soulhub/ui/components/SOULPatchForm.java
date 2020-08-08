@@ -20,8 +20,8 @@ import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
-import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.service.SOULPatchService;
+import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.events.SPFileSelectEvent;
 import io.horrorshow.soulhub.ui.views.EditSOULPatchView;
 import org.slf4j.Logger;
@@ -48,7 +48,6 @@ public class SOULPatchForm extends Div
     private final TextField author = new TextField("author");
     private final TextField noServings = new TextField("no servings");
     private final Grid<SPFile> spFilesGrid = new Grid<>();
-    private final Button newSpFile = new Button("create soulpatch file");
     private final Button editSOULPatch = new Button("edit soulpatch", VaadinIcon.EDIT.create());
     private final Anchor downloadLink = new Anchor();
 
@@ -112,7 +111,6 @@ public class SOULPatchForm extends Div
         content.add(description);
         content.add(author);
         content.add(noServings);
-        content.add(newSpFile);
         content.add(spFilesGrid);
         content.add(downloadLink);
         add(content);
