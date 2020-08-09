@@ -6,6 +6,13 @@ spring:
       ddl-auto: validate
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
+    properties:
+      hibernate:
+        search:
+          lucene_version: LATEST
+          default:
+            directory_provider: filesystem
+            indexBase: /D_AppContent/SOULHub/hibernate-search-idx
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres

@@ -30,8 +30,9 @@ import javax.persistence.*;
         })
 public class SPFile extends AuditModel {
 
+    public static final String FIELD_NAME = "name";
+    public static final String FIELD_CONTENT = "content";
     private static final long serialVersionUID = -4509227070431094816L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false, nullable = false)
@@ -47,12 +48,12 @@ public class SPFile extends AuditModel {
     @Column(name = "filetype")
     private FileType fileType;
 
-    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
+    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO, name = FIELD_NAME)
     @Analyzer(definition = "soulfile_analyzer")
     private String name;
 
     @Column(columnDefinition = "TEXT", name = "content")
-    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
+    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO, name = FIELD_CONTENT)
     @Analyzer(definition = "soulfile_analyzer")
     private String fileContent;
 

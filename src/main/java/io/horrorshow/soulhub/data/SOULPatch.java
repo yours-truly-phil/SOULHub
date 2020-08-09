@@ -34,6 +34,9 @@ public class SOULPatch extends AuditModel {
 
     private static final long serialVersionUID = -6746949290547828924L;
 
+    public static final String FIELD_NAME = "name";
+    public static final String FIELD_DESCRIPTION = "description";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false, nullable = false)
@@ -42,17 +45,18 @@ public class SOULPatch extends AuditModel {
     private Long id;
 
     @NotBlank
-    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
+    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO, name = FIELD_NAME)
     @Analyzer(definition = "soulpatch_analyzer")
     private String name;
 
     @Column(columnDefinition = "TEXT")
-    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
+    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO, name = FIELD_DESCRIPTION)
     @Analyzer(definition = "soulpatch_analyzer")
     private String description;
 
     @OneToMany(mappedBy = "soulPatch", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @ToString.Exclude
+    @IndexedEmbedded
     private Set<SPFile> spFiles = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)

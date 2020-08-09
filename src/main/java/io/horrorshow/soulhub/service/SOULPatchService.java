@@ -49,9 +49,6 @@ public class SOULPatchService {
     private final SOULPatchRepository soulPatchRepository;
     private final SPFileRepository spFileRepository;
 
-//    @PersistenceContext
-//    private EntityManager entityManager;
-
     @PersistenceUnit
     private final EntityManagerFactory entityManagerFactory;
 
@@ -91,6 +88,36 @@ public class SOULPatchService {
     }
 
     @Transactional
+    public List<SPFile> fullTextSearchSPFiles(String text) {
+        EntityManager em = entityManagerFactory.createEntityManager();
+        Validate.notNull(em, "Entity manager must not be null");
+        FullTextEntityManager fullTextEntityManager =
+                Search.getFullTextEntityManager(em);
+
+        em.getTransaction().begin();
+
+        QueryBuilder qb = fullTextEntityManager.getSearchFactory().buildQueryBuilder()
+                .forEntity(SPFile.class).get();
+
+        Query query = qb.keyword().onFields(SPFile.FIELD_NAME, SPFile.FIELD_CONTENT)
+                .ignoreAnalyzer()
+                .ignoreFieldBridge()
+                .matching(text).createQuery();
+
+        List<?> queryResultList = fullTextEntityManager
+                .createFullTextQuery(query, SPFile.class)
+                .getResultList();
+
+        em.getTransaction().commit();
+        em.close();
+
+        return queryResultList.stream()
+                .filter(SPFile.class::isInstance)
+                .map(SPFile.class::cast)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
     public List<SOULPatch> fullTextSearchSOULPatches(String text) {
         List<SOULPatch> result = new ArrayList<>();
         try {
@@ -108,15 +135,14 @@ public class SOULPatchService {
 
             List<String> keywordList = tokenizeString(customAnalyzer, text);
 
-            Query query = qb.keyword().onFields("name", "description")
+            Query query = qb.keyword().onFields(SOULPatch.FIELD_NAME, SOULPatch.FIELD_DESCRIPTION)
                     .ignoreAnalyzer()
                     .ignoreFieldBridge()
                     .matching(text).createQuery();
 
-            javax.persistence.Query persistenceQuery =
-                    fullTextEntityManager.createFullTextQuery(query, SOULPatch.class);
-
-            List<?> queryResultList = persistenceQuery.getResultList();
+            List<?> queryResultList = fullTextEntityManager
+                    .createFullTextQuery(query, SOULPatch.class)
+                    .getResultList();
 
             entityManager.getTransaction().commit();
             entityManager.close();

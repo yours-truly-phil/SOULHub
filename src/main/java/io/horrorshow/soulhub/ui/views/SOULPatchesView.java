@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
+import static java.lang.String.valueOf;
 
 @Route(value = UIConst.ROUTE_SOULPATCHES, layout = MainLayout.class)
 @RouteAlias(value = UIConst.ROUTE_EMPTY, layout = MainLayout.class)
@@ -74,7 +75,8 @@ public class SOULPatchesView
     private final Span userGreeting = new Span("Hello!");
 
     private final TextField fullTextSearch = new TextField("full text search");
-    private final Button fullTextSearchBtn = new Button("full text search");
+    private final Button fullTextSearchBtn = new Button("full text soulpatches");
+    private final Button fullTextSearchSPFiles = new Button("full text search SPFiles");
 
     public SOULPatchesView(@Autowired SOULPatchService service, @Autowired UserService userService) {
 
@@ -210,7 +212,7 @@ public class SOULPatchesView
             return starsRating;
         })).setHeader(COL_RATINGS);
 
-        grid.addColumn(soulPatch -> String.valueOf(soulPatch.getNoViews()))
+        grid.addColumn(soulPatch -> valueOf(soulPatch.getNoViews()))
                 .setHeader(COL_VIEWS).setResizable(true)
                 .setKey(COL_VIEWS)
                 .setSortable(true);
@@ -257,23 +259,43 @@ public class SOULPatchesView
 
             String resultString = fullTextSearchResult.stream()
                     .map(soulPatch ->
-                            String.format("Name: %s\nDescription: %s",
+                            format("Name: %s\nDescription: %s",
                                     soulPatch.getName(), soulPatch.getDescription()))
                     .collect(Collectors.joining("\n\n"));
-            new Notification("Full Text Search Result: \n" + resultString,
-                    5000, Notification.Position.MIDDLE).open();
+            new Notification(
+                    format("Full Text Search Result: \n%s", resultString),
+                    3000, Notification.Position.MIDDLE).open();
             LOGGER.debug("fullTextSearchResult:\n{}", resultString);
+        });
+
+        fullTextSearchSPFiles.addClickListener(event -> {
+            List<SPFile> res = service.fullTextSearchSPFiles(fullTextSearch.getValue());
+
+            String resultString = res.stream().map(SPFile::getName)
+                    .collect(Collectors.joining(", "));
+
+            new Notification(
+                    format("Full Text Search through spFiles results: %s", resultString),
+                    3000, Notification.Position.MIDDLE).open();
+
+            LOGGER.debug("full text search spfiles: {}",
+                    res.stream().map(SPFile::toString).collect(Collectors.joining()));
         });
     }
 
     private void arrangeComponents() {
+        VerticalLayout fullText =
+                new VerticalLayout(
+                        fullTextSearch,
+                        fullTextSearchBtn,
+                        fullTextSearchSPFiles);
+
         HorizontalLayout toolbar =
                 new HorizontalLayout(
                         filterText,
                         filterOwnedSoulpatches,
                         addSOULPatch,
-                        fullTextSearch,
-                        fullTextSearchBtn);
+                        fullText);
 
         VerticalLayout gridLayout = new VerticalLayout(grid);
 
