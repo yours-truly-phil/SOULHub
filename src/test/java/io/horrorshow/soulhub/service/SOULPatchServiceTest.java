@@ -76,7 +76,7 @@ public class SOULPatchServiceTest {
     @BeforeEach
     void init() {
         MockitoAnnotations.initMocks(this);
-        service = new SOULPatchService(soulPatchRepository, null);
+        service = new SOULPatchService(soulPatchRepository, null, null);
     }
 
     @Test

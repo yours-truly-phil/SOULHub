@@ -170,7 +170,9 @@ public class SOULPatchForm extends Div
     }
 
     @Override
-    public Registration addValueChangeListener(ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<SOULPatchForm, SOULPatch>> listener) {
+    public Registration addValueChangeListener(ValueChangeListener<? super
+            AbstractField.ComponentValueChangeEvent<SOULPatchForm, SOULPatch>> listener) {
+
         return fieldSupport.addValueChangeListener(listener);
     }
 }

@@ -13,18 +13,26 @@ import io.horrorshow.soulhub.xml.SOULFileXMLType;
 import io.horrorshow.soulhub.xml.SOULPatchFileXMLType;
 import io.horrorshow.soulhub.xml.SOULPatchXMLType;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.search.Query;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
+import org.hibernate.search.query.dsl.QueryBuilder;
+import org.jsoup.helper.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import javax.transaction.Transactional;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,14 +49,19 @@ public class SOULPatchService {
     private final SOULPatchRepository soulPatchRepository;
     private final SPFileRepository spFileRepository;
 
-    @PersistenceContext
-    private EntityManager entityManager;
+//    @PersistenceContext
+//    private EntityManager entityManager;
+
+    @PersistenceUnit
+    private final EntityManagerFactory entityManagerFactory;
 
     @Autowired
     public SOULPatchService(SOULPatchRepository soulPatchRepository,
-                            SPFileRepository spFileRepository) {
+                            SPFileRepository spFileRepository,
+                            EntityManagerFactory entityManagerFactory) {
         this.soulPatchRepository = soulPatchRepository;
         this.spFileRepository = spFileRepository;
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     public List<SOULPatch> findAll() {
@@ -75,6 +88,62 @@ public class SOULPatchService {
                                     sf -> sf.getName().matches(regex));
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<SOULPatch> fullTextSearchSOULPatches(String text) {
+        List<SOULPatch> result = new ArrayList<>();
+        try {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Validate.notNull(entityManager, "Entity manager can't be null");
+            FullTextEntityManager fullTextEntityManager =
+                    Search.getFullTextEntityManager(entityManager);
+            entityManager.getTransaction().begin();
+
+            QueryBuilder qb = fullTextEntityManager.getSearchFactory().buildQueryBuilder()
+                    .forEntity(SOULPatch.class).get();
+
+            Analyzer customAnalyzer = fullTextEntityManager.getSearchFactory()
+                    .getAnalyzer(SOULPatch.class);
+
+            List<String> keywordList = tokenizeString(customAnalyzer, text);
+
+            Query query = qb.keyword().onFields("name", "description")
+                    .ignoreAnalyzer()
+                    .ignoreFieldBridge()
+                    .matching(text).createQuery();
+
+            javax.persistence.Query persistenceQuery =
+                    fullTextEntityManager.createFullTextQuery(query, SOULPatch.class);
+
+            List<?> queryResultList = persistenceQuery.getResultList();
+
+            entityManager.getTransaction().commit();
+            entityManager.close();
+
+            result.addAll(queryResultList.stream()
+                    .filter(SOULPatch.class::isInstance)
+                    .map(SOULPatch.class::cast)
+                    .collect(Collectors.toList()));
+        } catch (Exception e) {
+            LOGGER.debug("Error fulltext searching for soulpatch", e);
+        }
+        return result;
+    }
+
+    private List<String> tokenizeString(Analyzer analyzer, String string) {
+        List<String> result = new ArrayList<>();
+        try {
+            TokenStream stream = analyzer.tokenStream(null, new StringReader(string));
+            stream.reset();
+            while (stream.incrementToken()) {
+                result.add(stream.getAttribute(CharTermAttribute.class).toString());
+            }
+            stream.close();
+        } catch (IOException e) {
+            LOGGER.debug("Error tokenizing string {}", string, e);
+        }
+        return result;
     }
 
     public List<SOULPatchXMLType> findAllXML() {
@@ -180,18 +249,6 @@ public class SOULPatchService {
             return xmlType.getId().equals(String.valueOf(patch.getId()));
         } catch (Exception e) {
             return false;
-        }
-    }
-
-
-    @Transactional
-    public void createDatabaseIndex() {
-        FullTextEntityManager fullTextEntityManager =
-                Search.getFullTextEntityManager(entityManager);
-        try {
-            fullTextEntityManager.createIndexer().startAndWait();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 

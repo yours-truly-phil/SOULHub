@@ -2,6 +2,8 @@ package io.horrorshow.soulhub.data;
 
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.lang.NonNull;
@@ -13,6 +15,8 @@ import javax.transaction.Transactional;
 
 @Component
 public class SOULPatchHibernateSearchInit implements ApplicationListener<ContextRefreshedEvent> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SOULPatchHibernateSearchInit.class);
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -26,9 +30,7 @@ public class SOULPatchHibernateSearchInit implements ApplicationListener<Context
         try {
             fullTextEntityManager.createIndexer().startAndWait();
         } catch (InterruptedException e) {
-            System.out.println("Error occurred trying to " +
-                    "build Hibernate Search indices "
-                    + e.toString());
+            LOGGER.error("Error occurred trying to build Hibernate Search indices", e);
         }
     }
 

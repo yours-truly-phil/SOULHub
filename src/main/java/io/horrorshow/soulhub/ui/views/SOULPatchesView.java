@@ -8,6 +8,7 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.BrowserWindowResizeEvent;
@@ -20,8 +21,8 @@ import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SOULPatchRating;
 import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.security.SecurityUtils;
-import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.service.SOULPatchService;
+import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.SOULFilePreview;
@@ -71,6 +72,9 @@ public class SOULPatchesView
     private final SOULPatchForm form;
     private final SOULFilePreview SOULFilePreview = new SOULFilePreview();
     private final Span userGreeting = new Span("Hello!");
+
+    private final TextField fullTextSearch = new TextField("full text search");
+    private final Button fullTextSearchBtn = new Button("full text search");
 
     public SOULPatchesView(@Autowired SOULPatchService service, @Autowired UserService userService) {
 
@@ -246,10 +250,30 @@ public class SOULPatchesView
         filterText.addValueChangeListener(e -> updateList());
 
         filterOwnedSoulpatches.addValueChangeListener(event -> updateList());
+
+        fullTextSearchBtn.addClickListener(event -> {
+            List<SOULPatch> fullTextSearchResult =
+                    service.fullTextSearchSOULPatches(fullTextSearch.getValue());
+
+            String resultString = fullTextSearchResult.stream()
+                    .map(soulPatch ->
+                            String.format("Name: %s\nDescription: %s",
+                                    soulPatch.getName(), soulPatch.getDescription()))
+                    .collect(Collectors.joining("\n\n"));
+            new Notification("Full Text Search Result: \n" + resultString,
+                    5000, Notification.Position.MIDDLE).open();
+            LOGGER.debug("fullTextSearchResult:\n{}", resultString);
+        });
     }
 
     private void arrangeComponents() {
-        HorizontalLayout toolbar = new HorizontalLayout(filterText, filterOwnedSoulpatches, addSOULPatch);
+        HorizontalLayout toolbar =
+                new HorizontalLayout(
+                        filterText,
+                        filterOwnedSoulpatches,
+                        addSOULPatch,
+                        fullTextSearch,
+                        fullTextSearchBtn);
 
         VerticalLayout gridLayout = new VerticalLayout(grid);
 
