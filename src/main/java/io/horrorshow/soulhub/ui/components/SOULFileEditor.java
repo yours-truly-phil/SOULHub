@@ -20,8 +20,8 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.SPFile;
-import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.service.SOULPatchService;
+import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.events.SPFileDeleteEvent;
 import io.horrorshow.soulhub.ui.events.SPFileSaveEvent;
 import org.slf4j.Logger;
@@ -221,7 +221,6 @@ public class SOULFileEditor extends VerticalLayout
 
     private void deleteSpFile(SPFile spFile) {
         soulPatchService.deleteSpFile(spFile);
-//        soulPatchService.deleteSpFileById(spFile.getId());
 
         new Notification(format("file %s removed", spFile.getName()),
                 3000).open();

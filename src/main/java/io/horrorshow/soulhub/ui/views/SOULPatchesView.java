@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.klaudeta.PaginatedGrid;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -194,23 +195,25 @@ public class SOULPatchesView
         })).setHeader(COL_FILES).setAutoWidth(true).setResizable(true)
                 .setKey(COL_FILES);
 
-        grid.addColumn(soulPatch -> soulPatch.getRatings().stream()
-                .mapToDouble(SOULPatchRating::getStars)
-                .average().orElse(Double.NaN))
-                .setHeader(COL_RATINGS)
-                .setKey(COL_RATINGS)
-                .setSortable(true);
-
         grid.addColumn(new ComponentRenderer<>(sp -> {
+            Span rating = new Span(String.valueOf(sp.getAverageRating()));
             StarsRating starsRating = new StarsRating();
             starsRating.setValue((int) Math.round(sp.getRatings().stream()
                     .mapToDouble(SOULPatchRating::getStars)
                     .average().orElse(0d)));
             starsRating.setNumstars(5);
             starsRating.setManual(true);
-            starsRating.addValueChangeListener(ratingEvent -> currentUserSOULPatchRating(sp, ratingEvent));
-            return starsRating;
-        })).setHeader(COL_RATINGS);
+            starsRating.addValueChangeListener(
+                    ratingEvent -> currentUserSOULPatchRating(sp, ratingEvent));
+            return new HorizontalLayout(rating, starsRating);
+        })).setHeader(COL_RATINGS)
+                .setKey(COL_RATINGS)
+                .setAutoWidth(true)
+                .setSortable(true)
+                .setComparator(Comparator.comparing(soulPatch ->
+                        soulPatch.getRatings().stream()
+                                .mapToDouble(SOULPatchRating::getStars)
+                                .average().orElse(0d)));
 
         grid.addColumn(soulPatch -> valueOf(soulPatch.getNoViews()))
                 .setHeader(COL_VIEWS).setResizable(true)

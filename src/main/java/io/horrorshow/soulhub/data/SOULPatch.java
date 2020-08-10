@@ -32,11 +32,9 @@ import java.util.stream.Collectors;
         })
 public class SOULPatch extends AuditModel {
 
-    private static final long serialVersionUID = -6746949290547828924L;
-
     public static final String FIELD_NAME = "name";
     public static final String FIELD_DESCRIPTION = "description";
-
+    private static final long serialVersionUID = -6746949290547828924L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false, nullable = false)
@@ -75,5 +73,10 @@ public class SOULPatch extends AuditModel {
         return spFiles.stream().filter(
                 spFile -> spFile.getFileType()
                         .equals(fileType)).collect(Collectors.toList());
+    }
+
+    public double getAverageRating() {
+        return getRatings().stream().mapToDouble(SOULPatchRating::getStars)
+                .average().orElse(0.0d);
     }
 }
