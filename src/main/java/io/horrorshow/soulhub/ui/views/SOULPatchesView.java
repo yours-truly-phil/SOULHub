@@ -6,6 +6,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -165,16 +166,51 @@ public class SOULPatchesView
 
         grid.addColumn(SOULPatch::getName)
                 .setHeader(COL_NAME)
-                .setResizable(true).setAutoWidth(true).setFrozen(true)
+                .setResizable(true)
+                .setAutoWidth(true)
+                .setFrozen(true)
                 .setKey(COL_NAME)
                 .setSortable(true);
 
-        grid.addColumn(SOULPatch::getDescription)
+        grid.addColumn(getColDescriptionRenderer())
                 .setHeader(COL_DESCRIPTION)
-                .setAutoWidth(true).setResizable(true)
-                .setKey(COL_DESCRIPTION);
+                .setKey(COL_DESCRIPTION)
+                .setFlexGrow(10)
+                .setResizable(true);
 
-        grid.addColumn(new ComponentRenderer<>(sp -> {
+        grid.addColumn(getColSpFilesRenderer())
+                .setHeader(COL_FILES)
+                .setAutoWidth(true)
+                .setResizable(true)
+                .setKey(COL_FILES);
+
+        grid.addColumn(getColRatingRenderer())
+                .setHeader(COL_RATINGS)
+                .setKey(COL_RATINGS)
+                .setAutoWidth(true)
+                .setSortable(true)
+                .setComparator(Comparator.comparing(soulPatch ->
+                        soulPatch.getRatings().stream()
+                                .mapToDouble(SOULPatchRating::getStars)
+                                .average().orElse(0d)));
+
+        grid.addColumn(soulPatch -> valueOf(soulPatch.getNoViews()))
+                .setHeader(COL_VIEWS)
+                .setResizable(true)
+                .setAutoWidth(true)
+                .setKey(COL_VIEWS)
+                .setSortable(true);
+
+        grid.addColumn(soulPatch -> soulPatch.getAuthor().getUserName())
+                .setHeader(COL_AUTHOR)
+                .setResizable(true)
+                .setAutoWidth(true)
+                .setKey(COL_AUTHOR)
+                .setSortable(true);
+    }
+
+    private ComponentRenderer<VerticalLayout, SOULPatch> getColSpFilesRenderer() {
+        return new ComponentRenderer<>(sp -> {
             VerticalLayout spFilesLayout = new VerticalLayout();
             if (!sp.getSpFiles().isEmpty()) {
                 sp.getSpFiles().forEach(spFile -> {
@@ -192,10 +228,11 @@ public class SOULPatchesView
                 spFilesLayout.add(new Span("no files attached"));
             }
             return spFilesLayout;
-        })).setHeader(COL_FILES).setAutoWidth(true).setResizable(true)
-                .setKey(COL_FILES);
+        });
+    }
 
-        grid.addColumn(new ComponentRenderer<>(sp -> {
+    private ComponentRenderer<HorizontalLayout, SOULPatch> getColRatingRenderer() {
+        return new ComponentRenderer<>(sp -> {
             Span rating = new Span(String.valueOf(sp.getAverageRating()));
             StarsRating starsRating = new StarsRating();
             starsRating.setValue((int) Math.round(sp.getRatings().stream()
@@ -206,24 +243,17 @@ public class SOULPatchesView
             starsRating.addValueChangeListener(
                     ratingEvent -> currentUserSOULPatchRating(sp, ratingEvent));
             return new HorizontalLayout(rating, starsRating);
-        })).setHeader(COL_RATINGS)
-                .setKey(COL_RATINGS)
-                .setAutoWidth(true)
-                .setSortable(true)
-                .setComparator(Comparator.comparing(soulPatch ->
-                        soulPatch.getRatings().stream()
-                                .mapToDouble(SOULPatchRating::getStars)
-                                .average().orElse(0d)));
+        });
+    }
 
-        grid.addColumn(soulPatch -> valueOf(soulPatch.getNoViews()))
-                .setHeader(COL_VIEWS).setResizable(true)
-                .setKey(COL_VIEWS)
-                .setSortable(true);
-
-        grid.addColumn(soulPatch -> soulPatch.getAuthor().getUserName())
-                .setHeader(COL_AUTHOR).setResizable(true)
-                .setKey(COL_AUTHOR)
-                .setSortable(true);
+    private ComponentRenderer<Paragraph, SOULPatch> getColDescriptionRenderer() {
+        return new ComponentRenderer<>(sp -> {
+            Paragraph p = new Paragraph();
+            p.setText(sp.getDescription());
+            p.addClassName("sp-grid-col-description");
+            p.setWidthFull();
+            return p;
+        });
     }
 
     private void currentUserSOULPatchRating(SOULPatch soulPatch,

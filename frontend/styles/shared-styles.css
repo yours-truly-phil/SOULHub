@@ -32,3 +32,7 @@ a[highlight] {
     margin: var(--lumo-space-m);
 }
 
+.sp-grid-col-description {
+    word-wrap: break-word;
+    white-space: pre-line;
+}
