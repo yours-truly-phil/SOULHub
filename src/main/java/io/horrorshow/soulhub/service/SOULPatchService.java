@@ -230,6 +230,7 @@ public class SOULPatchService {
     }
 
     public SOULPatch save(SOULPatch soulPatch) {
+        LOGGER.debug("soulpatch save: {}", soulPatch);
         return soulPatchRepository.saveAndFlush(soulPatch);
     }
 

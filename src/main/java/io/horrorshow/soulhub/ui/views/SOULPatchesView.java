@@ -266,14 +266,29 @@ public class SOULPatchesView
                     .filter(soulPatchRating ->
                             soulPatchRating.getAppUser()
                                     .equals(currentUser)).distinct().findAny()
-                    .ifPresentOrElse(soulPatchRating ->
-                                    // user rating present
-                                    LOGGER.debug("rating by {} exists {}",
-                                            currentUser.getUserName(),
-                                            soulPatchRating.toString()),
-                            // no rating present
-                            () -> LOGGER.debug("no rating by {} exists",
-                                    currentUser.getUserName()));
+                    .ifPresentOrElse(soulPatchRating -> {
+                                // user rating present
+                                soulPatchRating.setStars(event.getValue());
+                                service.save(soulPatch);
+                                updateList();
+
+                                LOGGER.debug("rating by {} exists {}",
+                                        currentUser.getUserName(),
+                                        soulPatchRating.toString());
+                            },
+                            () -> {
+                                // no rating present
+                                SOULPatchRating rating = new SOULPatchRating();
+                                rating.setAppUser(currentUser);
+                                rating.setSoulPatch(soulPatch);
+                                rating.setStars(event.getValue());
+                                soulPatch.getRatings().add(rating);
+                                service.save(soulPatch);
+                                updateList();
+
+                                LOGGER.debug("no rating by {} exists",
+                                        currentUser.getUserName());
+                            });
         }
     }
 

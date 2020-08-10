@@ -65,7 +65,7 @@ public class SOULPatch extends AuditModel {
     @Column(name = "no_views")
     private Long noViews = 0L;
 
-    @OneToMany(mappedBy = "soulPatch", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "soulPatch", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @ToString.Exclude
     private Set<SOULPatchRating> ratings = new HashSet<>();
 
