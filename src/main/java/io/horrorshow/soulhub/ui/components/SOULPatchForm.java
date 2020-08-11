@@ -22,6 +22,7 @@ import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.service.UserService;
+import io.horrorshow.soulhub.ui.events.SOULPatchDownloadEvent;
 import io.horrorshow.soulhub.ui.events.SPFileSelectEvent;
 import io.horrorshow.soulhub.ui.views.EditSOULPatchView;
 import org.slf4j.Logger;
@@ -133,9 +134,19 @@ public class SOULPatchForm extends Div
         StreamResource streamResource =
                 new StreamResource(
                         String.format("%s.zip", soulPatch.getName()),
-                        () -> new ByteArrayInputStream(soulPatchService.zipSOULPatchFiles(soulPatch)));
+                        () -> downloadSOULPatchBytes(soulPatch));
         downloadLink.setHref(streamResource);
         downloadLink.setText(String.format("Download full %s", soulPatch.getName()));
+    }
+
+    private ByteArrayInputStream downloadSOULPatchBytes(SOULPatch soulPatch) {
+        fireEvent(new SOULPatchDownloadEvent(this, soulPatch));
+        return new ByteArrayInputStream(soulPatchService.zipSOULPatchFiles(soulPatch));
+    }
+
+    public Registration addSOULPatchDownloadListener(
+            ComponentEventListener<SOULPatchDownloadEvent> listener) {
+        return addListener(SOULPatchDownloadEvent.class, listener);
     }
 
     public void gotoEditSOULPatch() {

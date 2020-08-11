@@ -29,6 +29,8 @@ import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.SOULFilePreview;
 import io.horrorshow.soulhub.ui.components.SOULPatchForm;
 import io.horrorshow.soulhub.ui.components.StarsRating;
+import io.horrorshow.soulhub.ui.events.SOULPatchDownloadEvent;
+import io.horrorshow.soulhub.ui.events.SPFileDownloadEvent;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +75,7 @@ public class SOULPatchesView
     private final Button addSOULPatch = new Button("add SOULPatch", VaadinIcon.FILE_ADD.create());
     private final Dialog soulPatchFormDialog = new Dialog();
     private final SOULPatchForm form;
-    private final SOULFilePreview SOULFilePreview = new SOULFilePreview();
+    private final SOULFilePreview spFilePreview = new SOULFilePreview();
     private final Span userGreeting = new Span("Hello!");
 
     private final TextField fullTextSearch = new TextField("full text search");
@@ -104,6 +106,8 @@ public class SOULPatchesView
     }
 
     private void initFields() {
+        spFilePreview.addSPFileDownloadListener(this::spFileDownload);
+
         initFilters();
 
         initSOULPatchesGrid();
@@ -126,7 +130,22 @@ public class SOULPatchesView
     private void initSOULPatchFormDialog() {
         form.setMinWidth("30em");
         form.addSpFileSelectListener(event -> previewSpFile(event.getSpFile()));
+        form.addSOULPatchDownloadListener(this::soulPatchDownload);
         soulPatchFormDialog.add(form);
+    }
+
+    private void soulPatchDownload(SOULPatchDownloadEvent event) {
+        SOULPatch soulPatch = event.getSoulPatch();
+        soulPatch.setNoViews(soulPatch.getNoViews() + 1);
+        service.save(soulPatch);
+        LOGGER.debug("SOULPatch download event, incremented view count: {}", soulPatch);
+    }
+
+    private void spFileDownload(SPFileDownloadEvent event) {
+        SOULPatch soulPatch = event.getSpFile().getSoulPatch();
+        soulPatch.setNoViews(soulPatch.getNoViews() + 1);
+        service.save(soulPatch);
+        LOGGER.debug("SPFile download event, increment corresponding soulpatch view count: {}", soulPatch);
     }
 
     private void initAddSOULPatchLink() {
@@ -271,7 +290,6 @@ public class SOULPatchesView
                                 // user rating present
                                 soulPatchRating.setStars(event.getValue());
                                 service.save(soulPatch);
-                                updateList();
 
                                 LOGGER.debug("rating by {} exists {}",
                                         currentUser.getUserName(),
@@ -285,7 +303,6 @@ public class SOULPatchesView
                                 rating.setStars(event.getValue());
                                 soulPatch.getRatings().add(rating);
                                 service.save(soulPatch);
-                                updateList();
 
                                 LOGGER.debug("no rating by {} exists",
                                         currentUser.getUserName());
@@ -371,7 +388,7 @@ public class SOULPatchesView
     }
 
     public void previewSpFile(SPFile spFile) {
-        SOULFilePreview.showSpFile(spFile);
+        spFilePreview.showSpFile(spFile);
     }
 
     @Override

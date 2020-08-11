@@ -3,6 +3,8 @@ package io.horrorshow.soulhub.ui.components;
 import com.hilerio.ace.AceEditor;
 import com.hilerio.ace.AceMode;
 import com.hilerio.ace.AceTheme;
+import com.vaadin.flow.component.ComponentEvent;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -12,7 +14,10 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.shared.Registration;
+import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
+import io.horrorshow.soulhub.ui.events.SPFileDownloadEvent;
 
 import java.io.ByteArrayInputStream;
 import java.time.format.DateTimeFormatter;
@@ -97,10 +102,20 @@ public class SOULFilePreview extends Dialog {
         aceEditor.setValue(spFile.getFileContent());
 
         StreamResource streamResource = new StreamResource(spFile.getName(),
-                () -> new ByteArrayInputStream(spFile.getFileContent().getBytes()));
+                () -> downloadSPFileBytes(spFile));
         downloadLink.setHref(streamResource);
         downloadLink.setText(String.format("Download %s", spFile.getName()));
 
         open();
+    }
+
+    private ByteArrayInputStream downloadSPFileBytes(SPFile spFile) {
+        fireEvent(new SPFileDownloadEvent(this, spFile));
+        return new ByteArrayInputStream(spFile.getFileContent().getBytes());
+    }
+
+    public Registration addSPFileDownloadListener(
+            ComponentEventListener<SPFileDownloadEvent> listener) {
+        return addListener(SPFileDownloadEvent.class, listener);
     }
 }

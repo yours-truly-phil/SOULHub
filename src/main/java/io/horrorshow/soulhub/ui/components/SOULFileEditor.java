@@ -228,11 +228,13 @@ public class SOULFileEditor extends VerticalLayout
         fireEvent(new SPFileDeleteEvent(this, spFile));
     }
 
-    public Registration addSpFileSavedListener(ComponentEventListener<SPFileSaveEvent> listener) {
+    public Registration addSpFileSavedListener(
+            ComponentEventListener<SPFileSaveEvent> listener) {
         return addListener(SPFileSaveEvent.class, listener);
     }
 
-    public Registration addSpFileDeleteListener(ComponentEventListener<SPFileDeleteEvent> listener) {
+    public Registration addSpFileDeleteListener(
+            ComponentEventListener<SPFileDeleteEvent> listener) {
         return addListener(SPFileDeleteEvent.class, listener);
     }
 
