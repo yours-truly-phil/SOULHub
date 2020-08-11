@@ -240,6 +240,9 @@ public class SOULPatchesView
                     .average().orElse(0d)));
             starsRating.setNumstars(5);
             starsRating.setManual(true);
+            if (!SecurityUtils.isUserLoggedIn()) {
+                starsRating.setReadOnly(true);
+            }
             starsRating.addValueChangeListener(
                     ratingEvent -> currentUserSOULPatchRating(sp, ratingEvent));
             return new HorizontalLayout(rating, starsRating);
@@ -289,6 +292,9 @@ public class SOULPatchesView
                                 LOGGER.debug("no rating by {} exists",
                                         currentUser.getUserName());
                             });
+        } else {
+            event.getSource().setNumstars(event.getOldValue());
+            new Notification("log in to rate soulpatches", 3000, Notification.Position.MIDDLE).open();
         }
     }
 
