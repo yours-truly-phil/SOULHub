@@ -240,9 +240,7 @@ public class SOULPatchesView
                     .average().orElse(0d)));
             starsRating.setNumstars(5);
             starsRating.setManual(true);
-            if (!SecurityUtils.isUserLoggedIn()) {
-                starsRating.setReadOnly(true);
-            }
+            starsRating.setReadOnly(!SecurityUtils.isUserLoggedIn());
             starsRating.addValueChangeListener(
                     ratingEvent -> currentUserSOULPatchRating(sp, ratingEvent));
             return new HorizontalLayout(rating, starsRating);
