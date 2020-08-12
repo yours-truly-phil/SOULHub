@@ -64,7 +64,7 @@ public class SOULPatchesView
     private static final String COL_AUTHOR = "author";
     private static final String COL_RATINGS = "rating";
 
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 50;
     private static final int PAGINATOR_SIZE = 5;
 
     private final SOULPatchService service;
@@ -195,20 +195,25 @@ public class SOULPatchesView
                 .setHeader(COL_DESCRIPTION)
                 .setKey(COL_DESCRIPTION)
                 .setFlexGrow(10)
-                .setResizable(true);
+                .setResizable(true)
+                .setSortable(true)
+                .setComparator(Comparator.comparingInt(sp -> sp.getDescription().length()));
 
         grid.addColumn(getColSpFilesRenderer())
                 .setHeader(COL_FILES)
                 .setAutoWidth(true)
                 .setResizable(true)
-                .setKey(COL_FILES);
+                .setSortable(true)
+                .setKey(COL_FILES)
+                .setComparator(Comparator.comparingInt(sp -> sp.getSpFiles().size()));
 
         grid.addColumn(getColRatingRenderer())
                 .setHeader(COL_RATINGS)
                 .setKey(COL_RATINGS)
-                .setAutoWidth(true)
+                .setWidth("14em")
                 .setSortable(true)
-                .setComparator(Comparator.comparing(soulPatch ->
+                .setResizable(true)
+                .setComparator(Comparator.comparingDouble(soulPatch ->
                         soulPatch.getRatings().stream()
                                 .mapToDouble(SOULPatchRating::getStars)
                                 .average().orElse(0d)));
@@ -218,14 +223,16 @@ public class SOULPatchesView
                 .setResizable(true)
                 .setAutoWidth(true)
                 .setKey(COL_VIEWS)
-                .setSortable(true);
+                .setSortable(true)
+                .setComparator(Comparator.comparingLong(SOULPatch::getNoViews));
 
         grid.addColumn(soulPatch -> soulPatch.getAuthor().getUserName())
                 .setHeader(COL_AUTHOR)
                 .setResizable(true)
                 .setAutoWidth(true)
                 .setKey(COL_AUTHOR)
-                .setSortable(true);
+                .setSortable(true)
+                .setComparator(Comparator.comparing(sp -> sp.getAuthor().getUserName()));
     }
 
     private ComponentRenderer<VerticalLayout, SOULPatch> getColSpFilesRenderer() {
