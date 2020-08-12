@@ -259,7 +259,7 @@ public class SOULPatchesView
 
     private ComponentRenderer<HorizontalLayout, SOULPatch> getColRatingRenderer() {
         return new ComponentRenderer<>(sp -> {
-            Span rating = new Span(String.valueOf(sp.getAverageRating()));
+            Span rating = new Span(String.format("%.2f", sp.getAverageRating()));
             StarsRating starsRating = new StarsRating();
             starsRating.setValue((int) Math.round(sp.getRatings().stream()
                     .mapToDouble(SOULPatchRating::getStars)
