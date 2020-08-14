@@ -31,17 +31,23 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<AppUser> user = userRepository.findByUserName(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<AppUser> user = userRepository.findAppUserByEmail(email);
         if (user.isPresent()) {
-            User.UserBuilder builder = User.withUsername(user.get().getUserName());
-            builder.password(user.get().getEncryptedPassword());
-            builder.roles(user.get().getRoles().stream().map(AppRole::getRoleName)
-                    .collect(Collectors.toSet()).toArray(String[]::new));
-            builder.disabled(user.get().getStatus() == AppUser.UserStatus.UNCONFIRMED);
-            return builder.build();
+            return getUserDetails(user.get());
+        } else if ((user = userRepository.findByUserName(email)).isPresent()) {
+            return getUserDetails(user.get());
         } else {
-            throw new UsernameNotFoundException(String.format("No user present with username: %s", username));
+            throw new UsernameNotFoundException(String.format("No user present with email: %s", email));
         }
+    }
+
+    private UserDetails getUserDetails(AppUser user) {
+        User.UserBuilder builder = User.withUsername(user.getEmail());
+        builder.password(user.getEncryptedPassword());
+        builder.roles(user.getRoles().stream().map(AppRole::getRoleName)
+                .collect(Collectors.toSet()).toArray(String[]::new));
+        builder.disabled(user.getStatus() == AppUser.UserStatus.UNCONFIRMED);
+        return builder.build();
     }
 }

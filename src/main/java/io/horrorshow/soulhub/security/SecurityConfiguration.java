@@ -71,7 +71,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated() //
 
                 // Configure the login page.
-                .and().formLogin().loginPage(LOGIN_URL).permitAll() //
+                .and()
+                .formLogin().loginPage(LOGIN_URL)
+                .usernameParameter("username") // http parameter to look for (vaadin login form)
+                .permitAll() //
                 .loginProcessingUrl(LOGIN_PROCESSING_URL) //
                 .failureUrl(LOGIN_FAILURE_URL)
 

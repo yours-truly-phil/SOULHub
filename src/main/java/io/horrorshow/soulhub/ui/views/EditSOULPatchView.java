@@ -191,8 +191,8 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         if (soulPatchService.isPossibleSOULPatchId(parameter)) {
             SOULPatch soulPatch = soulPatchService.findById(Long.valueOf(parameter));
             if (!userDetailsService.isCurrentUserOwnerOf(soulPatch)) {
-                LOGGER.debug("user not authorized to edit username={} soulpatch={} url-parameter={} event={}",
-                        SecurityUtils.getUsername(), soulPatch, parameter, event);
+                LOGGER.debug("user not authorized to edit user-mail={} soulpatch={} url-parameter={} event={}",
+                        SecurityUtils.getUserEmail(), soulPatch, parameter, event);
                 createErrorView(format("Insufficient rights to edit SOULPatch %s", parameter));
             } else {
                 reloadSOULPatch(soulPatch);
@@ -200,8 +200,8 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         } else if (parameter != null && parameter.equals("new")) {
             reloadSOULPatch(createSOULPatchForCurrentUser());
         } else {
-            LOGGER.debug("invalid access. parameter={} user={} event={}",
-                    parameter, SecurityUtils.getUsername(), event);
+            LOGGER.debug("invalid access. parameter={} user-mail={} event={}",
+                    parameter, SecurityUtils.getUserEmail(), event);
             createErrorView(format("Unable to serve request to edit SOULPatch %s", parameter));
         }
     }
@@ -218,10 +218,9 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     }
 
     private SOULPatch createSOULPatchForCurrentUser() {
-        Optional<AppUser> appUser = userDetailsService.loadAppUser(SecurityUtils.getUsername());
+        Optional<AppUser> appUser = userDetailsService.getCurrentAppUser();
         if (appUser.isPresent()) {
-            AppUser currentUser = appUser.get();
-            return soulPatchService.createSOULPatch(currentUser);
+            return soulPatchService.createSOULPatch(appUser.get());
         } else {
             throw new UsernameNotFoundException("unable to load user to create soulpatch for");
         }

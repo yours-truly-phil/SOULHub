@@ -47,7 +47,7 @@ public class SecurityUtils {
         return encoder.encode(password);
     }
 
-    public static String getUsername() {
+    public static String getUserEmail() {
         Object principal = SecurityContextHolder.getContext().getAuthentication();
         if (principal instanceof UserDetails) {
             return ((UserDetails) principal).getUsername();

@@ -121,7 +121,13 @@ public class SOULPatchesView
 
     private void initGreeting() {
         if (SecurityUtils.isUserLoggedIn()) {
-            userGreeting.setText(format("Hello %s", SecurityUtils.getUsername()));
+            userService.getCurrentAppUser()
+                    .ifPresentOrElse(
+                            u -> userGreeting.setText(format("Hello %s",
+                                    u.getUserName()))
+                            ,
+                            () -> userGreeting.setText(format("Hello %s",
+                                    SecurityUtils.getUserEmail())));
         } else {
             userGreeting.setVisible(false);
         }
@@ -386,8 +392,8 @@ public class SOULPatchesView
         grid.setItems(
                 service.findAll(filterText.getValue()).stream()
                         .filter(soulPatch -> (filterOwnedSoulpatches.getValue() &&
-                                soulPatch.getAuthor().getUserName()
-                                        .equals(SecurityUtils.getUsername()))
+                                soulPatch.getAuthor().getEmail()
+                                        .equals(SecurityUtils.getUserEmail()))
 
                                 ||
                                 !filterOwnedSoulpatches.getValue())

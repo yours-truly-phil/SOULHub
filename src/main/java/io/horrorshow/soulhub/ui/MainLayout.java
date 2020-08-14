@@ -18,11 +18,13 @@ import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import io.horrorshow.soulhub.security.SecurityUtils;
+import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.components.AppUserNavBarComponent;
 import io.horrorshow.soulhub.ui.components.LoginNavBarComponent;
 import io.horrorshow.soulhub.ui.views.AboutView;
 import io.horrorshow.soulhub.ui.views.AdminView;
 import io.horrorshow.soulhub.ui.views.SOULPatchesView;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @PWA(name = UIConst.TITLE,
         shortName = UIConst.TITLE,
@@ -37,7 +39,11 @@ public class MainLayout extends AppLayout {
 
     private static final long serialVersionUID = -4791247729805265577L;
 
-    public MainLayout() {
+    private final UserService userService;
+
+    public MainLayout(@Autowired UserService userService) {
+        this.userService = userService;
+
         addToNavbar(createNavbar());
         addToDrawer(createDrawer());
     }
@@ -62,8 +68,8 @@ public class MainLayout extends AppLayout {
         header.expand(navbarCenterSpace);
 
         HorizontalLayout appUserNavBar;
-        if (SecurityUtils.isUserLoggedIn()) {
-            appUserNavBar = new AppUserNavBarComponent(SecurityUtils.getUsername());
+        if (SecurityUtils.isUserLoggedIn() && userService.getCurrentAppUser().isPresent()) {
+            appUserNavBar = new AppUserNavBarComponent(userService.getCurrentAppUser().get());
         } else {
             appUserNavBar = new LoginNavBarComponent();
         }

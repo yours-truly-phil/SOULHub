@@ -146,7 +146,7 @@ public class UserService {
     }
 
     public Optional<AppUser> getCurrentAppUser() {
-        return loadAppUser(SecurityUtils.getUsername());
+        return loadAppUserByEmail(SecurityUtils.getUserEmail());
     }
 
     public Optional<VerificationToken> getVerificationToken(String token) {
