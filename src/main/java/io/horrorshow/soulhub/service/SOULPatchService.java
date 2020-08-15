@@ -301,6 +301,12 @@ public class SOULPatchService {
                 && spFileExistsById(Long.valueOf(parameter));
     }
 
+    public SOULPatch incrementNoDownloadsAndSave(SOULPatch soulPatch) {
+        soulPatch.setNoViews(soulPatch.getNoViews() + 1);
+        LOGGER.debug("SOULPatch download event, incremented counter: {}", soulPatch);
+        return save(soulPatch);
+    }
+
     public byte[] zipSOULPatchFiles(SOULPatch soulPatch) {
         try (final var baos = new ByteArrayOutputStream();
              final var zos = new ZipOutputStream(baos)) {
@@ -315,6 +321,7 @@ public class SOULPatchService {
             zos.finish();
             zos.flush();
             zos.close();
+            LOGGER.debug("zipped soulpatch files {}", soulPatch);
             return baos.toByteArray();
         } catch (IOException e) {
             LOGGER.error("error zipping soulpatch {}", soulPatch, e);

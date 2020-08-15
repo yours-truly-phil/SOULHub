@@ -81,10 +81,7 @@ public class SOULPatchReadOnly extends Div
     }
 
     private void soulPatchDownload(SOULPatchDownloadEvent event) {
-        SOULPatch soulPatch = event.getSoulPatch();
-        soulPatch.setNoViews(soulPatch.getNoViews() + 1);
-        soulPatchService.save(soulPatch);
-        LOGGER.debug("SOULPatch download event, incremented counter: {}", soulPatch);
+        soulPatchService.incrementNoDownloadsAndSave(event.getSoulPatch());
     }
 
     private void soulPatchChanged(

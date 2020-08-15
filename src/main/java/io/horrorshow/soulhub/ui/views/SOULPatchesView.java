@@ -141,17 +141,11 @@ public class SOULPatchesView
     }
 
     private void soulPatchDownload(SOULPatchDownloadEvent event) {
-        SOULPatch soulPatch = event.getSoulPatch();
-        soulPatch.setNoViews(soulPatch.getNoViews() + 1);
-        service.save(soulPatch);
-        LOGGER.debug("SOULPatch download event, incremented view count: {}", soulPatch);
+        service.incrementNoDownloadsAndSave(event.getSoulPatch());
     }
 
     private void spFileDownload(SPFileDownloadEvent event) {
-        SOULPatch soulPatch = event.getSpFile().getSoulPatch();
-        soulPatch.setNoViews(soulPatch.getNoViews() + 1);
-        service.save(soulPatch);
-        LOGGER.debug("SPFile download event, increment corresponding soulpatch view count: {}", soulPatch);
+        service.incrementNoDownloadsAndSave(event.getSpFile().getSoulPatch());
     }
 
     private void initAddSOULPatchLink() {
