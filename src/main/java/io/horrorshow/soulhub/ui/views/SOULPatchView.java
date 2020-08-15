@@ -13,6 +13,8 @@ import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.SOULPatchReadOnly;
+import io.horrorshow.soulhub.ui.components.SpFileTabs;
+import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,7 @@ public class SOULPatchView extends VerticalLayout implements HasUrlParameter<Str
     private final UserService userService;
 
     private final SOULPatchReadOnly soulPatchReadOnly;
+    private final SpFileTabs spFileTabs;
 
     private final AbstractFieldSupport<SOULPatchView, SOULPatch> fieldSupport;
 
@@ -48,6 +51,7 @@ public class SOULPatchView extends VerticalLayout implements HasUrlParameter<Str
         fieldSupport.addValueChangeListener(this::soulPatchChanged);
 
         soulPatchReadOnly = new SOULPatchReadOnly(soulPatchService, userService);
+        spFileTabs = new SpFileTabs(soulPatchService, userService);
 
         setClassName("soulpatch-view");
 
@@ -56,6 +60,7 @@ public class SOULPatchView extends VerticalLayout implements HasUrlParameter<Str
 
     private void arrangeComponents() {
         add(soulPatchReadOnly);
+        add(spFileTabs);
     }
 
     private void soulPatchChanged(
@@ -63,6 +68,7 @@ public class SOULPatchView extends VerticalLayout implements HasUrlParameter<Str
                     .ComponentValueChangeEvent<SOULPatchView, SOULPatch> event) {
 
         soulPatchReadOnly.setValue(event.getValue());
+        spFileTabs.setValue(Lists.newArrayList(event.getValue().getSpFiles().iterator()));
     }
 
     @Override

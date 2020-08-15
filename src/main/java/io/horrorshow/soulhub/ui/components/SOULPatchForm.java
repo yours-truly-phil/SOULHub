@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.ByteArrayInputStream;
 import java.util.Objects;
 
+@Deprecated
 public class SOULPatchForm extends Div
         implements HasValueAndElement<AbstractField.
         ComponentValueChangeEvent<SOULPatchForm, SOULPatch>, SOULPatch> {

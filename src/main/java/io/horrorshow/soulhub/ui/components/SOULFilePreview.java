@@ -22,6 +22,7 @@ import io.horrorshow.soulhub.ui.events.SPFileDownloadEvent;
 import java.io.ByteArrayInputStream;
 import java.time.format.DateTimeFormatter;
 
+@Deprecated
 public class SOULFilePreview extends Dialog {
 
     private static final long serialVersionUID = 3233168273572823081L;

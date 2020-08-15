@@ -26,9 +26,7 @@ import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
-import io.horrorshow.soulhub.ui.components.SOULFilePreview;
-import io.horrorshow.soulhub.ui.components.SOULPatchForm;
-import io.horrorshow.soulhub.ui.components.StarsRating;
+import io.horrorshow.soulhub.ui.components.*;
 import io.horrorshow.soulhub.ui.events.SOULPatchDownloadEvent;
 import io.horrorshow.soulhub.ui.events.SPFileDownloadEvent;
 import lombok.Getter;
@@ -75,7 +73,7 @@ public class SOULPatchesView
     private final Button addSOULPatch = new Button("add SOULPatch", VaadinIcon.FILE_ADD.create());
     private final Dialog soulPatchFormDialog = new Dialog();
     private final SOULPatchForm form;
-    private final SOULFilePreview spFilePreview = new SOULFilePreview();
+    private final SPFileReadOnlyDialog spFileReadOnlyDialog;
     private final Span userGreeting = new Span("Hello!");
 
     private final TextField fullTextSearch = new TextField("full text search");
@@ -86,7 +84,9 @@ public class SOULPatchesView
 
         this.service = service;
         this.userService = userService;
+
         form = new SOULPatchForm(service, userService);
+        spFileReadOnlyDialog = new SPFileReadOnlyDialog(service, userService);
 
         addClassName("soulpatches-view");
 
@@ -106,8 +106,6 @@ public class SOULPatchesView
     }
 
     private void initFields() {
-        spFilePreview.addSPFileDownloadListener(this::spFileDownload);
-
         initFilters();
 
         initSOULPatchesGrid();
@@ -142,10 +140,6 @@ public class SOULPatchesView
 
     private void soulPatchDownload(SOULPatchDownloadEvent event) {
         service.incrementNoDownloadsAndSave(event.getSoulPatch());
-    }
-
-    private void spFileDownload(SPFileDownloadEvent event) {
-        service.incrementNoDownloadsAndSave(event.getSpFile().getSoulPatch());
     }
 
     private void initAddSOULPatchLink() {
@@ -395,7 +389,8 @@ public class SOULPatchesView
     }
 
     public void previewSpFile(SPFile spFile) {
-        spFilePreview.showSpFile(spFile);
+        spFileReadOnlyDialog.setValue(spFile);
+        spFileReadOnlyDialog.open();
     }
 
     @Override
