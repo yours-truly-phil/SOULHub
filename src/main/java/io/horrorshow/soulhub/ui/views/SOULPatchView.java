@@ -12,7 +12,7 @@ import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
-import io.horrorshow.soulhub.ui.components.SOULPatchForm;
+import io.horrorshow.soulhub.ui.components.SOULPatchReadOnly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class SOULPatchView extends VerticalLayout implements HasUrlParameter<Str
     private final SOULPatchService soulPatchService;
     private final UserService userService;
 
-    private final SOULPatchForm soulPatchForm;
+    private final SOULPatchReadOnly soulPatchReadOnly;
 
     private final AbstractFieldSupport<SOULPatchView, SOULPatch> fieldSupport;
 
@@ -47,7 +47,7 @@ public class SOULPatchView extends VerticalLayout implements HasUrlParameter<Str
         });
         fieldSupport.addValueChangeListener(this::soulPatchChanged);
 
-        soulPatchForm = new SOULPatchForm(soulPatchService, userService);
+        soulPatchReadOnly = new SOULPatchReadOnly(soulPatchService, userService);
 
         setClassName("soulpatch-view");
 
@@ -55,11 +55,14 @@ public class SOULPatchView extends VerticalLayout implements HasUrlParameter<Str
     }
 
     private void arrangeComponents() {
-        add(soulPatchForm);
+        add(soulPatchReadOnly);
     }
 
-    private void soulPatchChanged(AbstractField.ComponentValueChangeEvent<SOULPatchView, SOULPatch> event) {
-        soulPatchForm.setValue(event.getValue());
+    private void soulPatchChanged(
+            AbstractField
+                    .ComponentValueChangeEvent<SOULPatchView, SOULPatch> event) {
+
+        soulPatchReadOnly.setValue(event.getValue());
     }
 
     @Override
@@ -73,13 +76,19 @@ public class SOULPatchView extends VerticalLayout implements HasUrlParameter<Str
     }
 
     @Override
-    public Registration addValueChangeListener(ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<SOULPatchView, SOULPatch>> listener) {
+    public Registration addValueChangeListener(
+            ValueChangeListener<? super AbstractField
+                    .ComponentValueChangeEvent<SOULPatchView, SOULPatch>> listener) {
+
         return fieldSupport.addValueChangeListener(listener);
     }
 
     @Override
-    public void setParameter(BeforeEvent event, String parameter) {
-        var paramMap = event.getLocation().getQueryParameters().getParameters();
+    public void setParameter(final BeforeEvent event, final String parameter) {
+
+        var paramMap =
+                event.getLocation().getQueryParameters().getParameters();
+
         LOGGER.debug("got request for soulpatch {} with parameters {}", parameter, paramMap);
 
         if (soulPatchService.isPossibleSOULPatchId(parameter)) {
@@ -90,7 +99,7 @@ public class SOULPatchView extends VerticalLayout implements HasUrlParameter<Str
         }
     }
 
-    private void createErrorView(String msg) {
+    private void createErrorView(final String msg) {
         removeAll();
         add(new H1(format("Error: %s", msg)));
         add(new RouterLink("to SOULPatches view", SOULPatchesView.class));
