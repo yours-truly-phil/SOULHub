@@ -190,12 +190,12 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
         if (soulPatchService.isPossibleSOULPatchId(parameter)) {
             SOULPatch soulPatch = soulPatchService.findById(Long.valueOf(parameter));
-            if (!userDetailsService.isCurrentUserOwnerOf(soulPatch)) {
+            if (userDetailsService.isCurrentUserOwnerOf(soulPatch)) {
+                reloadSOULPatch(soulPatch);
+            } else {
                 LOGGER.debug("user not authorized to edit user-mail={} soulpatch={} url-parameter={} event={}",
                         SecurityUtils.getUserEmail(), soulPatch, parameter, event);
                 createErrorView(format("Insufficient rights to edit SOULPatch %s", parameter));
-            } else {
-                reloadSOULPatch(soulPatch);
             }
         } else if (parameter != null && parameter.equals("new")) {
             reloadSOULPatch(createSOULPatchForCurrentUser());
