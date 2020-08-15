@@ -113,6 +113,7 @@ public class SOULPatchReadOnly extends Div
 
         description.setWidthFull();
         description.setTitle("description");
+        description.setClassName("sp-description-text");
 
         author.setWidthFull();
         author.setTitle("author");

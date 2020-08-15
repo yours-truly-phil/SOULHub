@@ -36,3 +36,8 @@ a[highlight] {
     word-wrap: break-word;
     white-space: pre-line;
 }
+
+.sp-description-text {
+    word-wrap: break-word;
+    white-space: pre-line;
+}
