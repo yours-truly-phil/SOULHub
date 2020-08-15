@@ -5,7 +5,6 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -26,9 +25,9 @@ import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
-import io.horrorshow.soulhub.ui.components.*;
-import io.horrorshow.soulhub.ui.events.SOULPatchDownloadEvent;
-import io.horrorshow.soulhub.ui.events.SPFileDownloadEvent;
+import io.horrorshow.soulhub.ui.components.SOULPatchReadOnlyDialog;
+import io.horrorshow.soulhub.ui.components.SPFileReadOnlyDialog;
+import io.horrorshow.soulhub.ui.components.StarsRating;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,8 +70,7 @@ public class SOULPatchesView
     private final TextField filterText = new TextField("filter by (regex)");
     private final Checkbox filterOwnedSoulpatches = new Checkbox("show only my soulpatches");
     private final Button addSOULPatch = new Button("add SOULPatch", VaadinIcon.FILE_ADD.create());
-    private final Dialog soulPatchFormDialog = new Dialog();
-    private final SOULPatchForm form;
+    private final SOULPatchReadOnlyDialog soulPatchReadOnlyDialog;
     private final SPFileReadOnlyDialog spFileReadOnlyDialog;
     private final Span userGreeting = new Span("Hello!");
 
@@ -85,8 +83,8 @@ public class SOULPatchesView
         this.service = service;
         this.userService = userService;
 
-        form = new SOULPatchForm(service, userService);
         spFileReadOnlyDialog = new SPFileReadOnlyDialog(service, userService);
+        soulPatchReadOnlyDialog = new SOULPatchReadOnlyDialog(service, userService);
 
         addClassName("soulpatches-view");
 
@@ -112,8 +110,6 @@ public class SOULPatchesView
 
         initAddSOULPatchLink();
 
-        initSOULPatchFormDialog();
-
         initGreeting();
     }
 
@@ -129,17 +125,6 @@ public class SOULPatchesView
         } else {
             userGreeting.setVisible(false);
         }
-    }
-
-    private void initSOULPatchFormDialog() {
-        form.setMinWidth("30em");
-        form.addSpFileSelectListener(event -> previewSpFile(event.getSpFile()));
-        form.addSOULPatchDownloadListener(this::soulPatchDownload);
-        soulPatchFormDialog.add(form);
-    }
-
-    private void soulPatchDownload(SOULPatchDownloadEvent event) {
-        service.incrementNoDownloadsAndSave(event.getSoulPatch());
     }
 
     private void initAddSOULPatchLink() {
@@ -162,17 +147,8 @@ public class SOULPatchesView
         grid.asSingleSelect().addValueChangeListener(event ->
                 grid.asSingleSelect().getOptionalValue()
                         .ifPresentOrElse(
-                                this::showSOULPatchDialog,
-                                this::hideSOULPatchDialog));
-    }
-
-    private void hideSOULPatchDialog() {
-        soulPatchFormDialog.close();
-    }
-
-    private void showSOULPatchDialog(SOULPatch soulPatch) {
-        form.setValue(soulPatch);
-        soulPatchFormDialog.open();
+                                soulPatchReadOnlyDialog::open,
+                                soulPatchReadOnlyDialog::close));
     }
 
     private void addSOULPatchesGridColumns() {
@@ -240,7 +216,7 @@ public class SOULPatchesView
                                     format("%s [%s]", spFile.getName(),
                                             (spFile.getFileType() != null) ? spFile.getFileType().toString() : ""),
                                     VaadinIcon.FILE_CODE.create(),
-                                    event -> previewSpFile(spFile)));
+                                    event -> spFileReadOnlyDialog.open(spFile)));
 
                     spFilesLayout.add(layout);
                 });
@@ -386,11 +362,6 @@ public class SOULPatchesView
                                 ||
                                 !filterOwnedSoulpatches.getValue())
                         .collect(Collectors.toList()));
-    }
-
-    public void previewSpFile(SPFile spFile) {
-        spFileReadOnlyDialog.setValue(spFile);
-        spFileReadOnlyDialog.open();
     }
 
     @Override

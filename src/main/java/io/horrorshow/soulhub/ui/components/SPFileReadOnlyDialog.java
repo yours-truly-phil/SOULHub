@@ -21,6 +21,7 @@ public class SPFileReadOnlyDialog extends Dialog
 
     public SPFileReadOnlyDialog(@Autowired SOULPatchService soulPatchService,
                                 @Autowired UserService userService) {
+
         spFileReadOnly = new SPFileReadOnly(soulPatchService, userService);
 
         Button close = new Button("close dialog");
@@ -35,16 +36,25 @@ public class SPFileReadOnlyDialog extends Dialog
         setDraggable(true);
     }
 
+    public void open(SPFile spFile) {
+        setValue(spFile);
+        open();
+    }
+
+    @Override
     public SPFile getValue() {
         return spFileReadOnly.getValue();
     }
 
+    @Override
     public void setValue(SPFile value) {
         spFileReadOnly.setValue(value);
     }
 
     @Override
-    public Registration addValueChangeListener(ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<SPFileReadOnly, SPFile>> listener) {
+    public Registration addValueChangeListener(
+            ValueChangeListener<? super AbstractField
+                    .ComponentValueChangeEvent<SPFileReadOnly, SPFile>> listener) {
         return spFileReadOnly.addValueChangeListener(listener);
     }
 }
