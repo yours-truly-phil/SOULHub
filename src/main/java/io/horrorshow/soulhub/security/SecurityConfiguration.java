@@ -24,7 +24,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String LOGIN_URL = "/login";
     private static final String LOGOUT_SUCCESS_URL = "/login";
 
-    private static final String[] PERMIT_URLS = {"/", "/confirm", "/about", "/soulpatches", "/register"};
+    private static final String[] PERMIT_URLS =
+            {"/", "/confirm", "/about", "/soulpatches", "/register", "/soulpatch"};
 
     private final UserDetailsService userDetailsService;
 
