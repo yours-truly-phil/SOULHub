@@ -57,6 +57,7 @@ public class PlaygroundView extends Div
 
     private void soulpatchRating(SOULPatchRatingEvent event) {
         LOGGER().debug("soulpatch rating {}", event);
+        dataProvider.refreshItem(event.getSoulPatch());
     }
 
     private void spFileSelected(SPFileSelectEvent event) {
