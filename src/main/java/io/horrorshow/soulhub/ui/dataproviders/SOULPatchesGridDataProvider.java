@@ -5,6 +5,7 @@ import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.provider.QuerySortOrderBuilder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
+import io.horrorshow.soulhub.HasLogger;
 import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.service.SOULPatchService;
@@ -26,7 +27,8 @@ import java.util.function.Consumer;
 @SpringComponent
 @UIScope
 public class SOULPatchesGridDataProvider
-        extends FilterablePageableDataProvider<SOULPatch, SOULPatchesGridDataProvider.SOULPatchFilter> {
+        extends FilterablePageableDataProvider<SOULPatch, SOULPatchesGridDataProvider.SOULPatchFilter>
+        implements HasLogger {
 
     private static final long serialVersionUID = 8027534129208314189L;
 
@@ -59,6 +61,7 @@ public class SOULPatchesGridDataProvider
         if (pageObserver != null) {
             pageObserver.accept(page);
         }
+        LOGGER().debug("query: {} pageable: {} result: {}", query, pageable, page);
         return page;
     }
 
@@ -70,7 +73,9 @@ public class SOULPatchesGridDataProvider
     @Override
     protected int sizeInBackEnd(Query<SOULPatch, SOULPatchFilter> query) {
         SOULPatchFilter filter = query.getFilter().orElse(SOULPatchFilter.getEmptyFilter());
-        return soulPatchService.countAnyMatching(filter);
+        int count = soulPatchService.countAnyMatching(filter);
+        LOGGER().debug("size in backend for query {}: {}", query, count);
+        return count;
     }
 
     public void setPageObserver(Consumer<Page<SOULPatch>> pageObserver) {

@@ -2,7 +2,6 @@ package io.horrorshow.soulhub.ui.components;
 
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -17,13 +16,14 @@ import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.security.SecurityUtils;
 import io.horrorshow.soulhub.ui.events.SOULPatchRatingEvent;
 import io.horrorshow.soulhub.ui.events.SPFileSelectEvent;
+import org.vaadin.klaudeta.PaginatedGrid;
 
 import java.util.Comparator;
 
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 
-public class SOULPatchesGrid extends Grid<SOULPatch> implements HasLogger {
+public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> implements HasLogger {
 
     public static final String COL_NAME = "name";
     public static final String COL_DESCRIPTION = "description";
@@ -31,15 +31,22 @@ public class SOULPatchesGrid extends Grid<SOULPatch> implements HasLogger {
     public static final String COL_VIEWS = "views";
     public static final String COL_AUTHOR = "author";
     public static final String COL_RATINGS = "rating";
+
+    public static final int DEFAULT_PAGE_SIZE = 50;
+    public static final int DEFAULT_PAGINATOR_SIZE = 10;
+
     private static final long serialVersionUID = 3319346975462092870L;
 
     public SOULPatchesGrid() {
+        setClassName("soulpatches-grid");
 
-        init();
+        setPageSize(DEFAULT_PAGE_SIZE);
+        setPaginatorSize(DEFAULT_PAGINATOR_SIZE);
 
+        initColumns();
     }
 
-    private void init() {
+    private void initColumns() {
         addColumn(SOULPatch::getName)
                 .setHeader(COL_NAME)
                 .setKey(COL_NAME)
@@ -143,45 +150,6 @@ public class SOULPatchesGrid extends Grid<SOULPatch> implements HasLogger {
     private void spFileButtonClicked(SPFile spFile) {
         fireEvent(new SPFileSelectEvent(this, spFile));
     }
-
-//    private void soulPatchRatingStarsClicked(SOULPatch soulPatch,
-//                                             AbstractField.ComponentValueChangeEvent<StarsRating, Integer> event) {
-//
-//        fireEvent(new SOULPatchRatingEvent(this, soulPatch, event));
-//        LOGGER().debug("soulpatch rating event {} for soulpatch {}", event, soulPatch);
-//
-//        if (SecurityUtils.isUserLoggedIn() && userService.getCurrentAppUser().isPresent()) {
-//            AppUser currentUser = userService.getCurrentAppUser().get();
-//            soulPatch.getRatings().stream()
-//                    .filter(soulPatchRating ->
-//                            soulPatchRating.getAppUser()
-//                                    .equals(currentUser)).distinct().findAny()
-//                    .ifPresentOrElse(soulPatchRating -> {
-//                                // user rating present
-//                                soulPatchRating.setStars(event.getValue());
-//                                soulPatchService.save(soulPatch);
-//
-//                                LOGGER().debug("rating by {} exists {}",
-//                                        currentUser.getUserName(),
-//                                        soulPatchRating.toString());
-//                            },
-//                            () -> {
-//                                // no rating present
-//                                SOULPatchRating rating = new SOULPatchRating();
-//                                rating.setAppUser(currentUser);
-//                                rating.setSoulPatch(soulPatch);
-//                                rating.setStars(event.getValue());
-//                                soulPatch.getRatings().add(rating);
-//                                soulPatchService.save(soulPatch);
-//
-//                                LOGGER().debug("no rating by {} exists",
-//                                        currentUser.getUserName());
-//                            });
-//        } else {
-//            event.getSource().setNumstars(event.getOldValue());
-//            new Notification("log in to rate soulpatches", 3000, Notification.Position.MIDDLE).open();
-//        }
-//    }
 
     public Registration addSPFileSelectListener(
             ComponentEventListener<SPFileSelectEvent> listener) {

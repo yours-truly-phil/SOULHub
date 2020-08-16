@@ -24,27 +24,389 @@ values (nextval('hibernate_sequence'), 'dbadmin1', 'dbadmin1@mail.com',
         'ACTIVE');
 
 insert into app_role (id, role_name)
-VALUES ((select id from app_user where user_name = 'dbadmin1'), 'ADMIN');
+-- VALUES ((select id from app_user where user_name = 'dbadmin1'), 'ADMIN');
+values (nextval('hibernate_sequence'), 'ADMIN');
 
 insert into app_role (id, role_name)
-VALUES ((select id from app_user where user_name = 'dbuser1'), 'USER');
+-- VALUES ((select id from app_user where user_name = 'dbuser1'), 'USER');
+values (nextval('hibernate_sequence'), 'USER');
 
 insert into user_role (user_id, role_id)
-VALUES (
---         nextval('hibernate_sequence'),
-               (select id from app_user where user_name = 'dbadmin1'),
-               (select id from app_role where role_name = 'USER'));
+VALUES ((select id from app_user where user_name = 'dbadmin1'),
+        (select id from app_role where role_name = 'USER'));
 insert into user_role (user_id, role_id)
-VALUES (
---         nextval('hibernate_sequence'),
-               (select id from app_user where user_name = 'dbadmin1'),
-               (select id from app_role where role_name = 'ADMIN'));
+VALUES ((select id from app_user where user_name = 'dbadmin1'),
+        (select id from app_role where role_name = 'ADMIN'));
 insert into user_role (user_id, role_id)
-values (
---         nextval('hibernate_sequence'),
-               (select id from app_user where user_name = 'dbuser1'),
-               (select id from app_role where role_name = 'USER'));
+values ((select id from app_user where user_name = 'dbuser1'),
+        (select id from app_role where role_name = 'USER'));
 
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
+insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
+values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,
+        (select id from app_user where user_name = 'dbuser1'), 'description', 'name', 0);
 
 insert into soulpatches(id, created_at, updated_at, author, description, name, no_views)
 values (nextval('hibernate_sequence'), current_timestamp, current_timestamp,

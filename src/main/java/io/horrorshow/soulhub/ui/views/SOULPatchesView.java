@@ -345,7 +345,7 @@ public class SOULPatchesView
 
         VerticalLayout gridLayout = new VerticalLayout(grid);
 
-        HorizontalLayout mainContent = new HorizontalLayout(gridLayout);//, form);
+        HorizontalLayout mainContent = new HorizontalLayout(gridLayout);
         mainContent.setSizeFull();
 
         add(userGreeting, toolbar, mainContent);

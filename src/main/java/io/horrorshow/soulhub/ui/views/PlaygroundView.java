@@ -47,12 +47,12 @@ public class PlaygroundView extends Div
 
         soulPatchesGrid = new SOULPatchesGrid();
         soulPatchesGrid.setDataProvider(dataProvider);
+        soulPatchesGrid.setHeightByRows(true);
         soulPatchesGrid.addSPFileSelectListener(this::spFileSelected);
         soulPatchesGrid.addSOULPatchRatingsListener(this::soulpatchRating);
         soulPatchesGrid.asSingleSelect().addValueChangeListener(this::soulPatchesGridSingleSelection);
 
-        dataProvider.setPageObserver(this::pageObserved);
-
+        dataProvider.setPageObserver(this::observePage);
 
         arrangeComponents();
     }
@@ -89,10 +89,10 @@ public class PlaygroundView extends Div
         add(layout);
     }
 
-    private void pageObserved(Page<SOULPatch> soulPatches) {
+    private void observePage(Page<SOULPatch> soulPatchPage) {
         LOGGER().debug("page observer soulpatches: {}, pages: {}",
-                soulPatches.getTotalElements(),
-                soulPatches.getTotalPages());
+                soulPatchPage.getTotalElements(),
+                soulPatchPage.getTotalPages());
     }
 
     @Override
