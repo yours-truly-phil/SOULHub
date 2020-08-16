@@ -26,6 +26,7 @@
     <hibernate-search.version>5.11.5.Final</hibernate-search.version>
     <acewidget.version>1.4-Beta</acewidget.version>
     <vaadin-grid-pagination.version>2.0.7</vaadin-grid-pagination.version>
+    <spring-data-provider.version>2.1.0</spring-data-provider.version>
   </properties>
 
   <repositories>
@@ -196,6 +197,11 @@
       <groupId>org.vaadin.klaudeta</groupId>
       <artifactId>grid-pagination</artifactId>
       <version>${vaadin-grid-pagination.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.artur</groupId>
+      <artifactId>spring-data-provider</artifactId>
+      <version>${spring-data-provider.version}</version>
     </dependency>
 
     <dependency>

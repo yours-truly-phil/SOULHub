@@ -1,5 +1,7 @@
 package io.horrorshow.soulhub.ui;
 
+import org.springframework.data.domain.Sort;
+
 public class UIConst {
 
     public static final String TITLE = "SOULHub";
@@ -17,6 +19,7 @@ public class UIConst {
     public static final String ROUTE_USERINFO = "user";
     public static final String ROUTE_CONFIRM_REGISTER = "confirm";
     public static final String ROUTE_SOULPATCH = "soulpatch";
+    public static final String ROUTE_PLAYGROUND = "playground";
 
     public static final String TITLE_ABOUT = TITLE + " | About";
     public static final String TITLE_ADMIN = TITLE + " | Admin";
@@ -28,6 +31,7 @@ public class UIConst {
     public static final String TITLE_USERINFO = TITLE + " | Userinfo";
     public static final String TITLE_CONFIRM_REGISTER = TITLE + " | Confirm Registration";
     public static final String TITLE_SOULPATCH = TITLE + " | SOULPatch";
+    public static final String TITLE_PLAYGROUND = TITLE + " | Playground";
 
     public static final String LINK_TEXT_LOGOUT = "Logout";
     public static final String LINK_TEXT_SOULPATCHES = "SOULPatches";
@@ -44,4 +48,6 @@ public class UIConst {
     public static final String PARAM_TOKEN = "token";
     public static final String PARAM_SPFILE = "file";
 
+    public static final Sort.Direction DEFAULT_SORT_DIRECTION = Sort.Direction.ASC;
+    public static final String[] ORDER_SORT_FIELDS_SOULPATCHES = {"name", "noViews"};
 }

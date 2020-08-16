@@ -9,6 +9,7 @@ import io.horrorshow.soulhub.data.records.SOULPatchRecord;
 import io.horrorshow.soulhub.data.repository.SOULPatchRepository;
 import io.horrorshow.soulhub.data.repository.SPFileRepository;
 import io.horrorshow.soulhub.exception.ResourceNotFound;
+import io.horrorshow.soulhub.ui.dataproviders.SOULPatchesGridDataProvider;
 import io.horrorshow.soulhub.xml.SOULFileXMLType;
 import io.horrorshow.soulhub.xml.SOULPatchFileXMLType;
 import io.horrorshow.soulhub.xml.SOULPatchXMLType;
@@ -24,6 +25,8 @@ import org.jsoup.helper.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -326,6 +329,44 @@ public class SOULPatchService {
         } catch (IOException e) {
             LOGGER.error("error zipping soulpatch {}", soulPatch, e);
             return null;
+        }
+    }
+
+    public Page<SOULPatch> findAnyMatching(
+            SOULPatchesGridDataProvider.SOULPatchFilter filter, Pageable pageable) {
+
+        if (filter.getNamesFilter().isPresent() && !filter.getUserFilter().isEmpty()) {
+            return soulPatchRepository.findSOULPatchesByAuthorIdInAndNameContainingIgnoreCase(
+                    filter.getUserFilter().stream().map(AppUser::getId).collect(Collectors.toSet()),
+                    filter.getNamesFilter().get(),
+                    pageable);
+        } else if (filter.getNamesFilter().isEmpty() && !filter.getUserFilter().isEmpty()) {
+            return soulPatchRepository.findSOULPatchesByAuthorIdIn(
+                    filter.getUserFilter().stream().map(AppUser::getId).collect(Collectors.toSet()),
+                    pageable);
+        } else if (filter.getNamesFilter().isPresent() && filter.getUserFilter().isEmpty()) {
+            return soulPatchRepository.findSOULPatchesByNameContainingIgnoreCase(
+                    filter.getNamesFilter().get(),
+                    pageable);
+        } else {
+            return soulPatchRepository.findAll(pageable);
+        }
+    }
+
+    public int countAnyMatching(SOULPatchesGridDataProvider.SOULPatchFilter filter) {
+
+        if (filter.getNamesFilter().isPresent() && !filter.getUserFilter().isEmpty()) {
+            return (int) soulPatchRepository.countSOULPatchesByAuthorIdInAndNameContainingIgnoreCase(
+                    filter.getUserFilter().stream().map(AppUser::getId).collect(Collectors.toSet()),
+                    filter.getNamesFilter().get());
+        } else if (filter.getNamesFilter().isEmpty() && !filter.getUserFilter().isEmpty()) {
+            return (int) soulPatchRepository.countSOULPatchesByAuthorIdIn(
+                    filter.getUserFilter().stream().map(AppUser::getId).collect(Collectors.toSet()));
+        } else if (filter.getNamesFilter().isPresent() && filter.getUserFilter().isEmpty()) {
+            return (int) soulPatchRepository.countSOULPatchesByNameContainingIgnoreCase(
+                    filter.getNamesFilter().get());
+        } else {
+            return (int) soulPatchRepository.count();
         }
     }
 }
