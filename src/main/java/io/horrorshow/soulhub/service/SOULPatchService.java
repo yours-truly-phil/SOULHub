@@ -102,7 +102,7 @@ public class SOULPatchService {
         QueryBuilder qb = fullTextEntityManager.getSearchFactory().buildQueryBuilder()
                 .forEntity(SPFile.class).get();
 
-        Query query = qb.keyword().onFields(SPFile.FIELD_NAME, SPFile.FIELD_CONTENT)
+        Query query = qb.keyword().onFields(SPFile.COL_NAME, SPFile.COL_CONTENT)
                 .ignoreAnalyzer()
                 .ignoreFieldBridge()
                 .matching(text).createQuery();
