@@ -2,12 +2,15 @@ package io.horrorshow.soulhub.ui.presenter;
 
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import io.horrorshow.soulhub.HasLogger;
 import io.horrorshow.soulhub.data.SOULPatch;
+import io.horrorshow.soulhub.service.SOULPatchService;
+import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.dataproviders.SOULPatchesGridDataProvider;
+import io.horrorshow.soulhub.ui.events.SOULPatchFullTextSearchEvent;
 import io.horrorshow.soulhub.ui.events.SOULPatchRatingEvent;
+import io.horrorshow.soulhub.ui.events.SOULPatchesFilterEvent;
 import io.horrorshow.soulhub.ui.events.SPFileSelectEvent;
 import io.horrorshow.soulhub.ui.views.PlaygroundView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +20,19 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SOULPatchesPresenter implements HasLogger {
 
     private final SOULPatchesGridDataProvider dataProvider;
+    private final UserService userService;
     private PlaygroundView view;
 
-    public SOULPatchesPresenter(@Autowired SOULPatchesGridDataProvider dataProvider) {
+    public SOULPatchesPresenter(@Autowired SOULPatchesGridDataProvider dataProvider,
+                                @Autowired UserService userService) {
         this.dataProvider = dataProvider;
+        this.userService = userService;
 
         dataProvider.setPageObserver(this::observePage);
     }
@@ -44,16 +49,17 @@ public class SOULPatchesPresenter implements HasLogger {
         view.getGrid().addSPFileSelectListener(this::spFileSelected);
         view.getGrid().addSOULPatchRatingsListener(this::soulpatchRating);
         view.getGrid().asSingleSelect().addValueChangeListener(this::soulPatchesGridSelection);
-        view.getFilterText().addValueChangeListener(this::filterTextChanged);
+        view.getHeader().addSOULPatchesFilterListener(this::soulPatchesFilterEvent);
+        view.getHeader().addFullTextSearchListener(this::fullTextSearchEvent);
     }
 
-    private void filterTextChanged(
-            AbstractField.ComponentValueChangeEvent<TextField, String> event) {
-        var filter = new SOULPatchesGridDataProvider.SOULPatchFilter();
-        filter.setNamesFilter(
-                (event.getValue().isBlank())
-                        ? Optional.empty()
-                        : Optional.of(event.getValue()));
+    private void soulPatchesFilterEvent(SOULPatchesFilterEvent event) {
+        var filter = new SOULPatchService.SOULPatchesFetchFilter();
+        filter.setNamesFilter(event.getFilter().getNamesFilter());
+        if (event.getFilter().isOnlyCurUser()) {
+            userService.getCurrentAppUser().ifPresent(appUser ->
+                    filter.getUsersFilter().add(appUser));
+        }
         dataProvider.setFilter(filter);
     }
 
@@ -63,6 +69,10 @@ public class SOULPatchesPresenter implements HasLogger {
                 .ifPresentOrElse(
                         soulPatch -> LOGGER().debug("soulpatch selected {}", soulPatch),
                         () -> LOGGER().debug("nothing selected"));
+    }
+
+    private void fullTextSearchEvent(SOULPatchFullTextSearchEvent event) {
+        LOGGER().debug("full text search event: {}", event.getValue());
     }
 
     private void soulpatchRating(SOULPatchRatingEvent event) {

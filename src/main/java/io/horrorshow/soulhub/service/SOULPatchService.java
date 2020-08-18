@@ -9,10 +9,13 @@ import io.horrorshow.soulhub.data.records.SOULPatchRecord;
 import io.horrorshow.soulhub.data.repository.SOULPatchRepository;
 import io.horrorshow.soulhub.data.repository.SPFileRepository;
 import io.horrorshow.soulhub.exception.ResourceNotFound;
-import io.horrorshow.soulhub.ui.dataproviders.SOULPatchesGridDataProvider;
 import io.horrorshow.soulhub.xml.SOULFileXMLType;
 import io.horrorshow.soulhub.xml.SOULPatchFileXMLType;
 import io.horrorshow.soulhub.xml.SOULPatchXMLType;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
@@ -35,11 +38,10 @@ import javax.persistence.PersistenceUnit;
 import javax.transaction.Transactional;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -333,18 +335,17 @@ public class SOULPatchService {
     }
 
     public Page<SOULPatch> findAnyMatching(
-            SOULPatchesGridDataProvider.SOULPatchFilter filter, Pageable pageable) {
-
-        if (filter.getNamesFilter().isPresent() && !filter.getUserFilter().isEmpty()) {
+            SOULPatchesFetchFilter filter, Pageable pageable) {
+        if (filter.getNamesFilter().isPresent() && !filter.getUsersFilter().isEmpty()) {
             return soulPatchRepository.findSOULPatchesByAuthorIdInAndNameContainingIgnoreCase(
-                    filter.getUserFilter().stream().map(AppUser::getId).collect(Collectors.toSet()),
+                    filter.getUsersFilter().stream().map(AppUser::getId).collect(Collectors.toSet()),
                     filter.getNamesFilter().get(),
                     pageable);
-        } else if (filter.getNamesFilter().isEmpty() && !filter.getUserFilter().isEmpty()) {
+        } else if (filter.getNamesFilter().isEmpty() && !filter.getUsersFilter().isEmpty()) {
             return soulPatchRepository.findSOULPatchesByAuthorIdIn(
-                    filter.getUserFilter().stream().map(AppUser::getId).collect(Collectors.toSet()),
+                    filter.getUsersFilter().stream().map(AppUser::getId).collect(Collectors.toSet()),
                     pageable);
-        } else if (filter.getNamesFilter().isPresent() && filter.getUserFilter().isEmpty()) {
+        } else if (filter.getNamesFilter().isPresent() && filter.getUsersFilter().isEmpty()) {
             return soulPatchRepository.findSOULPatchesByNameContainingIgnoreCase(
                     filter.getNamesFilter().get(),
                     pageable);
@@ -353,20 +354,54 @@ public class SOULPatchService {
         }
     }
 
-    public int countAnyMatching(SOULPatchesGridDataProvider.SOULPatchFilter filter) {
+    public int countAnyMatching(SOULPatchesFetchFilter filter) {
 
-        if (filter.getNamesFilter().isPresent() && !filter.getUserFilter().isEmpty()) {
+        if (filter.getNamesFilter().isPresent() && !filter.getUsersFilter().isEmpty()) {
             return (int) soulPatchRepository.countSOULPatchesByAuthorIdInAndNameContainingIgnoreCase(
-                    filter.getUserFilter().stream().map(AppUser::getId).collect(Collectors.toSet()),
+                    filter.getUsersFilter().stream().map(AppUser::getId).collect(Collectors.toSet()),
                     filter.getNamesFilter().get());
-        } else if (filter.getNamesFilter().isEmpty() && !filter.getUserFilter().isEmpty()) {
+        } else if (filter.getNamesFilter().isEmpty() && !filter.getUsersFilter().isEmpty()) {
             return (int) soulPatchRepository.countSOULPatchesByAuthorIdIn(
-                    filter.getUserFilter().stream().map(AppUser::getId).collect(Collectors.toSet()));
-        } else if (filter.getNamesFilter().isPresent() && filter.getUserFilter().isEmpty()) {
+                    filter.getUsersFilter().stream().map(AppUser::getId).collect(Collectors.toSet()));
+        } else if (filter.getNamesFilter().isPresent() && filter.getUsersFilter().isEmpty()) {
             return (int) soulPatchRepository.countSOULPatchesByNameContainingIgnoreCase(
                     filter.getNamesFilter().get());
         } else {
             return (int) soulPatchRepository.count();
+        }
+    }
+
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @EqualsAndHashCode
+    @ToString
+    public static class SOULPatchesFetchFilter implements Serializable {
+
+        private static final long serialVersionUID = -1706756888052669980L;
+
+        private final Set<AppUser> usersFilter = new HashSet<>();
+
+        private String namesFilter = null;
+
+        public static SOULPatchesFetchFilter getEmptyFilter() {
+            return new SOULPatchesFetchFilter();
+        }
+
+        public Optional<String> getNamesFilter() {
+            if (namesFilter != null && !namesFilter.isBlank()) {
+                return Optional.of(namesFilter);
+            } else {
+                return Optional.empty();
+            }
+        }
+
+        public void setNamesFilter(String namesFilter) {
+            this.namesFilter = namesFilter;
+        }
+
+        public Set<AppUser> getUsersFilter() {
+            return usersFilter;
         }
     }
 }

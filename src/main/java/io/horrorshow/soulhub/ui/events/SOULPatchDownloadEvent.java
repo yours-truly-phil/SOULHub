@@ -3,7 +3,9 @@ package io.horrorshow.soulhub.ui.events;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import io.horrorshow.soulhub.data.SOULPatch;
+import lombok.ToString;
 
+@ToString
 public class SOULPatchDownloadEvent extends ComponentEvent<Component> {
 
     private static final long serialVersionUID = 6709860142221597167L;

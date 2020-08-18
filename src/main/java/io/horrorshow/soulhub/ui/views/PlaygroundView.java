@@ -2,12 +2,12 @@ package io.horrorshow.soulhub.ui.views;
 
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.*;
 import io.horrorshow.soulhub.HasLogger;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.SOULPatchesGrid;
+import io.horrorshow.soulhub.ui.components.SOULPatchesGridHeader;
 import io.horrorshow.soulhub.ui.presenter.SOULPatchesPresenter;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,31 +18,33 @@ public class PlaygroundView extends Div
 
     private static final long serialVersionUID = 6587633236690463135L;
 
-    private final TextField filterText = new TextField("Filter names by");
-    private final SOULPatchesGrid soulPatchesGrid = new SOULPatchesGrid();
+    private final SOULPatchesGrid grid = new SOULPatchesGrid();
+    private final SOULPatchesGridHeader filter = new SOULPatchesGridHeader();
 
     private final SOULPatchesPresenter soulPatchesPresenter;
 
     public PlaygroundView(@Autowired SOULPatchesPresenter soulPatchesPresenter) {
         this.soulPatchesPresenter = soulPatchesPresenter;
         soulPatchesPresenter.init(this);
-        soulPatchesGrid.setHeightByRows(true);
 
-        arrangeComponents();
+        layoutComponents();
     }
 
     public SOULPatchesGrid getGrid() {
-        return this.soulPatchesGrid;
+        return this.grid;
     }
 
-    public TextField getFilterText() {
-        return this.filterText;
+    public SOULPatchesGridHeader getHeader() {
+        return this.filter;
     }
 
-    private void arrangeComponents() {
+    private void layoutComponents() {
+        grid.setHeightByRows(true);
+        filter.setWidthFull();
+
         VerticalLayout layout = new VerticalLayout();
-        layout.add(filterText);
-        layout.add(soulPatchesGrid);
+        layout.add(filter);
+        layout.add(grid);
         add(layout);
     }
 
