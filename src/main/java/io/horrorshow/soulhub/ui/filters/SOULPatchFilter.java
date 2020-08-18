@@ -12,9 +12,16 @@ import java.io.Serializable;
 public class SOULPatchFilter implements Serializable {
     private static final long serialVersionUID = -3255793403758813065L;
     private boolean onlyCurUser = false;
-    private String namesFilter = null;
+    @NonNull
+    private String namesFilter = "";
 
     public static SOULPatchFilter getEmptyFilter() {
         return new SOULPatchFilter();
+    }
+
+    public static SOULPatchFilter getOnlyCurrentUser() {
+        var filter = new SOULPatchFilter();
+        filter.setOnlyCurUser(true);
+        return filter;
     }
 }

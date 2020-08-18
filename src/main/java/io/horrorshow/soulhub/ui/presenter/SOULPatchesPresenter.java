@@ -7,11 +7,13 @@ import io.horrorshow.soulhub.HasLogger;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.service.UserService;
+import io.horrorshow.soulhub.ui.UIConst;
+import io.horrorshow.soulhub.ui.components.SOULPatchesGridHeader;
 import io.horrorshow.soulhub.ui.dataproviders.SOULPatchesGridDataProvider;
 import io.horrorshow.soulhub.ui.events.SOULPatchFullTextSearchEvent;
 import io.horrorshow.soulhub.ui.events.SOULPatchRatingEvent;
-import io.horrorshow.soulhub.ui.events.SOULPatchesFilterEvent;
 import io.horrorshow.soulhub.ui.events.SPFileSelectEvent;
+import io.horrorshow.soulhub.ui.filters.SOULPatchFilter;
 import io.horrorshow.soulhub.ui.views.PlaygroundView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -49,14 +51,16 @@ public class SOULPatchesPresenter implements HasLogger {
         view.getGrid().addSPFileSelectListener(this::spFileSelected);
         view.getGrid().addSOULPatchRatingsListener(this::soulpatchRating);
         view.getGrid().asSingleSelect().addValueChangeListener(this::soulPatchesGridSelection);
-        view.getHeader().addSOULPatchesFilterListener(this::soulPatchesFilterEvent);
         view.getHeader().addFullTextSearchListener(this::fullTextSearchEvent);
+        view.getHeader().addValueChangeListener(this::soulpatchesHeaderChanged);
     }
 
-    private void soulPatchesFilterEvent(SOULPatchesFilterEvent event) {
+    private void soulpatchesHeaderChanged(
+            AbstractField.ComponentValueChangeEvent<SOULPatchesGridHeader, SOULPatchFilter> event) {
+        LOGGER().debug("soulpatch header value changed: {}", event.getValue());
         var filter = new SOULPatchService.SOULPatchesFetchFilter();
-        filter.setNamesFilter(event.getFilter().getNamesFilter());
-        if (event.getFilter().isOnlyCurUser()) {
+        filter.setNamesFilter(event.getValue().getNamesFilter());
+        if (event.getValue().isOnlyCurUser()) {
             userService.getCurrentAppUser().ifPresent(appUser ->
                     filter.getUsersFilter().add(appUser));
         }
@@ -85,6 +89,13 @@ public class SOULPatchesPresenter implements HasLogger {
     }
 
     public void onNavigation(String parameter, Map<String, List<String>> parameterMap) {
+
+        if (parameterMap.containsKey(UIConst.PARAM_SHOW_BY_CURRENT_USER)
+                && parameterMap.get(UIConst.PARAM_SHOW_BY_CURRENT_USER).stream()
+                .anyMatch(Boolean.TRUE.toString()::equalsIgnoreCase)) {
+
+            view.getHeader().setValue(SOULPatchFilter.getOnlyCurrentUser());
+        }
         LOGGER().debug("on navigation with parameter: {} and parameterMap {}",
                 parameter, parameterMap.toString());
     }

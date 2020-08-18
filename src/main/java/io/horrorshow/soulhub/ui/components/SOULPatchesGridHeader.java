@@ -1,10 +1,13 @@
 package io.horrorshow.soulhub.ui.components;
 
+import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.HasValueAndElement;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.internal.AbstractFieldSupport;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -15,7 +18,11 @@ import io.horrorshow.soulhub.ui.events.SOULPatchFullTextSearchEvent;
 import io.horrorshow.soulhub.ui.events.SOULPatchesFilterEvent;
 import io.horrorshow.soulhub.ui.filters.SOULPatchFilter;
 
-public class SOULPatchesGridHeader extends Div {
+import java.util.Objects;
+
+public class SOULPatchesGridHeader extends Div
+        implements HasValueAndElement<AbstractField.ComponentValueChangeEvent
+        <SOULPatchesGridHeader, SOULPatchFilter>, SOULPatchFilter> {
 
     private static final long serialVersionUID = 8863450661909139044L;
 
@@ -25,7 +32,14 @@ public class SOULPatchesGridHeader extends Div {
     private final TextField fullTextSearch = new TextField("search through file contents and descriptions");
     private final Button fullTextBtn = new Button("Find...");
 
+    private final AbstractFieldSupport<SOULPatchesGridHeader, SOULPatchFilter> fieldSupport;
+
     public SOULPatchesGridHeader() {
+        fieldSupport = new AbstractFieldSupport<>(
+                this, SOULPatchFilter.getEmptyFilter(), Objects::equals, filter -> {
+            namesFilter.setValue(filter.getNamesFilter());
+            showOnlyCurUser.setValue(filter.isOnlyCurUser());
+        });
         setupNamesFilter();
 
         setupShowOnlyCurUserFilter();
@@ -33,6 +47,11 @@ public class SOULPatchesGridHeader extends Div {
         setupFullTextSearch();
 
         arrangeComponents();
+    }
+
+    private void valueChanged(
+            AbstractField.ComponentValueChangeEvent<SOULPatchesGridHeader, SOULPatchFilter> event) {
+
     }
 
     private void setupFullTextSearch() {
@@ -62,7 +81,7 @@ public class SOULPatchesGridHeader extends Div {
         SOULPatchFilter filter = SOULPatchFilter.getEmptyFilter();
         filter.setNamesFilter(namesFilter.getValue());
         filter.setOnlyCurUser(showOnlyCurUser.getValue());
-        fireEvent(new SOULPatchesFilterEvent(this, filter));
+        setValue(filter);
     }
 
     private void arrangeComponents() {
@@ -84,5 +103,22 @@ public class SOULPatchesGridHeader extends Div {
     public Registration addFullTextSearchListener(
             ComponentEventListener<SOULPatchFullTextSearchEvent> listener) {
         return addListener(SOULPatchFullTextSearchEvent.class, listener);
+    }
+
+    @Override
+    public SOULPatchFilter getValue() {
+        return fieldSupport.getValue();
+    }
+
+    @Override
+    public void setValue(SOULPatchFilter value) {
+        fieldSupport.setValue(value);
+    }
+
+    @Override
+    public Registration addValueChangeListener(
+            ValueChangeListener<? super AbstractField
+                    .ComponentValueChangeEvent<SOULPatchesGridHeader, SOULPatchFilter>> listener) {
+        return fieldSupport.addValueChangeListener(listener);
     }
 }
