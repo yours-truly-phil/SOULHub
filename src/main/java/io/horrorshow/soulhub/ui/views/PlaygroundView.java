@@ -1,25 +1,15 @@
 package io.horrorshow.soulhub.ui.views;
 
-import com.vaadin.flow.component.AbstractField;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.*;
 import io.horrorshow.soulhub.HasLogger;
-import io.horrorshow.soulhub.data.SOULPatch;
-import io.horrorshow.soulhub.service.SOULPatchService;
-import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.SOULPatchesGrid;
-import io.horrorshow.soulhub.ui.dataproviders.SOULPatchesGridDataProvider;
-import io.horrorshow.soulhub.ui.events.SOULPatchRatingEvent;
-import io.horrorshow.soulhub.ui.events.SPFileSelectEvent;
+import io.horrorshow.soulhub.ui.presenter.SOULPatchesPresenter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-
-import java.util.Optional;
 
 @Route(value = UIConst.ROUTE_PLAYGROUND, layout = MainLayout.class)
 @PageTitle(UIConst.TITLE_PLAYGROUND)
@@ -28,58 +18,25 @@ public class PlaygroundView extends Div
 
     private static final long serialVersionUID = 6587633236690463135L;
 
-    private final SOULPatchService soulPatchService;
-    private final UserService userService;
-    private final SOULPatchesGridDataProvider dataProvider;
+    private final TextField filterText = new TextField("Filter names by");
+    private final SOULPatchesGrid soulPatchesGrid = new SOULPatchesGrid();
 
-    private final TextField filterText;
-    private final SOULPatchesGrid soulPatchesGrid;
+    private final SOULPatchesPresenter soulPatchesPresenter;
 
-    public PlaygroundView(@Autowired SOULPatchService soulPatchService,
-                          @Autowired UserService userService,
-                          @Autowired SOULPatchesGridDataProvider dataProvider) {
-        this.soulPatchService = soulPatchService;
-        this.userService = userService;
-        this.dataProvider = dataProvider;
-
-        filterText = new TextField("Filter names by");
-        filterText.addValueChangeListener(this::filterTextChanged);
-
-        soulPatchesGrid = new SOULPatchesGrid();
-        soulPatchesGrid.setDataProvider(dataProvider);
+    public PlaygroundView(@Autowired SOULPatchesPresenter soulPatchesPresenter) {
+        this.soulPatchesPresenter = soulPatchesPresenter;
+        soulPatchesPresenter.init(this);
         soulPatchesGrid.setHeightByRows(true);
-        soulPatchesGrid.addSPFileSelectListener(this::spFileSelected);
-        soulPatchesGrid.addSOULPatchRatingsListener(this::soulpatchRating);
-        soulPatchesGrid.asSingleSelect().addValueChangeListener(this::soulPatchesGridSingleSelection);
-
-        dataProvider.setPageObserver(this::observePage);
 
         arrangeComponents();
     }
 
-    private void filterTextChanged(AbstractField.ComponentValueChangeEvent<TextField, String> event) {
-        var filter = new SOULPatchesGridDataProvider.SOULPatchFilter();
-        filter.setNamesFilter(
-                (event.getValue().isBlank())
-                        ? Optional.empty()
-                        : Optional.of(event.getValue()));
-        dataProvider.setFilter(filter);
+    public SOULPatchesGrid getGrid() {
+        return this.soulPatchesGrid;
     }
 
-    private void soulPatchesGridSingleSelection(AbstractField.ComponentValueChangeEvent<Grid<SOULPatch>, SOULPatch> event) {
-        soulPatchesGrid.asSingleSelect().getOptionalValue()
-                .ifPresentOrElse(
-                        soulPatch -> LOGGER().debug("soulpatch selected {}", soulPatch),
-                        () -> LOGGER().debug("nothing selected"));
-    }
-
-    private void soulpatchRating(SOULPatchRatingEvent event) {
-        LOGGER().debug("soulpatch rating {}", event);
-        dataProvider.refreshItem(event.getSoulPatch());
-    }
-
-    private void spFileSelected(SPFileSelectEvent event) {
-        LOGGER().debug("sp file selected {}", event);
+    public TextField getFilterText() {
+        return this.filterText;
     }
 
     private void arrangeComponents() {
@@ -89,14 +46,9 @@ public class PlaygroundView extends Div
         add(layout);
     }
 
-    private void observePage(Page<SOULPatch> soulPatchPage) {
-        LOGGER().debug("page observer soulpatches: {}, pages: {}",
-                soulPatchPage.getTotalElements(),
-                soulPatchPage.getTotalPages());
-    }
-
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-
+        var parameterMap = event.getLocation().getQueryParameters().getParameters();
+        soulPatchesPresenter.onNavigation(parameter, parameterMap);
     }
 }
