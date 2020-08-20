@@ -18,8 +18,6 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -57,18 +55,23 @@ public class SOULPatchesPresenter {
         view.getGrid().asSingleSelect().addValueChangeListener(this::soulPatchesGridSelection);
         view.getHeader().addFullTextSearchListener(this::fullTextSearchEvent);
         view.getHeader().addValueChangeListener(this::soulpatchesHeaderChanged);
-        view.getSpFileReadOnlyDialog().getSpFileReadOnly().addSPFileDownloadListener(this::spFileDownloaded);
-        view.getSoulPatchReadOnlyDialog().getSoulPatchReadOnly().setSOULPatchZipInputStreamProvider(this::getSOULPatchZipInputStream);
-        view.getSoulPatchReadOnlyDialog().getSoulPatchReadOnly().addSOULPatchDownloadListener(this::soulPatchDownloaded);
+
+        view.getSpFileReadOnlyDialog()
+                .getSpFileReadOnly()
+                .addSPFileDownloadListener(this::spFileDownloaded);
+
+        view.getSoulPatchReadOnlyDialog()
+                .getSoulPatchReadOnly()
+                .setSOULPatchZipInputStreamProvider(soulPatchService::getZipSOULPatchStreamProvider);
+
+        view.getSoulPatchReadOnlyDialog()
+                .getSoulPatchReadOnly()
+                .addSOULPatchDownloadListener(this::soulPatchDownloaded);
     }
 
     private void soulPatchDownloaded(SOULPatchDownloadEvent event) {
         soulPatchService.incrementNoDownloadsAndSave(event.getSoulPatch());
         dataProvider.refreshItem(event.getSoulPatch());
-    }
-
-    private InputStream getSOULPatchZipInputStream(SOULPatch soulPatch) {
-        return new ByteArrayInputStream(soulPatchService.zipSOULPatchFiles(soulPatch));
     }
 
     private void spFileDownloaded(SPFileDownloadEvent event) {
@@ -92,9 +95,7 @@ public class SOULPatchesPresenter {
             AbstractField.ComponentValueChangeEvent<Grid<SOULPatch>, SOULPatch> event) {
         view.getGrid().asSingleSelect().getOptionalValue()
                 .ifPresentOrElse(
-//                        soulPatch -> log.debug("soulpatch selected {}", soulPatch),
                         soulPatch -> view.getSoulPatchReadOnlyDialog().open(soulPatch),
-//                        () -> log.debug("nothing selected"));
                         () -> view.getSoulPatchReadOnlyDialog().close());
     }
 

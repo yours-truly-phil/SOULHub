@@ -9,6 +9,8 @@ import io.horrorshow.soulhub.data.records.SOULPatchRecord;
 import io.horrorshow.soulhub.data.repository.SOULPatchRepository;
 import io.horrorshow.soulhub.data.repository.SPFileRepository;
 import io.horrorshow.soulhub.exception.ResourceNotFound;
+import io.horrorshow.soulhub.ui.events.SOULPatchDownloadEvent;
+import io.horrorshow.soulhub.ui.events.SPFileDownloadEvent;
 import io.horrorshow.soulhub.xml.SOULFileXMLType;
 import io.horrorshow.soulhub.xml.SOULPatchFileXMLType;
 import io.horrorshow.soulhub.xml.SOULPatchXMLType;
@@ -35,12 +37,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import javax.transaction.Transactional;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.Serializable;
-import java.io.StringReader;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -310,6 +310,10 @@ public class SOULPatchService {
         return save(soulPatch);
     }
 
+    public InputStream getZipSOULPatchStreamProvider(SOULPatch soulPatch) {
+        return new ByteArrayInputStream(zipSOULPatchFiles(soulPatch));
+    }
+
     public byte[] zipSOULPatchFiles(SOULPatch soulPatch) {
         try (final var baos = new ByteArrayOutputStream();
              final var zos = new ZipOutputStream(baos)) {
@@ -369,6 +373,13 @@ public class SOULPatchService {
         }
     }
 
+    public void soulPatchDownloaded(SOULPatchDownloadEvent soulPatchDownloadEvent) {
+        incrementNoDownloadsAndSave(soulPatchDownloadEvent.getSoulPatch());
+    }
+
+    public void spFileDownloaded(SPFileDownloadEvent spFileDownloadEvent) {
+        incrementNoDownloadsAndSave(spFileDownloadEvent.getSpFile().getSoulPatch());
+    }
 
     @NoArgsConstructor
     @AllArgsConstructor

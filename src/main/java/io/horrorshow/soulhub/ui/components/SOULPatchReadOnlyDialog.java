@@ -11,11 +11,8 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.SOULPatch;
-import io.horrorshow.soulhub.service.SOULPatchService;
-import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.views.EditSOULPatchView;
 import io.horrorshow.soulhub.ui.views.SOULPatchView;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class SOULPatchReadOnlyDialog extends Dialog
         implements HasValueAndElement<AbstractField.ComponentValueChangeEvent
@@ -23,20 +20,11 @@ public class SOULPatchReadOnlyDialog extends Dialog
 
     private static final long serialVersionUID = 469080434031031088L;
 
-//    private final UserService userService;
-
     private final SOULPatchReadOnly soulPatchReadOnly = new SOULPatchReadOnly();
-
+    private final Button editSOULPatch = new Button("edit SOULPatch", VaadinIcon.EDIT.create());
     private boolean isEditable = false;
 
-    private final Button editSOULPatch = new Button("edit SOULPatch", VaadinIcon.EDIT.create());
-
-//    public SOULPatchReadOnlyDialog(@Autowired SOULPatchService soulPatchService,
-//                                   @Autowired UserService userService) {
     public SOULPatchReadOnlyDialog() {
-//        this.userService = userService;
-
-//        soulPatchReadOnly = new SOULPatchReadOnly(soulPatchService, userService);
 
         addValueChangeListener(this::valueChanged);
 
@@ -71,7 +59,6 @@ public class SOULPatchReadOnlyDialog extends Dialog
     private void valueChanged(
             AbstractField.ComponentValueChangeEvent<SOULPatchReadOnly, SOULPatch> event) {
         editSOULPatch.setVisible(isEditable);
-//        editSOULPatch.setVisible(userService.isCurrentUserOwnerOf(event.getValue()));
     }
 
     private void editSOULPatchClicked(ClickEvent<Button> event) {

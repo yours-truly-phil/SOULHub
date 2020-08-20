@@ -48,9 +48,10 @@ public class SOULPatchView extends VerticalLayout implements HasUrlParameter<Str
         });
         fieldSupport.addValueChangeListener(this::soulPatchChanged);
 
-//        soulPatchReadOnly = new SOULPatchReadOnly(soulPatchService, userService);
-
         setClassName("soulpatch-view");
+
+        soulPatchReadOnly.setSOULPatchZipInputStreamProvider(soulPatchService::getZipSOULPatchStreamProvider);
+        soulPatchReadOnly.addSOULPatchDownloadListener(soulPatchService::soulPatchDownloaded);
 
         arrangeComponents();
     }
