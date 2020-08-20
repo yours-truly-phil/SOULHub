@@ -38,7 +38,7 @@ public class SOULPatchReadOnly extends Div
     private final Label author = new Label("author"); // TODO create insertable author component
     private final Label downloads = new Label("downloads");
     private final Anchor downloadLink = new Anchor();
-    private Function<SOULPatch, InputStream> streamProvider;
+    private Function<SOULPatch, InputStream> soulPatchZipByteStreamSupplier;
 
     public SOULPatchReadOnly() {
 
@@ -80,7 +80,7 @@ public class SOULPatchReadOnly extends Div
     }
 
     public void setSOULPatchZipInputStreamProvider(Function<SOULPatch, InputStream> streamProvider) {
-        this.streamProvider = streamProvider;
+        this.soulPatchZipByteStreamSupplier = streamProvider;
     }
 
     private void init() {
@@ -138,7 +138,7 @@ public class SOULPatchReadOnly extends Div
 
     public InputStream downloadSOULPatch(SOULPatch soulPatch) {
         fireEvent(new SOULPatchDownloadEvent(this, soulPatch));
-        return streamProvider.apply(soulPatch);
+        return soulPatchZipByteStreamSupplier.apply(soulPatch);
     }
 
     @Override

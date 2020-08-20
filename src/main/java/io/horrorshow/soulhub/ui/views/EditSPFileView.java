@@ -5,8 +5,8 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 import io.horrorshow.soulhub.data.SPFile;
-import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.service.SOULPatchService;
+import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.SOULFileEditor;
@@ -70,7 +70,7 @@ public class EditSPFileView
         removeAll();
         add(new H1("Unable to serve request"));
         add(new Span(error));
-        add(new RouterLink("to SOULPatches view", SOULPatchesViewOld.class));
+        add(new RouterLink("to SOULPatches view", SOULPatchesView.class));
     }
 
     private void updateView(SPFile spFile) {
