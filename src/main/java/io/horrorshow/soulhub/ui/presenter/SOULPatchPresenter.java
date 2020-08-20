@@ -1,17 +1,16 @@
 package io.horrorshow.soulhub.ui.presenter;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.events.SOULPatchDownloadEvent;
+import io.horrorshow.soulhub.ui.events.SPFileDownloadEvent;
 import io.horrorshow.soulhub.ui.views.SOULPatchView;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,10 +31,18 @@ public class SOULPatchPresenter {
 
     public void init(SOULPatchView view) {
         this.view = view;
+        view.getSpFileTabs()
+                .getSpFileReadOnly()
+                .addSPFileDownloadListener(this::spFileDownloaded);
         view.getSoulPatchReadOnly()
                 .setSOULPatchZipInputStreamProvider(soulPatchService::getZipSOULPatchStreamProvider);
         view.getSoulPatchReadOnly()
                 .addSOULPatchDownloadListener(this::soulPatchDownloaded);
+    }
+
+    private void spFileDownloaded(SPFileDownloadEvent event) {
+        var sp = soulPatchService.incrementNoDownloadsAndSave(event.getSpFile().getSoulPatch());
+        view.setValue(sp);
     }
 
     private void soulPatchDownloaded(SOULPatchDownloadEvent event) {
@@ -44,7 +51,7 @@ public class SOULPatchPresenter {
     }
 
     public void onNavigation(String parameter, Map<String, List<String>> parameterMap) {
-        if(soulPatchService.isPossibleSOULPatchId(parameter)) {
+        if (soulPatchService.isPossibleSOULPatchId(parameter)) {
             var soulPatch = soulPatchService.findById(Long.valueOf(parameter));
             view.setValue(soulPatch);
         } else {

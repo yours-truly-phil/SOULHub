@@ -47,6 +47,10 @@ public class SpFileTabs extends Div
         arrangeComponents();
     }
 
+    public SPFileReadOnly getSpFileReadOnly() {
+        return spFileReadOnly;
+    }
+
     private void selectionChanged(Tabs.SelectedChangeEvent event) {
         SPFile spFile = tabsToSpFiles.get(event.getSelectedTab());
         spFileReadOnly.setValue(spFile);
