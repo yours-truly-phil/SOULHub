@@ -71,7 +71,7 @@ public class SOULPatchesView
     private final Checkbox filterOwnedSoulpatches = new Checkbox("show only my soulpatches");
     private final Button addSOULPatch = new Button("add SOULPatch", VaadinIcon.FILE_ADD.create());
     private final SOULPatchReadOnlyDialog soulPatchReadOnlyDialog;
-    private final SPFileReadOnlyDialog spFileReadOnlyDialog;
+    private final SPFileReadOnlyDialog spFileReadOnlyDialog = new SPFileReadOnlyDialog();
     private final Span userGreeting = new Span("Hello!");
 
     private final TextField fullTextSearch = new TextField("full text search");
@@ -83,7 +83,7 @@ public class SOULPatchesView
         this.service = service;
         this.userService = userService;
 
-        spFileReadOnlyDialog = new SPFileReadOnlyDialog(service, userService);
+//        spFileReadOnlyDialog = new SPFileReadOnlyDialog(service, userService);
         soulPatchReadOnlyDialog = new SOULPatchReadOnlyDialog(service, userService);
 
         addClassName("soulpatches-view");

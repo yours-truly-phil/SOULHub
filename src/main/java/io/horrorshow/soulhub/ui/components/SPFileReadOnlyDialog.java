@@ -7,9 +7,6 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.SPFile;
-import io.horrorshow.soulhub.service.SOULPatchService;
-import io.horrorshow.soulhub.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class SPFileReadOnlyDialog extends Dialog
         implements HasValueAndElement<AbstractField.ComponentValueChangeEvent
@@ -19,11 +16,11 @@ public class SPFileReadOnlyDialog extends Dialog
 
     private final SPFileReadOnly spFileReadOnly;
 
-    public SPFileReadOnlyDialog(@Autowired SOULPatchService soulPatchService,
-                                @Autowired UserService userService) {
-
-        spFileReadOnly = new SPFileReadOnly(soulPatchService, userService);
-
+    //    public SPFileReadOnlyDialog(@Autowired SOULPatchService soulPatchService,
+//                                @Autowired UserService userService) {
+    public SPFileReadOnlyDialog() {
+//        spFileReadOnly = new SPFileReadOnly(soulPatchService, userService);
+        spFileReadOnly = new SPFileReadOnly();
         Button close = new Button("close dialog");
         close.addClickListener(event -> close());
 
@@ -39,6 +36,10 @@ public class SPFileReadOnlyDialog extends Dialog
     public void open(SPFile spFile) {
         setValue(spFile);
         open();
+    }
+
+    public SPFileReadOnly getSpFileReadOnly() {
+        return spFileReadOnly;
     }
 
     @Override

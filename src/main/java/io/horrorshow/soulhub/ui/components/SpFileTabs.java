@@ -38,7 +38,8 @@ public class SpFileTabs extends Div
                 new AbstractFieldSupport<>(this, null, Objects::equals, sp -> {
                 });
 
-        spFileReadOnly = new SPFileReadOnly(soulPatchService, userService);
+//        spFileReadOnly = new SPFileReadOnly(soulPatchService, userService);
+        spFileReadOnly = new SPFileReadOnly();
 
         setClassName("spfile-tabs");
 

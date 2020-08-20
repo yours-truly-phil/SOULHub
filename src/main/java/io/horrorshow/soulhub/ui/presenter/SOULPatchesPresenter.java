@@ -12,6 +12,7 @@ import io.horrorshow.soulhub.ui.components.SOULPatchesGridHeader;
 import io.horrorshow.soulhub.ui.dataproviders.SOULPatchesGridDataProvider;
 import io.horrorshow.soulhub.ui.events.SOULPatchFullTextSearchEvent;
 import io.horrorshow.soulhub.ui.events.SOULPatchRatingEvent;
+import io.horrorshow.soulhub.ui.events.SPFileDownloadEvent;
 import io.horrorshow.soulhub.ui.events.SPFileSelectEvent;
 import io.horrorshow.soulhub.ui.filters.SOULPatchFilter;
 import io.horrorshow.soulhub.ui.views.PlaygroundView;
@@ -29,12 +30,15 @@ public class SOULPatchesPresenter implements HasLogger {
 
     private final SOULPatchesGridDataProvider dataProvider;
     private final UserService userService;
+    private final SOULPatchService soulPatchService;
     private PlaygroundView view;
 
     public SOULPatchesPresenter(@Autowired SOULPatchesGridDataProvider dataProvider,
-                                @Autowired UserService userService) {
+                                @Autowired UserService userService,
+                                @Autowired SOULPatchService soulPatchService) {
         this.dataProvider = dataProvider;
         this.userService = userService;
+        this.soulPatchService = soulPatchService;
 
         dataProvider.setPageObserver(this::observePage);
     }
@@ -53,6 +57,12 @@ public class SOULPatchesPresenter implements HasLogger {
         view.getGrid().asSingleSelect().addValueChangeListener(this::soulPatchesGridSelection);
         view.getHeader().addFullTextSearchListener(this::fullTextSearchEvent);
         view.getHeader().addValueChangeListener(this::soulpatchesHeaderChanged);
+        view.getSpFileReadOnlyDialog().getSpFileReadOnly().addSPFileDownloadListener(this::spFileDownloaded);
+    }
+
+    private void spFileDownloaded(SPFileDownloadEvent event) {
+        soulPatchService.incrementNoDownloadsAndSave(event.getSpFile().getSoulPatch());
+        dataProvider.refreshItem(event.getSpFile().getSoulPatch());
     }
 
     private void soulpatchesHeaderChanged(
@@ -86,6 +96,7 @@ public class SOULPatchesPresenter implements HasLogger {
 
     private void spFileSelected(SPFileSelectEvent event) {
         LOGGER().debug("sp file selected {}", event);
+        view.getSpFileReadOnlyDialog().open(event.getSpFile());
     }
 
     public void onNavigation(String parameter, Map<String, List<String>> parameterMap) {

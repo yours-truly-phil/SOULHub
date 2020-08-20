@@ -8,6 +8,7 @@ import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.SOULPatchesGrid;
 import io.horrorshow.soulhub.ui.components.SOULPatchesGridHeader;
+import io.horrorshow.soulhub.ui.components.SPFileReadOnlyDialog;
 import io.horrorshow.soulhub.ui.presenter.SOULPatchesPresenter;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,6 +21,7 @@ public class PlaygroundView extends Div
 
     private final SOULPatchesGrid grid = new SOULPatchesGrid();
     private final SOULPatchesGridHeader filter = new SOULPatchesGridHeader();
+    private final SPFileReadOnlyDialog spFileReadOnlyDialog = new SPFileReadOnlyDialog();
 
     private final SOULPatchesPresenter soulPatchesPresenter;
 
@@ -36,6 +38,10 @@ public class PlaygroundView extends Div
 
     public SOULPatchesGridHeader getHeader() {
         return this.filter;
+    }
+
+    public SPFileReadOnlyDialog getSpFileReadOnlyDialog() {
+        return spFileReadOnlyDialog;
     }
 
     private void layoutComponents() {
