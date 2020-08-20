@@ -22,11 +22,8 @@ public class SOULPatchReadOnlyDialog extends Dialog
 
     private final SOULPatchReadOnly soulPatchReadOnly = new SOULPatchReadOnly();
     private final Button editSOULPatch = new Button("edit SOULPatch", VaadinIcon.EDIT.create());
-    private boolean isEditable = false;
 
     public SOULPatchReadOnlyDialog() {
-
-        addValueChangeListener(this::valueChanged);
 
         VerticalLayout content = new VerticalLayout();
 
@@ -52,13 +49,12 @@ public class SOULPatchReadOnlyDialog extends Dialog
         setDraggable(true);
     }
 
-    public SOULPatchReadOnly getSoulPatchReadOnly() {
-        return soulPatchReadOnly;
+    public Button getEditSOULPatchBtn() {
+        return editSOULPatch;
     }
 
-    private void valueChanged(
-            AbstractField.ComponentValueChangeEvent<SOULPatchReadOnly, SOULPatch> event) {
-        editSOULPatch.setVisible(isEditable);
+    public SOULPatchReadOnly getSoulPatchReadOnly() {
+        return soulPatchReadOnly;
     }
 
     private void editSOULPatchClicked(ClickEvent<Button> event) {

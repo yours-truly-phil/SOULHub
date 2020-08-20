@@ -8,12 +8,11 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.SOULPatch;
-import io.horrorshow.soulhub.service.SOULPatchService;
-import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.SOULPatchReadOnly;
 import io.horrorshow.soulhub.ui.components.SpFileTabs;
+import io.horrorshow.soulhub.ui.presenter.SOULPatchPresenter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,18 +30,15 @@ public class SOULPatchView extends VerticalLayout implements HasUrlParameter<Str
 
     private static final long serialVersionUID = -6869511952510668506L;
 
-    private final SOULPatchService soulPatchService;
-    private final UserService userService;
-
     private final SOULPatchReadOnly soulPatchReadOnly = new SOULPatchReadOnly();
     private final SpFileTabs spFileTabs = new SpFileTabs();
 
     private final AbstractFieldSupport<SOULPatchView, SOULPatch> fieldSupport;
+    private final SOULPatchPresenter soulPatchPresenter;
 
-    public SOULPatchView(@Autowired SOULPatchService soulPatchService,
-                         @Autowired UserService userService) {
-        this.soulPatchService = soulPatchService;
-        this.userService = userService;
+    public SOULPatchView(@Autowired SOULPatchPresenter soulPatchPresenter) {
+        this.soulPatchPresenter = soulPatchPresenter;
+        soulPatchPresenter.init(this);
 
         this.fieldSupport = new AbstractFieldSupport<>(this, null, Objects::equals, sp -> {
         });
@@ -50,10 +46,15 @@ public class SOULPatchView extends VerticalLayout implements HasUrlParameter<Str
 
         setClassName("soulpatch-view");
 
-        soulPatchReadOnly.setSOULPatchZipInputStreamProvider(soulPatchService::getZipSOULPatchStreamProvider);
-        soulPatchReadOnly.addSOULPatchDownloadListener(soulPatchService::soulPatchDownloaded);
-
         arrangeComponents();
+    }
+
+    public SOULPatchReadOnly getSoulPatchReadOnly() {
+        return soulPatchReadOnly;
+    }
+
+    public SpFileTabs getSpFileTabs() {
+        return spFileTabs;
     }
 
     private void arrangeComponents() {
@@ -89,23 +90,13 @@ public class SOULPatchView extends VerticalLayout implements HasUrlParameter<Str
 
     @Override
     public void setParameter(final BeforeEvent event, final String parameter) {
-
-        var paramMap =
-                event.getLocation().getQueryParameters().getParameters();
-
-        log.debug("got request for soulpatch {} with parameters {}", parameter, paramMap);
-
-        if (soulPatchService.isPossibleSOULPatchId(parameter)) {
-            SOULPatch soulPatch = soulPatchService.findById(Long.valueOf(parameter));
-            setValue(soulPatch);
-        } else {
-            createErrorView("No SOULPatch with given parameter");
-        }
+        var parameterMap = event.getLocation().getQueryParameters().getParameters();
+        soulPatchPresenter.onNavigation(parameter, parameterMap);
     }
 
-    private void createErrorView(final String msg) {
+    public void createErrorView(final String msg) {
         removeAll();
         add(new H1(format("Error: %s", msg)));
-        add(new RouterLink("to SOULPatches view", SOULPatchesViewOld.class));
+        add(new RouterLink("to SOULPatches view", SOULPatchesView.class));
     }
 }

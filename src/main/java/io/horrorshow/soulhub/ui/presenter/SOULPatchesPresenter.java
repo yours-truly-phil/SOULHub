@@ -7,6 +7,7 @@ import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.UIConst;
+import io.horrorshow.soulhub.ui.components.SOULPatchReadOnly;
 import io.horrorshow.soulhub.ui.components.SOULPatchesGridHeader;
 import io.horrorshow.soulhub.ui.dataproviders.SOULPatchesGridDataProvider;
 import io.horrorshow.soulhub.ui.events.*;
@@ -56,10 +57,12 @@ public class SOULPatchesPresenter {
         view.getHeader().addFullTextSearchListener(this::fullTextSearchEvent);
         view.getHeader().addValueChangeListener(this::soulpatchesHeaderChanged);
 
+
         view.getSpFileReadOnlyDialog()
                 .getSpFileReadOnly()
                 .addSPFileDownloadListener(this::spFileDownloaded);
 
+        view.getSoulPatchReadOnlyDialog().addValueChangeListener(this::soulPatchReadOnlyChanged);
         view.getSoulPatchReadOnlyDialog()
                 .getSoulPatchReadOnly()
                 .setSOULPatchZipInputStreamProvider(soulPatchService::getZipSOULPatchStreamProvider);
@@ -67,6 +70,14 @@ public class SOULPatchesPresenter {
         view.getSoulPatchReadOnlyDialog()
                 .getSoulPatchReadOnly()
                 .addSOULPatchDownloadListener(this::soulPatchDownloaded);
+    }
+
+    private void soulPatchReadOnlyChanged(
+            AbstractField.ComponentValueChangeEvent
+                    <SOULPatchReadOnly, SOULPatch> event) {
+        view.getSoulPatchReadOnlyDialog()
+                .getEditSOULPatchBtn()
+                .setVisible(userService.isCurrentUserOwnerOf(event.getValue()));
     }
 
     private void soulPatchDownloaded(SOULPatchDownloadEvent event) {
