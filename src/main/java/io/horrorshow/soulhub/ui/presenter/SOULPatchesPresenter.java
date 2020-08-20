@@ -9,18 +9,17 @@ import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.SOULPatchesGridHeader;
 import io.horrorshow.soulhub.ui.dataproviders.SOULPatchesGridDataProvider;
-import io.horrorshow.soulhub.ui.events.SOULPatchFullTextSearchEvent;
-import io.horrorshow.soulhub.ui.events.SOULPatchRatingEvent;
-import io.horrorshow.soulhub.ui.events.SPFileDownloadEvent;
-import io.horrorshow.soulhub.ui.events.SPFileSelectEvent;
+import io.horrorshow.soulhub.ui.events.*;
 import io.horrorshow.soulhub.ui.filters.SOULPatchFilter;
-import io.horrorshow.soulhub.ui.views.PlaygroundView;
+import io.horrorshow.soulhub.ui.views.SOULPatchesView;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +31,7 @@ public class SOULPatchesPresenter {
     private final SOULPatchesGridDataProvider dataProvider;
     private final UserService userService;
     private final SOULPatchService soulPatchService;
-    private PlaygroundView view;
+    private SOULPatchesView view;
 
     public SOULPatchesPresenter(@Autowired SOULPatchesGridDataProvider dataProvider,
                                 @Autowired UserService userService,
@@ -50,7 +49,7 @@ public class SOULPatchesPresenter {
                 soulPatchPage.getTotalPages());
     }
 
-    public void init(PlaygroundView view) {
+    public void init(SOULPatchesView view) {
         this.view = view;
         view.getGrid().setDataProvider(dataProvider);
         view.getGrid().addSPFileSelectListener(this::spFileSelected);
@@ -59,6 +58,17 @@ public class SOULPatchesPresenter {
         view.getHeader().addFullTextSearchListener(this::fullTextSearchEvent);
         view.getHeader().addValueChangeListener(this::soulpatchesHeaderChanged);
         view.getSpFileReadOnlyDialog().getSpFileReadOnly().addSPFileDownloadListener(this::spFileDownloaded);
+        view.getSoulPatchReadOnlyDialog().getSoulPatchReadOnly().setSOULPatchZipInputStreamProvider(this::getSOULPatchZipInputStream);
+        view.getSoulPatchReadOnlyDialog().getSoulPatchReadOnly().addSOULPatchDownloadListener(this::soulPatchDownloaded);
+    }
+
+    private void soulPatchDownloaded(SOULPatchDownloadEvent event) {
+        soulPatchService.incrementNoDownloadsAndSave(event.getSoulPatch());
+        dataProvider.refreshItem(event.getSoulPatch());
+    }
+
+    private InputStream getSOULPatchZipInputStream(SOULPatch soulPatch) {
+        return new ByteArrayInputStream(soulPatchService.zipSOULPatchFiles(soulPatch));
     }
 
     private void spFileDownloaded(SPFileDownloadEvent event) {
@@ -82,8 +92,10 @@ public class SOULPatchesPresenter {
             AbstractField.ComponentValueChangeEvent<Grid<SOULPatch>, SOULPatch> event) {
         view.getGrid().asSingleSelect().getOptionalValue()
                 .ifPresentOrElse(
-                        soulPatch -> log.debug("soulpatch selected {}", soulPatch),
-                        () -> log.debug("nothing selected"));
+//                        soulPatch -> log.debug("soulpatch selected {}", soulPatch),
+                        soulPatch -> view.getSoulPatchReadOnlyDialog().open(soulPatch),
+//                        () -> log.debug("nothing selected"));
+                        () -> view.getSoulPatchReadOnlyDialog().close());
     }
 
     private void fullTextSearchEvent(SOULPatchFullTextSearchEvent event) {

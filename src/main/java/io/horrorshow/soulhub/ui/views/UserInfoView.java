@@ -104,7 +104,7 @@ public class UserInfoView extends VerticalLayout
 
         RouterLink link = new RouterLink(
                 "show my soulpatches",
-                SOULPatchesView.class);
+                SOULPatchesViewOld.class);
         link.setQueryParameters(queryParameters);
         return link;
     }

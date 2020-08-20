@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Objects;
+import java.util.function.Function;
 
 public class SOULPatchReadOnly extends Div
         implements HasValueAndElement<
@@ -31,8 +32,8 @@ public class SOULPatchReadOnly extends Div
 
     private static final long serialVersionUID = -3610662759595192083L;
 
-    private final SOULPatchService soulPatchService;
-    private final UserService userService;
+//    private final SOULPatchService soulPatchService;
+//    private final UserService userService;
 
     private final AbstractFieldSupport<SOULPatchReadOnly, SOULPatch> fieldSupport;
 
@@ -44,11 +45,13 @@ public class SOULPatchReadOnly extends Div
     private final Label author = new Label("author"); // TODO create insertable author component
     private final Label downloads = new Label("downloads");
     private final Anchor downloadLink = new Anchor();
+    private Function<SOULPatch, InputStream> streamProvider;
 
-    public SOULPatchReadOnly(@Autowired SOULPatchService soulPatchService,
-                             @Autowired UserService userService) {
-        this.soulPatchService = soulPatchService;
-        this.userService = userService;
+//    public SOULPatchReadOnly(@Autowired SOULPatchService soulPatchService,
+//                             @Autowired UserService userService) {
+//        this.soulPatchService = soulPatchService;
+//        this.userService = userService;
+    public SOULPatchReadOnly() {
 
         this.fieldSupport =
                 new AbstractFieldSupport<>(this, null, Objects::equals, sp -> {
@@ -57,7 +60,7 @@ public class SOULPatchReadOnly extends Div
         setClassName("soulpatch-read-only-element");
 
         addValueChangeListener(this::soulPatchChanged);
-        addSOULPatchDownloadListener(this::soulPatchDownload);
+//        addSOULPatchDownloadListener(this::soulPatchDownload);
 
         init();
 
@@ -76,9 +79,9 @@ public class SOULPatchReadOnly extends Div
         add(formLayout);
     }
 
-    private void soulPatchDownload(SOULPatchDownloadEvent event) {
-        soulPatchService.incrementNoDownloadsAndSave(event.getSoulPatch());
-    }
+//    private void soulPatchDownload(SOULPatchDownloadEvent event) {
+//        soulPatchService.incrementNoDownloadsAndSave(event.getSoulPatch());
+//    }
 
     private void soulPatchChanged(
             AbstractField.ComponentValueChangeEvent<SOULPatchReadOnly, SOULPatch> event) {
@@ -87,14 +90,18 @@ public class SOULPatchReadOnly extends Div
         binder.readBean(sp);
     }
 
-    private InputStream downloadSOULPatchBytes(SOULPatch sp) {
-        fireEvent(new SOULPatchDownloadEvent(this, sp));
-        return new ByteArrayInputStream(soulPatchService.zipSOULPatchFiles(sp));
-    }
+//    private InputStream downloadSOULPatchBytes(SOULPatch sp) {
+//        fireEvent(new SOULPatchDownloadEvent(this, sp));
+//        return new ByteArrayInputStream(soulPatchService.zipSOULPatchFiles(sp));
+//    }
 
     public Registration addSOULPatchDownloadListener(
             ComponentEventListener<SOULPatchDownloadEvent> listener) {
         return addListener(SOULPatchDownloadEvent.class, listener);
+    }
+
+    public void setSOULPatchZipInputStreamProvider(Function<SOULPatch, InputStream> streamProvider) {
+        this.streamProvider = streamProvider;
     }
 
     private void init() {
@@ -131,7 +138,8 @@ public class SOULPatchReadOnly extends Div
                 new ReadOnlyHasValue<>(sp -> {
                     StreamResource sr = new StreamResource(
                             String.format("%s.zip", sp.getName()),
-                            () -> downloadSOULPatchBytes(sp));
+//                            () -> downloadSOULPatchBytes(sp));
+                            () -> streamProvider.apply(sp));
                     downloadLink.setHref(sr);
                     downloadLink.setText(String.format("%s.zip", sp.getName()));
                 }, null);

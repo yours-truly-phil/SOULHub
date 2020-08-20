@@ -70,7 +70,7 @@ public class EditSPFileView
         removeAll();
         add(new H1("Unable to serve request"));
         add(new Span(error));
-        add(new RouterLink("to SOULPatches view", SOULPatchesView.class));
+        add(new RouterLink("to SOULPatches view", SOULPatchesViewOld.class));
     }
 
     private void updateView(SPFile spFile) {

@@ -34,7 +34,7 @@ public class SOULPatchView extends VerticalLayout implements HasUrlParameter<Str
     private final SOULPatchService soulPatchService;
     private final UserService userService;
 
-    private final SOULPatchReadOnly soulPatchReadOnly;
+    private final SOULPatchReadOnly soulPatchReadOnly = new SOULPatchReadOnly();
     private final SpFileTabs spFileTabs = new SpFileTabs();
 
     private final AbstractFieldSupport<SOULPatchView, SOULPatch> fieldSupport;
@@ -48,7 +48,7 @@ public class SOULPatchView extends VerticalLayout implements HasUrlParameter<Str
         });
         fieldSupport.addValueChangeListener(this::soulPatchChanged);
 
-        soulPatchReadOnly = new SOULPatchReadOnly(soulPatchService, userService);
+//        soulPatchReadOnly = new SOULPatchReadOnly(soulPatchService, userService);
 
         setClassName("soulpatch-view");
 
@@ -105,6 +105,6 @@ public class SOULPatchView extends VerticalLayout implements HasUrlParameter<Str
     private void createErrorView(final String msg) {
         removeAll();
         add(new H1(format("Error: %s", msg)));
-        add(new RouterLink("to SOULPatches view", SOULPatchesView.class));
+        add(new RouterLink("to SOULPatches view", SOULPatchesViewOld.class));
     }
 }

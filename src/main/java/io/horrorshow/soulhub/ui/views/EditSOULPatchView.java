@@ -54,7 +54,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
 
     private final RouterLink toSOULPatchesViewLink =
             new RouterLink(format("navigate back to %s", UIConst.LINK_TEXT_SOULPATCHES),
-                    SOULPatchesView.class);
+                    SOULPatchesViewOld.class);
 
     private final TextField name = new TextField();
     private final TextArea description = new TextArea();
@@ -207,7 +207,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     private void createErrorView(String message) {
         removeAll();
         add(new H1(format("Lol, what did you do?! '%s'", message)));
-        add(new RouterLink("to SOULPatches view", SOULPatchesView.class));
+        add(new RouterLink("to SOULPatches view", SOULPatchesViewOld.class));
     }
 
     private void reloadSOULPatch(SOULPatch soulPatch) {
@@ -246,7 +246,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         soulPatchService.delete(soulPatch);
         new Notification(format("soulpatch %s removed", soulPatch.getName()),
                 3000).open();
-        UI.getCurrent().navigate(SOULPatchesView.class);
+        UI.getCurrent().navigate(SOULPatchesViewOld.class);
     }
 
     @Override

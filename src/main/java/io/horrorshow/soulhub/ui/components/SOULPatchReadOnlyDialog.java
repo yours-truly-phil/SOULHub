@@ -23,18 +23,20 @@ public class SOULPatchReadOnlyDialog extends Dialog
 
     private static final long serialVersionUID = 469080434031031088L;
 
-    private final UserService userService;
+//    private final UserService userService;
 
-    private final SOULPatchReadOnly soulPatchReadOnly;
+    private final SOULPatchReadOnly soulPatchReadOnly = new SOULPatchReadOnly();
+
+    private boolean isEditable = false;
 
     private final Button editSOULPatch = new Button("edit SOULPatch", VaadinIcon.EDIT.create());
 
-    public SOULPatchReadOnlyDialog(@Autowired SOULPatchService soulPatchService,
-                                   @Autowired UserService userService) {
+//    public SOULPatchReadOnlyDialog(@Autowired SOULPatchService soulPatchService,
+//                                   @Autowired UserService userService) {
+    public SOULPatchReadOnlyDialog() {
+//        this.userService = userService;
 
-        this.userService = userService;
-
-        soulPatchReadOnly = new SOULPatchReadOnly(soulPatchService, userService);
+//        soulPatchReadOnly = new SOULPatchReadOnly(soulPatchService, userService);
 
         addValueChangeListener(this::valueChanged);
 
@@ -62,10 +64,14 @@ public class SOULPatchReadOnlyDialog extends Dialog
         setDraggable(true);
     }
 
+    public SOULPatchReadOnly getSoulPatchReadOnly() {
+        return soulPatchReadOnly;
+    }
+
     private void valueChanged(
             AbstractField.ComponentValueChangeEvent<SOULPatchReadOnly, SOULPatch> event) {
-
-        editSOULPatch.setVisible(userService.isCurrentUserOwnerOf(event.getValue()));
+        editSOULPatch.setVisible(isEditable);
+//        editSOULPatch.setVisible(userService.isCurrentUserOwnerOf(event.getValue()));
     }
 
     private void editSOULPatchClicked(ClickEvent<Button> event) {
