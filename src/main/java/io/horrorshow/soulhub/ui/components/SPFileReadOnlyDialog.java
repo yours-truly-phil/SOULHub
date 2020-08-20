@@ -16,10 +16,7 @@ public class SPFileReadOnlyDialog extends Dialog
 
     private final SPFileReadOnly spFileReadOnly;
 
-    //    public SPFileReadOnlyDialog(@Autowired SOULPatchService soulPatchService,
-//                                @Autowired UserService userService) {
     public SPFileReadOnlyDialog() {
-//        spFileReadOnly = new SPFileReadOnly(soulPatchService, userService);
         spFileReadOnly = new SPFileReadOnly();
         Button close = new Button("close dialog");
         close.addClickListener(event -> close());

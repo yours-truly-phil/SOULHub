@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
@@ -25,8 +26,6 @@ import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.jsoup.helper.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,9 +46,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @Service
+@Log4j2
 public class SOULPatchService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SOULPatchService.class);
 
     private final SOULPatchRepository soulPatchRepository;
     private final SPFileRepository spFileRepository;
@@ -157,7 +155,7 @@ public class SOULPatchService {
                     .map(SOULPatch.class::cast)
                     .collect(Collectors.toList()));
         } catch (Exception e) {
-            LOGGER.debug("Error fulltext searching for soulpatch", e);
+            log.debug("Error fulltext searching for soulpatch", e);
         }
         return result;
     }
@@ -172,7 +170,7 @@ public class SOULPatchService {
             }
             stream.close();
         } catch (IOException e) {
-            LOGGER.debug("Error tokenizing string {}", string, e);
+            log.debug("Error tokenizing string {}", string, e);
         }
         return result;
     }
@@ -235,7 +233,7 @@ public class SOULPatchService {
     }
 
     public SOULPatch save(SOULPatch soulPatch) {
-        LOGGER.debug("soulpatch save: {}", soulPatch);
+        log.debug("soulpatch save: {}", soulPatch);
         return soulPatchRepository.saveAndFlush(soulPatch);
     }
 
@@ -308,7 +306,7 @@ public class SOULPatchService {
 
     public SOULPatch incrementNoDownloadsAndSave(SOULPatch soulPatch) {
         soulPatch.setNoViews(soulPatch.getNoViews() + 1);
-        LOGGER.debug("SOULPatch download event, incremented counter: {}", soulPatch);
+        log.debug("SOULPatch download event, incremented counter: {}", soulPatch);
         return save(soulPatch);
     }
 
@@ -326,10 +324,10 @@ public class SOULPatchService {
             zos.finish();
             zos.flush();
             zos.close();
-            LOGGER.debug("zipped soulpatch files {}", soulPatch);
+            log.debug("zipped soulpatch files {}", soulPatch);
             return baos.toByteArray();
         } catch (IOException e) {
-            LOGGER.error("error zipping soulpatch {}", soulPatch, e);
+            log.error("error zipping soulpatch {}", soulPatch, e);
             return null;
         }
     }

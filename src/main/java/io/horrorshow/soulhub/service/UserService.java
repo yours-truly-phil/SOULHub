@@ -6,8 +6,7 @@ import io.horrorshow.soulhub.data.repository.AppUserRepository;
 import io.horrorshow.soulhub.data.repository.VerificationTokenRepository;
 import io.horrorshow.soulhub.security.SecurityUtils;
 import io.horrorshow.soulhub.ui.UIConst;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -24,12 +23,11 @@ import java.util.UUID;
 
 @Service
 @Transactional
+@Log4j2
 public class UserService {
 
     public static final String USER_ROLE = "USER";
     public static final String ADMIN_ROLE = "ADMIN";
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     private final AppRoleRepository appRoleRepository;
     private final AppUserRepository appUserRepository;
@@ -73,7 +71,7 @@ public class UserService {
 
     @Transactional
     public AppUser registerAppUser(AppUser appUser) throws RoleNotFoundException, ValidationException {
-        LOGGER.debug("trying to register app user: {}", appUser.toString());
+        log.debug("trying to register app user: {}", appUser.toString());
 
         if (usernameExists(appUser.getUserName())) {
             throw new ValidationException("Username unavailable");
@@ -89,7 +87,7 @@ public class UserService {
 
         Set<ConstraintViolation<AppUser>> violations = validator.validate(user);
         violations.forEach(violation -> {
-            LOGGER.debug("Validation Violation: {}", violation);
+            log.debug("Validation Violation: {}", violation);
             throw new ValidationException(violation.getMessage());
         });
 
@@ -100,16 +98,16 @@ public class UserService {
                 appRole -> user.getRoles().add(appRole)
         );
         userRole.orElseThrow(RoleNotFoundException::new);
-        LOGGER.info("saving new user as: {}", user.toString());
+        log.info("saving new user as: {}", user.toString());
 
         AppUser savedUser = appUserRepository.save(user);
-        LOGGER.info("user registered {}", savedUser);
+        log.info("user registered {}", savedUser);
 
         final String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = createVerificationToken(savedUser, token);
         final SimpleMailMessage email = constructEmailRegistrationMessage(savedUser, verificationToken);
         mailSender.send(email);
-        LOGGER.info("verification email sent to {}", savedUser);
+        log.info("verification email sent to {}", savedUser);
 
         return savedUser;
     }

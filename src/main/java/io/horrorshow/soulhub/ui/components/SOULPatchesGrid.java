@@ -9,7 +9,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.shared.Registration;
-import io.horrorshow.soulhub.HasLogger;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SOULPatchRating;
 import io.horrorshow.soulhub.data.SPFile;
@@ -23,7 +22,7 @@ import java.util.Comparator;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 
-public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> implements HasLogger {
+public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
 
     public static final String COL_NAME = "name";
     public static final String COL_DESCRIPTION = "description";

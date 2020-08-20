@@ -14,9 +14,8 @@ import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.SOULPatchReadOnly;
 import io.horrorshow.soulhub.ui.components.SpFileTabs;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.compress.utils.Lists;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Objects;
@@ -25,13 +24,12 @@ import static java.lang.String.format;
 
 @Route(value = UIConst.ROUTE_SOULPATCH, layout = MainLayout.class)
 @PageTitle(UIConst.TITLE_SOULPATCH)
+@Log4j2
 public class SOULPatchView extends VerticalLayout implements HasUrlParameter<String>,
         HasValueAndElement<
                 AbstractField.ComponentValueChangeEvent<SOULPatchView, SOULPatch>, SOULPatch> {
 
     private static final long serialVersionUID = -6869511952510668506L;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SOULPatchView.class);
 
     private final SOULPatchService soulPatchService;
     private final UserService userService;
@@ -94,7 +92,7 @@ public class SOULPatchView extends VerticalLayout implements HasUrlParameter<Str
         var paramMap =
                 event.getLocation().getQueryParameters().getParameters();
 
-        LOGGER.debug("got request for soulpatch {} with parameters {}", parameter, paramMap);
+        log.debug("got request for soulpatch {} with parameters {}", parameter, paramMap);
 
         if (soulPatchService.isPossibleSOULPatchId(parameter)) {
             SOULPatch soulPatch = soulPatchService.findById(Long.valueOf(parameter));

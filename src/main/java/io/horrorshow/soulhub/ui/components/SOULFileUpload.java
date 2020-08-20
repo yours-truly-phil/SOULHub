@@ -13,8 +13,7 @@ import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.data.api.SOULPatchParser;
 import io.horrorshow.soulhub.ui.events.SPFileUploadedEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -22,11 +21,10 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
+@Log4j2
 public class SOULFileUpload extends VerticalLayout {
 
     private static final long serialVersionUID = 3216291855595166003L;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SOULFileUpload.class);
 
     private static final String[] ACCEPTED_FILETYPE = {".soul", ".soulpatch"};
 
@@ -60,7 +58,7 @@ public class SOULFileUpload extends VerticalLayout {
     private void fileRejected(FileRejectedEvent event) {
         new Notification(event.getErrorMessage(), 3000,
                 Notification.Position.MIDDLE).open();
-        LOGGER.debug(event.getErrorMessage());
+        log.debug(event.getErrorMessage());
     }
 
     private void fileUploaded(SucceededEvent event) {
@@ -71,7 +69,7 @@ public class SOULFileUpload extends VerticalLayout {
                 new InputStreamReader(is, StandardCharsets.UTF_8))
                 .lines().collect(Collectors.joining("\n"));
 
-        LOGGER.debug("Filename [{}] MIMEType [{}] Length [{}] toString [{}]",
+        log.debug("Filename [{}] MIMEType [{}] Length [{}] toString [{}]",
                 event.getFileName(),
                 event.getMIMEType(),
                 event.getContentLength(),

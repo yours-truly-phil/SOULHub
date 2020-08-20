@@ -18,8 +18,6 @@ import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.events.SOULPatchDownloadEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayInputStream;
@@ -32,8 +30,6 @@ public class SOULPatchReadOnly extends Div
                 SOULPatchReadOnly, SOULPatch>, SOULPatch> {
 
     private static final long serialVersionUID = -3610662759595192083L;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SOULPatchReadOnly.class);
 
     private final SOULPatchService soulPatchService;
     private final UserService userService;

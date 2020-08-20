@@ -9,8 +9,7 @@ import io.horrorshow.soulhub.data.VerificationToken;
 import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
@@ -20,13 +19,12 @@ import java.util.Optional;
 
 @Route(value = UIConst.ROUTE_CONFIRM_REGISTER, layout = MainLayout.class)
 @PageTitle(UIConst.TITLE_CONFIRM_REGISTER)
+@Log4j2
 public class ConfirmRegistrationView
         extends VerticalLayout
         implements HasUrlParameter<String> {
 
     private static final long serialVersionUID = 2366499291878068397L;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConfirmRegistrationView.class);
 
     private final UserService userDetailsService;
 
@@ -38,12 +36,12 @@ public class ConfirmRegistrationView
 
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-        LOGGER.debug("confirm registration with param {}", parameter);
+        log.debug("confirm registration with param {}", parameter);
         Location location = event.getLocation();
         QueryParameters queryParameters = location.getQueryParameters();
         Map<String, List<String>> pmap
                 = queryParameters.getParameters();
-        LOGGER.debug("parametersMap: {}", pmap.toString());
+        log.debug("parametersMap: {}", pmap.toString());
 
         if (pmap.containsKey(UIConst.PARAM_TOKEN)
                 && !pmap.get(UIConst.PARAM_TOKEN).isEmpty()) {

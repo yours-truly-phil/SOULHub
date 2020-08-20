@@ -24,8 +24,7 @@ import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.events.SPFileDeleteEvent;
 import io.horrorshow.soulhub.ui.events.SPFileSaveEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.format.DateTimeFormatter;
@@ -33,14 +32,13 @@ import java.util.Objects;
 
 import static java.lang.String.format;
 
+@Log4j2
 public class SOULFileEditor extends VerticalLayout
         implements
         HasValueAndElement<AbstractField.
                 ComponentValueChangeEvent<SOULFileEditor, SPFile>, SPFile> {
 
     private static final long serialVersionUID = -6950603059471911545L;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SOULFileEditor.class);
 
     private final TextField name = new TextField();
     private final AceEditor aceEditor = new AceEditor();
@@ -177,13 +175,13 @@ public class SOULFileEditor extends VerticalLayout
             // TODO investigate: sets the value to new value, then empty, then value again initially
             //  firing change twice, fucking up display of save button on changes
             // TODO investigate: typing rapidly in the ace-editor causes the cursor to jump to end of script
-            LOGGER.debug("ValueChangeEvent oldValue: {} newValue: {}",
+            log.debug("ValueChangeEvent oldValue: {} newValue: {}",
                     event.getOldValue(), event.getValue());
         });
         binder.addStatusChangeListener(event -> {
             boolean isValid = event.getBinder().isValid();
             boolean hasChanges = event.getBinder().hasChanges();
-            LOGGER.debug("StatusChangedEvent from {} isValid: {} hasChanges: {}",
+            log.debug("StatusChangedEvent from {} isValid: {} hasChanges: {}",
                     event.getSource(), isValid, hasChanges);
             save.setEnabled(hasChanges && isValid);
         });
@@ -206,7 +204,7 @@ public class SOULFileEditor extends VerticalLayout
                 new Notification(format("Problem saving file %s", spFile.toString()));
             }
         } catch (ValidationException e) {
-            LOGGER.debug(e.getMessage());
+            log.debug(e.getMessage());
         }
     }
 
@@ -258,7 +256,7 @@ public class SOULFileEditor extends VerticalLayout
         binder.readBean(spFile);
         setVisible(true);
         aceEditor.focus();
-        LOGGER.debug("end of setValue({}) isValid: {} hasChanges: {}",
+        log.debug("end of setValue({}) isValid: {} hasChanges: {}",
                 spFile.getName(), binder.isValid(), binder.hasChanges());
     }
 

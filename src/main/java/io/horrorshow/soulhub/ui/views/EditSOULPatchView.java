@@ -29,8 +29,7 @@ import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.MultipleSPFileLayoutManager;
 import io.horrorshow.soulhub.ui.components.SOULFileUpload;
 import io.horrorshow.soulhub.ui.events.SPFileUploadedEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -43,13 +42,12 @@ import static java.lang.String.format;
 @Secured(value = UIConst.ROLE_USER)
 @Route(value = UIConst.ROUTE_EDIT_SOULPATCH, layout = MainLayout.class)
 @PageTitle(UIConst.TITLE_EDIT_SOULPATCH)
+@Log4j2
 public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter<String>,
         HasValueAndElement<AbstractField.
                 ComponentValueChangeEvent<EditSOULPatchView, SOULPatch>, SOULPatch> {
 
     private static final long serialVersionUID = -4704235426941430447L;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(EditSOULPatchView.class);
 
     private final SOULPatchService soulPatchService;
     private final UserService userDetailsService;
@@ -154,7 +152,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
         binder.addStatusChangeListener(event -> {
             boolean isValid = event.getBinder().isValid();
             boolean hasChanges = event.getBinder().hasChanges();
-            LOGGER.debug("isValid: {} hasChanges: {}", isValid, hasChanges);
+            log.debug("isValid: {} hasChanges: {}", isValid, hasChanges);
 
             save.setEnabled(hasChanges && isValid);
         });
@@ -193,14 +191,14 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
             if (userDetailsService.isCurrentUserOwnerOf(soulPatch)) {
                 reloadSOULPatch(soulPatch);
             } else {
-                LOGGER.debug("user not authorized to edit user-mail={} soulpatch={} url-parameter={} event={}",
+                log.debug("user not authorized to edit user-mail={} soulpatch={} url-parameter={} event={}",
                         SecurityUtils.getUserEmail(), soulPatch, parameter, event);
                 createErrorView(format("Insufficient rights to edit SOULPatch %s", parameter));
             }
         } else if (parameter != null && parameter.equals("new")) {
             reloadSOULPatch(createSOULPatchForCurrentUser());
         } else {
-            LOGGER.debug("invalid access. parameter={} user-mail={} event={}",
+            log.debug("invalid access. parameter={} user-mail={} event={}",
                     parameter, SecurityUtils.getUserEmail(), event);
             createErrorView(format("Unable to serve request to edit SOULPatch %s", parameter));
         }
@@ -239,7 +237,7 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
                 new Notification(format("problem saving soulpatch %s", soulPatch.toString()));
             }
         } catch (ValidationException e) {
-            LOGGER.debug(e.getMessage());
+            log.debug(e.getMessage());
         }
     }
 

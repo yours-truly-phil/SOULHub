@@ -3,7 +3,6 @@ package io.horrorshow.soulhub.ui.views;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
-import io.horrorshow.soulhub.HasLogger;
 import io.horrorshow.soulhub.ui.MainLayout;
 import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.SOULPatchesGrid;
@@ -15,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Route(value = UIConst.ROUTE_PLAYGROUND, layout = MainLayout.class)
 @PageTitle(UIConst.TITLE_PLAYGROUND)
 public class PlaygroundView extends Div
-        implements HasUrlParameter<String>, HasLogger {
+        implements HasUrlParameter<String> {
 
     private static final long serialVersionUID = 6587633236690463135L;
 

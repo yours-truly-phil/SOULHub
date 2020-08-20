@@ -3,7 +3,6 @@ package io.horrorshow.soulhub.ui.presenter;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import io.horrorshow.soulhub.HasLogger;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.service.UserService;
@@ -16,6 +15,7 @@ import io.horrorshow.soulhub.ui.events.SPFileDownloadEvent;
 import io.horrorshow.soulhub.ui.events.SPFileSelectEvent;
 import io.horrorshow.soulhub.ui.filters.SOULPatchFilter;
 import io.horrorshow.soulhub.ui.views.PlaygroundView;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -26,7 +26,8 @@ import java.util.Map;
 
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class SOULPatchesPresenter implements HasLogger {
+@Log4j2
+public class SOULPatchesPresenter {
 
     private final SOULPatchesGridDataProvider dataProvider;
     private final UserService userService;
@@ -44,7 +45,7 @@ public class SOULPatchesPresenter implements HasLogger {
     }
 
     private void observePage(Page<SOULPatch> soulPatchPage) {
-        LOGGER().debug("page observer soulpatches: {}, pages: {}",
+        log.debug("page observer soulpatches: {}, pages: {}",
                 soulPatchPage.getTotalElements(),
                 soulPatchPage.getTotalPages());
     }
@@ -67,7 +68,7 @@ public class SOULPatchesPresenter implements HasLogger {
 
     private void soulpatchesHeaderChanged(
             AbstractField.ComponentValueChangeEvent<SOULPatchesGridHeader, SOULPatchFilter> event) {
-        LOGGER().debug("soulpatch header value changed: {}", event.getValue());
+        log.debug("soulpatch header value changed: {}", event.getValue());
         var filter = new SOULPatchService.SOULPatchesFetchFilter();
         filter.setNamesFilter(event.getValue().getNamesFilter());
         if (event.getValue().isOnlyCurUser()) {
@@ -81,21 +82,21 @@ public class SOULPatchesPresenter implements HasLogger {
             AbstractField.ComponentValueChangeEvent<Grid<SOULPatch>, SOULPatch> event) {
         view.getGrid().asSingleSelect().getOptionalValue()
                 .ifPresentOrElse(
-                        soulPatch -> LOGGER().debug("soulpatch selected {}", soulPatch),
-                        () -> LOGGER().debug("nothing selected"));
+                        soulPatch -> log.debug("soulpatch selected {}", soulPatch),
+                        () -> log.debug("nothing selected"));
     }
 
     private void fullTextSearchEvent(SOULPatchFullTextSearchEvent event) {
-        LOGGER().debug("full text search event: {}", event.getValue());
+        log.debug("full text search event: {}", event.getValue());
     }
 
     private void soulpatchRating(SOULPatchRatingEvent event) {
-        LOGGER().debug("soulpatch rating {}", event);
+        log.debug("soulpatch rating {}", event);
         dataProvider.refreshItem(event.getSoulPatch());
     }
 
     private void spFileSelected(SPFileSelectEvent event) {
-        LOGGER().debug("sp file selected {}", event);
+        log.debug("sp file selected {}", event);
         view.getSpFileReadOnlyDialog().open(event.getSpFile());
     }
 
@@ -107,7 +108,7 @@ public class SOULPatchesPresenter implements HasLogger {
 
             view.getHeader().setValue(SOULPatchFilter.getOnlyCurrentUser());
         }
-        LOGGER().debug("on navigation with parameter: {} and parameterMap {}",
+        log.debug("on navigation with parameter: {} and parameterMap {}",
                 parameter, parameterMap.toString());
     }
 }

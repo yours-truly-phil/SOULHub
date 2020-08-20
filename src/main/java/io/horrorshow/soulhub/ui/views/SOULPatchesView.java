@@ -29,8 +29,7 @@ import io.horrorshow.soulhub.ui.components.SOULPatchReadOnlyDialog;
 import io.horrorshow.soulhub.ui.components.SPFileReadOnlyDialog;
 import io.horrorshow.soulhub.ui.components.StarsRating;
 import lombok.Getter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.klaudeta.PaginatedGrid;
 
@@ -46,13 +45,12 @@ import static java.lang.String.valueOf;
 @RouteAlias(value = UIConst.ROUTE_EMPTY, layout = MainLayout.class)
 @Getter
 @PageTitle(UIConst.TITLE_SOULPATCHES)
+@Log4j2
 public class SOULPatchesView
         extends VerticalLayout
         implements HasUrlParameter<String> {
 
     private static final long serialVersionUID = 3981631233877217865L;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SOULPatchesView.class);
 
     private static final String COL_NAME = "name";
     private static final String COL_DESCRIPTION = "description";
@@ -83,7 +81,6 @@ public class SOULPatchesView
         this.service = service;
         this.userService = userService;
 
-//        spFileReadOnlyDialog = new SPFileReadOnlyDialog(service, userService);
         soulPatchReadOnlyDialog = new SOULPatchReadOnlyDialog(service, userService);
 
         addClassName("soulpatches-view");
@@ -255,7 +252,7 @@ public class SOULPatchesView
 
     private void currentUserSOULPatchRating(SOULPatch soulPatch,
                                             AbstractField.ComponentValueChangeEvent<StarsRating, Integer> event) {
-        LOGGER.debug("soulpatch rating event {} for soulpatch {}", event, soulPatch);
+        log.debug("soulpatch rating event {} for soulpatch {}", event, soulPatch);
 
         if (SecurityUtils.isUserLoggedIn() && userService.getCurrentAppUser().isPresent()) {
             AppUser currentUser = userService.getCurrentAppUser().get();
@@ -268,7 +265,7 @@ public class SOULPatchesView
                                 soulPatchRating.setStars(event.getValue());
                                 service.save(soulPatch);
 
-                                LOGGER.debug("rating by {} exists {}",
+                                log.debug("rating by {} exists {}",
                                         currentUser.getUserName(),
                                         soulPatchRating.toString());
                             },
@@ -281,7 +278,7 @@ public class SOULPatchesView
                                 soulPatch.getRatings().add(rating);
                                 service.save(soulPatch);
 
-                                LOGGER.debug("no rating by {} exists",
+                                log.debug("no rating by {} exists",
                                         currentUser.getUserName());
                             });
         } else {
@@ -311,7 +308,7 @@ public class SOULPatchesView
             new Notification(
                     format("Full Text Search Result: \n%s", resultString),
                     3000, Notification.Position.MIDDLE).open();
-            LOGGER.debug("fullTextSearchResult:\n{}", resultString);
+            log.debug("fullTextSearchResult:\n{}", resultString);
         });
 
         fullTextSearchSPFiles.addClickListener(event -> {
@@ -324,7 +321,7 @@ public class SOULPatchesView
                     format("Full Text Search through spFiles results: %s", resultString),
                     3000, Notification.Position.MIDDLE).open();
 
-            LOGGER.debug("full text search spfiles: {}",
+            log.debug("full text search spfiles: {}",
                     res.stream().map(SPFile::toString).collect(Collectors.joining()));
         });
     }
@@ -369,10 +366,10 @@ public class SOULPatchesView
         Location location = event.getLocation();
         QueryParameters locationQueryParameters
                 = location.getQueryParameters();
-        LOGGER.debug("parameter: {}", parameter);
+        log.debug("parameter: {}", parameter);
         Map<String, List<String>> parametersMap
                 = locationQueryParameters.getParameters();
-        LOGGER.debug("parametersMap: {}", parametersMap.toString());
+        log.debug("parametersMap: {}", parametersMap.toString());
 
         if (parametersMap.containsKey(UIConst.PARAM_SHOW_BY_CURRENT_USER)
                 && parametersMap.get(UIConst.PARAM_SHOW_BY_CURRENT_USER)
