@@ -3,9 +3,7 @@ package io.horrorshow.soulhub.ui.presenter;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
-import io.horrorshow.soulhub.data.SOULPatchRating;
 import io.horrorshow.soulhub.security.SecurityUtils;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.service.UserService;
@@ -120,31 +118,10 @@ public class SOULPatchesPresenter {
     private void soulpatchRating(SOULPatchRatingEvent event) {
         log.debug("soulpatch rating {}", event);
         if (SecurityUtils.isUserLoggedIn() && userService.getCurrentAppUser().isPresent()) {
-            AppUser currentUser = userService.getCurrentAppUser().get();
-            event.getSoulPatch().getRatings().stream()
-                    .filter(rating -> rating.getAppUser()
-                            .equals(currentUser)).distinct().findAny()
-                    .ifPresentOrElse(
-                            rating -> {
-                                // rating present
-                                rating.setStars(event.getValue());
-                                soulPatchService.save(event.getSoulPatch());
-                                log.debug("rating by {} exists {}",
-                                        currentUser.getEmail(),
-                                        rating.toString());
-                            },
-                            () -> {
-                                // no rating present
-                                SOULPatchRating rating = new SOULPatchRating();
-                                rating.setAppUser(currentUser);
-                                rating.setSoulPatch(event.getSoulPatch());
-                                rating.setStars(event.getValue());
-                                event.getSoulPatch().getRatings().add(rating);
-                                soulPatchService.save(event.getSoulPatch());
-                                log.debug("no rating by {} existed, created {}",
-                                        currentUser.getEmail(),
-                                        rating.toString());
-                            });
+            soulPatchService.soulPatchRating(
+                    event.getSoulPatch(),
+                    event.getValue(),
+                    userService.getCurrentAppUser().get());
         }
 
         dataProvider.refreshItem(event.getSoulPatch());

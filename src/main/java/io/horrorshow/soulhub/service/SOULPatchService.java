@@ -2,6 +2,7 @@ package io.horrorshow.soulhub.service;
 
 import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
+import io.horrorshow.soulhub.data.SOULPatchRating;
 import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.data.api.SOULPatchParser;
 import io.horrorshow.soulhub.data.records.RecordsConverter;
@@ -40,7 +41,6 @@ import javax.transaction.Transactional;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -379,6 +379,29 @@ public class SOULPatchService {
 
     public void spFileDownloaded(SPFileDownloadEvent spFileDownloadEvent) {
         incrementNoDownloadsAndSave(spFileDownloadEvent.getSpFile().getSoulPatch());
+    }
+
+    public void soulPatchRating(SOULPatch sp, Integer v, AppUser user) {
+        sp.getRatings().stream()
+                .filter(rating -> rating.getAppUser().equals(user)).distinct()
+                .findAny()
+                .ifPresentOrElse(
+                        rating -> updateRating(rating, v)
+                        , () -> createRating(sp, v, user));
+    }
+
+    private void createRating(SOULPatch sp, Integer v, AppUser user) {
+        SOULPatchRating rating = new SOULPatchRating();
+        rating.setAppUser(user);
+        rating.setSoulPatch(sp);
+        rating.setStars(v);
+        sp.getRatings().add(rating);
+        save(sp);
+    }
+
+    private void updateRating(SOULPatchRating rating, Integer v) {
+        rating.setStars(v);
+        save(rating.getSoulPatch());
     }
 
     @NoArgsConstructor
