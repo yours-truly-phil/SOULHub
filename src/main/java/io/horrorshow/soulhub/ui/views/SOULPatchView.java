@@ -37,7 +37,7 @@ public class SOULPatchView extends VerticalLayout implements HasUrlParameter<Str
     private final UserService userService;
 
     private final SOULPatchReadOnly soulPatchReadOnly;
-    private final SpFileTabs spFileTabs;
+    private final SpFileTabs spFileTabs = new SpFileTabs();
 
     private final AbstractFieldSupport<SOULPatchView, SOULPatch> fieldSupport;
 
@@ -51,7 +51,6 @@ public class SOULPatchView extends VerticalLayout implements HasUrlParameter<Str
         fieldSupport.addValueChangeListener(this::soulPatchChanged);
 
         soulPatchReadOnly = new SOULPatchReadOnly(soulPatchService, userService);
-        spFileTabs = new SpFileTabs(soulPatchService, userService);
 
         setClassName("soulpatch-view");
 

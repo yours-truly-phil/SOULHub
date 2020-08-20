@@ -9,9 +9,6 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.SPFile;
-import io.horrorshow.soulhub.service.SOULPatchService;
-import io.horrorshow.soulhub.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,16 +29,16 @@ public class SpFileTabs extends Div
 
     private final AbstractFieldSupport<SpFileTabs, List<SPFile>> fieldSupport;
 
-    public SpFileTabs(@Autowired SOULPatchService soulPatchService,
-                      @Autowired UserService userService) {
+    public SpFileTabs() {
         this.fieldSupport =
                 new AbstractFieldSupport<>(this, null, Objects::equals, sp -> {
                 });
 
-//        spFileReadOnly = new SPFileReadOnly(soulPatchService, userService);
         spFileReadOnly = new SPFileReadOnly();
 
         setClassName("spfile-tabs");
+
+        setVisible(false);
 
         addValueChangeListener(this::spFilesChanged);
 
@@ -80,6 +77,7 @@ public class SpFileTabs extends Div
 
     @Override
     public void setValue(List<SPFile> value) {
+        setVisible(value.size() > 0);
         fieldSupport.setValue(value);
     }
 

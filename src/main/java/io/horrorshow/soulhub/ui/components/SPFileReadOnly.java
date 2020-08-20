@@ -19,10 +19,7 @@ import com.vaadin.flow.data.binder.ReadOnlyHasValue;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.SPFile;
-import io.horrorshow.soulhub.service.SOULPatchService;
-import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.events.SPFileDownloadEvent;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -36,9 +33,6 @@ public class SPFileReadOnly extends Div
 
     private static final long serialVersionUID = 8519553192242944636L;
 
-//    private final SOULPatchService soulPatchService;
-//    private final UserService userService;
-
     private final H3 name = new H3();
     private final AceEditor aceEditor = new AceEditor();
     private final Select<AceTheme> aceThemeSelect = new Select<>();
@@ -50,10 +44,6 @@ public class SPFileReadOnly extends Div
     private final AbstractFieldSupport<SPFileReadOnly, SPFile> fieldSupport;
     private final Binder<SPFile> binder = new Binder<>(SPFile.class);
 
-//    public SPFileReadOnly(@Autowired SOULPatchService soulPatchService,
-//                          @Autowired UserService userService) {
-//        this.soulPatchService = soulPatchService;
-//        this.userService = userService;
     public SPFileReadOnly() {
 
         this.fieldSupport =
@@ -62,17 +52,14 @@ public class SPFileReadOnly extends Div
 
         setClassName("spfile-read-only");
 
+        setVisible(false); // set to true if spFile in setValue(spFile) != null
+
         addValueChangeListener(this::valueChanged);
-//        addSPFileDownloadListener(this::spFileDownloaded);
 
         initComponents();
 
         arrangeComponents();
     }
-
-//    private void spFileDownloaded(SPFileDownloadEvent event) {
-//        soulPatchService.incrementNoDownloadsAndSave(event.getSpFile().getSoulPatch());
-//    }
 
     private void arrangeComponents() {
         FormLayout attributes = new FormLayout();
@@ -166,6 +153,7 @@ public class SPFileReadOnly extends Div
 
     @Override
     public void setValue(SPFile value) {
+        setVisible(value != null);
         fieldSupport.setValue(value);
     }
 
