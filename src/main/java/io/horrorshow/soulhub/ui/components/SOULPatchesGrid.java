@@ -59,7 +59,6 @@ public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
                 .setResizable(true)
                 .setFlexGrow(10)
                 .setSortable(true);
-//                .setComparator(Comparator.comparingInt(sp -> sp.getDescription().length()));
 
         addColumn(getColSpFilesRenderer())
                 .setHeader(COL_FILES)
@@ -67,7 +66,6 @@ public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
                 .setResizable(true)
                 .setAutoWidth(true)
                 .setSortable(false);
-//                .setComparator(Comparator.comparingInt(sp -> sp.getSpFiles().size()));
 
         addColumn(getColRatingRenderer())
                 .setHeader(COL_RATINGS)
@@ -75,10 +73,6 @@ public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
                 .setResizable(true)
                 .setWidth("14em")
                 .setSortable(false);
-//                .setComparator(Comparator.comparingDouble(soulPatch ->
-//                        soulPatch.getRatings().stream()
-//                                .mapToDouble(SOULPatchRating::getStars)
-//                                .average().orElse(0d)));
 
         addColumn(soulPatch -> valueOf(soulPatch.getNoViews()))
                 .setHeader(COL_NO_DOWNLOADS)
@@ -86,7 +80,6 @@ public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
                 .setResizable(true)
                 .setAutoWidth(true)
                 .setSortable(true);
-//                .setComparator(Comparator.comparingLong(SOULPatch::getNoViews));
 
         addColumn(soulPatch -> soulPatch.getAuthor().getUserName())
                 .setHeader(COL_AUTHOR)
@@ -94,7 +87,6 @@ public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
                 .setResizable(true)
                 .setAutoWidth(true)
                 .setSortable(false);
-//                .setComparator(Comparator.comparing(sp -> sp.getAuthor().getUserName()));
     }
 
     private ComponentRenderer<VerticalLayout, SOULPatch> getColSpFilesRenderer() {
