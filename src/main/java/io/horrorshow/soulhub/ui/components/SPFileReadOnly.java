@@ -19,6 +19,7 @@ import com.vaadin.flow.data.binder.ReadOnlyHasValue;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.SPFile;
+import io.horrorshow.soulhub.data.util.StringUtils;
 import io.horrorshow.soulhub.ui.events.SPFileDownloadEvent;
 
 import java.io.ByteArrayInputStream;
@@ -106,11 +107,13 @@ public class SPFileReadOnly extends Div
 
         ReadOnlyHasValue<SPFile> downloadBinding =
                 new ReadOnlyHasValue<>(spFile -> {
+                    String filename =
+                            String.format("%s", StringUtils.toValidFilename(spFile.getName()));
                     StreamResource sr = new StreamResource(
-                            String.format("%s", spFile.getName()),
+                            filename,
                             () -> downloadSPFile(spFile));
                     downloadLink.setHref(sr);
-                    downloadLink.setText(String.format("%s", spFile.getName()));
+                    downloadLink.setText(filename);
                 });
 
         binder.forField(new ReadOnlyHasValue<>(name::setText, null))

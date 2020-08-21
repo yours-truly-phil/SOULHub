@@ -15,6 +15,7 @@ import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
+import io.horrorshow.soulhub.data.util.StringUtils;
 import io.horrorshow.soulhub.ui.events.SOULPatchDownloadEvent;
 
 import java.io.InputStream;
@@ -115,11 +116,12 @@ public class SOULPatchReadOnly extends Div
                 new ReadOnlyHasValue<>(downloads::setText, null);
         ReadOnlyHasValue<SOULPatch> downloadBinding =
                 new ReadOnlyHasValue<>(sp -> {
+                    String filename = String.format("%s.zip", StringUtils.toValidFilename(sp.getName()));
                     StreamResource sr = new StreamResource(
-                            String.format("%s.zip", sp.getName()),
+                            filename,
                             () -> downloadSOULPatch(sp));
                     downloadLink.setHref(sr);
-                    downloadLink.setText(String.format("%s.zip", sp.getName()));
+                    downloadLink.setText(filename);
                 }, null);
 
         binder.forField(idBinding)
