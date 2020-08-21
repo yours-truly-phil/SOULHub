@@ -29,6 +29,7 @@ public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
     public static final String KEY_NO_DOWNLOADS = "noViews";
     public static final String COL_AUTHOR = "author";
     public static final String COL_RATINGS = "rating";
+    public static final String KEY_RATINGS = "ratings";
 
     public static final int DEFAULT_PAGE_SIZE = 50;
     public static final int DEFAULT_PAGINATOR_SIZE = 10;
@@ -69,10 +70,10 @@ public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
 
         addColumn(getColRatingRenderer())
                 .setHeader(COL_RATINGS)
-                .setKey(COL_RATINGS)
+                .setKey(KEY_RATINGS)
                 .setResizable(true)
                 .setWidth("14em")
-                .setSortable(false);
+                .setSortable(true);
 
         addColumn(soulPatch -> valueOf(soulPatch.getNoViews()))
                 .setHeader(COL_NO_DOWNLOADS)
