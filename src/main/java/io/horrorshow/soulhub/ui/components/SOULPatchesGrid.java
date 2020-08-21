@@ -17,8 +17,6 @@ import io.horrorshow.soulhub.ui.events.SOULPatchRatingEvent;
 import io.horrorshow.soulhub.ui.events.SPFileSelectEvent;
 import org.vaadin.klaudeta.PaginatedGrid;
 
-import java.util.Comparator;
-
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 
@@ -27,7 +25,8 @@ public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
     public static final String COL_NAME = "name";
     public static final String COL_DESCRIPTION = "description";
     public static final String COL_FILES = "files";
-    public static final String COL_VIEWS = "views";
+    public static final String COL_NO_DOWNLOADS = "downloads";
+    public static final String KEY_NO_DOWNLOADS = "noViews";
     public static final String COL_AUTHOR = "author";
     public static final String COL_RATINGS = "rating";
 
@@ -59,43 +58,43 @@ public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
                 .setKey(COL_DESCRIPTION)
                 .setResizable(true)
                 .setFlexGrow(10)
-                .setSortable(true)
-                .setComparator(Comparator.comparingInt(sp -> sp.getDescription().length()));
+                .setSortable(true);
+//                .setComparator(Comparator.comparingInt(sp -> sp.getDescription().length()));
 
         addColumn(getColSpFilesRenderer())
                 .setHeader(COL_FILES)
                 .setKey(COL_FILES)
                 .setResizable(true)
                 .setAutoWidth(true)
-                .setSortable(false) // TODO
-                .setComparator(Comparator.comparingInt(sp -> sp.getSpFiles().size()));
+                .setSortable(false);
+//                .setComparator(Comparator.comparingInt(sp -> sp.getSpFiles().size()));
 
         addColumn(getColRatingRenderer())
                 .setHeader(COL_RATINGS)
                 .setKey(COL_RATINGS)
                 .setResizable(true)
                 .setWidth("14em")
-                .setSortable(false) // TODO Exception in repository.find(...): no property rating found
-                .setComparator(Comparator.comparingDouble(soulPatch ->
-                        soulPatch.getRatings().stream()
-                                .mapToDouble(SOULPatchRating::getStars)
-                                .average().orElse(0d)));
+                .setSortable(false);
+//                .setComparator(Comparator.comparingDouble(soulPatch ->
+//                        soulPatch.getRatings().stream()
+//                                .mapToDouble(SOULPatchRating::getStars)
+//                                .average().orElse(0d)));
 
         addColumn(soulPatch -> valueOf(soulPatch.getNoViews()))
-                .setHeader(COL_VIEWS)
-                .setKey(COL_VIEWS)
+                .setHeader(COL_NO_DOWNLOADS)
+                .setKey(KEY_NO_DOWNLOADS)
                 .setResizable(true)
                 .setAutoWidth(true)
-                .setSortable(true)
-                .setComparator(Comparator.comparingLong(SOULPatch::getNoViews));
+                .setSortable(true);
+//                .setComparator(Comparator.comparingLong(SOULPatch::getNoViews));
 
         addColumn(soulPatch -> soulPatch.getAuthor().getUserName())
                 .setHeader(COL_AUTHOR)
                 .setKey(COL_AUTHOR)
                 .setResizable(true)
                 .setAutoWidth(true)
-                .setSortable(true)
-                .setComparator(Comparator.comparing(sp -> sp.getAuthor().getUserName()));
+                .setSortable(false);
+//                .setComparator(Comparator.comparing(sp -> sp.getAuthor().getUserName()));
     }
 
     private ComponentRenderer<VerticalLayout, SOULPatch> getColSpFilesRenderer() {
