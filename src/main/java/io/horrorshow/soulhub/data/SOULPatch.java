@@ -34,6 +34,10 @@ public class SOULPatch extends AuditModel {
 
     public static final String FIELD_NAME = "name";
     public static final String FIELD_DESCRIPTION = "description";
+    public static final String FIELD_SPFILES = "spFiles";
+    public static final String FIELD_AUTHOR = "author";
+    public static final String FIELD_COUNTER = "noViews";
+    public static final String FIELD_RATINGS = "ratings";
     private static final long serialVersionUID = -6746949290547828924L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

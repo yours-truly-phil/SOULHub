@@ -33,13 +33,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.io.*;
 import java.time.LocalDateTime;
@@ -341,8 +341,7 @@ public class SOULPatchService {
 
     public Page<SOULPatch> findAnyMatching(
             SOULPatchesFetchFilter filter, Pageable pageable) {
-        if (pageable.getSort().get().findFirst().isPresent()
-                && pageable.getSort().get().findFirst().get().getProperty().equals("ratings")) {
+        if (getFirstSortOrder(pageable).getProperty().equals(SOULPatch.FIELD_RATINGS)) {
             return findAllSOULPatchesOrderByAverageRating(pageable);
         }
         if (filter.getNamesFilter().isPresent() && !filter.getUsersFilter().isEmpty()) {
@@ -363,23 +362,42 @@ public class SOULPatchService {
         }
     }
 
+    private Sort.Order getFirstSortOrder(Pageable pageable) {
+        if (pageable.getSort().get().findFirst().isPresent()) {
+            return pageable.getSort().get().findFirst().get();
+        } else {
+            return new Sort.Order(Sort.Direction.ASC, SOULPatch.FIELD_NAME);
+        }
+    }
+
     public Page<SOULPatch> findAllSOULPatchesOrderByAverageRating(Pageable pageable) {
         var em = entityManagerFactory.createEntityManager();
         var cb = em.getCriteriaBuilder();
         var cq = cb.createQuery(SOULPatch.class);
         var root = cq.from(SOULPatch.class);
-        Join<SOULPatch, SOULPatchRating> join = root.join("ratings", JoinType.LEFT);
-        var avg = cb.avg(join.get("stars"));
-        cq.select(root).groupBy(root.get("id"));
-        var coalesce = cb.coalesce(avg, 0);
-        var order = (Objects.requireNonNull(pageable.getSort().getOrderFor("ratings"))
-                .isAscending()) ? cb.asc(coalesce) : cb.desc(coalesce);
+
+        Order order = getOrderBy(pageable, cb, cq, root);
         cq.orderBy(order);
+
         var result = em.createQuery(cq).getResultList();
         em.close();
         long start = pageable.getOffset();
         long end = (start + pageable.getPageSize()) > result.size() ? result.size() : (start + pageable.getPageSize());
         return new PageImpl<>(result.subList((int) start, (int) end), pageable, result.size());
+    }
+
+    private Order getOrderBy(Pageable pageable, CriteriaBuilder cb, CriteriaQuery<SOULPatch> cq, Root<SOULPatch> root) {
+        Sort.Order sortOrder = getFirstSortOrder(pageable);
+        Expression<?> sort;
+        if (sortOrder.getProperty().equals(SOULPatch.FIELD_RATINGS)) {
+            Join<SOULPatch, SOULPatchRating> join = root.join("ratings", JoinType.LEFT);
+            var avg = cb.avg(join.get("stars"));
+            cq.select(root).groupBy(root.get("id"));
+            sort = cb.coalesce(avg, 0);
+        } else {
+            sort = root.get(SOULPatch.FIELD_NAME);
+        }
+        return (sortOrder.isAscending()) ? cb.asc(sort) : cb.desc(sort);
     }
 
     public int countAnyMatching(SOULPatchesFetchFilter filter) {
