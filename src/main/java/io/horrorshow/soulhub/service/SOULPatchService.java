@@ -414,17 +414,17 @@ public class SOULPatchService {
     public int countAnyMatching(SOULPatchesFetchFilter filter) {
 
         if (filter.getNamesFilter().isPresent() && !filter.getUsersFilter().isEmpty()) {
-            return (int) soulPatchRepository.countSOULPatchesByAuthorIdInAndNameContainingIgnoreCase(
+            return Math.toIntExact(soulPatchRepository.countSOULPatchesByAuthorIdInAndNameContainingIgnoreCase(
                     filter.getUsersFilter().stream().map(AppUser::getId).collect(Collectors.toSet()),
-                    filter.getNamesFilter().get());
+                    filter.getNamesFilter().get()));
         } else if (filter.getNamesFilter().isEmpty() && !filter.getUsersFilter().isEmpty()) {
-            return (int) soulPatchRepository.countSOULPatchesByAuthorIdIn(
-                    filter.getUsersFilter().stream().map(AppUser::getId).collect(Collectors.toSet()));
+            return Math.toIntExact(soulPatchRepository.countSOULPatchesByAuthorIdIn(
+                    filter.getUsersFilter().stream().map(AppUser::getId).collect(Collectors.toSet())));
         } else if (filter.getNamesFilter().isPresent() && filter.getUsersFilter().isEmpty()) {
-            return (int) soulPatchRepository.countSOULPatchesByNameContainingIgnoreCase(
-                    filter.getNamesFilter().get());
+            return Math.toIntExact(soulPatchRepository.countSOULPatchesByNameContainingIgnoreCase(
+                    filter.getNamesFilter().get()));
         } else {
-            return (int) soulPatchRepository.count();
+            return Math.toIntExact(soulPatchRepository.count());
         }
     }
 
