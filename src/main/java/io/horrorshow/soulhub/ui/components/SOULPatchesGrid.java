@@ -11,6 +11,7 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SOULPatchRating;
+import io.horrorshow.soulhub.data.SOULPatch_;
 import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.security.SecurityUtils;
 import io.horrorshow.soulhub.ui.events.SOULPatchRatingEvent;
@@ -48,7 +49,7 @@ public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
     private void initColumns() {
         addColumn(SOULPatch::getName)
                 .setHeader(COL_NAME)
-                .setKey(COL_NAME)
+                .setKey(SOULPatch_.NAME)
                 .setResizable(true)
                 .setAutoWidth(true)
                 .setFrozen(true)
@@ -56,35 +57,35 @@ public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
 
         addColumn(getColDescriptionRenderer())
                 .setHeader(COL_DESCRIPTION)
-                .setKey(COL_DESCRIPTION)
+                .setKey(SOULPatch_.DESCRIPTION)
                 .setResizable(true)
                 .setFlexGrow(10)
                 .setSortable(true);
 
         addColumn(getColSpFilesRenderer())
                 .setHeader(COL_FILES)
-                .setKey(COL_FILES)
+                .setKey(SOULPatch_.SP_FILES)
                 .setResizable(true)
                 .setAutoWidth(true)
                 .setSortable(false);
 
         addColumn(getColRatingRenderer())
                 .setHeader(COL_RATINGS)
-                .setKey(KEY_RATINGS)
+                .setKey(SOULPatch_.RATINGS)
                 .setResizable(true)
                 .setWidth("14em")
                 .setSortable(true);
 
         addColumn(soulPatch -> valueOf(soulPatch.getNoViews()))
                 .setHeader(COL_NO_DOWNLOADS)
-                .setKey(KEY_NO_DOWNLOADS)
+                .setKey(SOULPatch_.NO_VIEWS)
                 .setResizable(true)
                 .setAutoWidth(true)
                 .setSortable(true);
 
         addColumn(soulPatch -> soulPatch.getAuthor().getUserName())
                 .setHeader(COL_AUTHOR)
-                .setKey(COL_AUTHOR)
+                .setKey(SOULPatch_.AUTHOR)
                 .setResizable(true)
                 .setAutoWidth(true)
                 .setSortable(false);

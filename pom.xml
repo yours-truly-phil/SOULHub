@@ -27,6 +27,7 @@
     <acewidget.version>1.4-Beta</acewidget.version>
     <vaadin-grid-pagination.version>2.0.7</vaadin-grid-pagination.version>
     <spring-data-provider.version>2.1.0</spring-data-provider.version>
+    <hibernate-jpamodelgen.version>5.3.7.Final</hibernate-jpamodelgen.version>
   </properties>
 
   <repositories>
@@ -137,6 +138,11 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-search-orm</artifactId>
       <version>${hibernate-search.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-jpamodelgen</artifactId>
+      <version>${hibernate-jpamodelgen.version}</version>
     </dependency>
 
     <!-- copied from Vaadin start project -->

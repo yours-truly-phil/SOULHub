@@ -32,12 +32,6 @@ import java.util.stream.Collectors;
         })
 public class SOULPatch extends AuditModel {
 
-    public static final String FIELD_NAME = "name";
-    public static final String FIELD_DESCRIPTION = "description";
-    public static final String FIELD_SPFILES = "spFiles";
-    public static final String FIELD_AUTHOR = "author";
-    public static final String FIELD_COUNTER = "noViews";
-    public static final String FIELD_RATINGS = "ratings";
     private static final long serialVersionUID = -6746949290547828924L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -47,12 +41,12 @@ public class SOULPatch extends AuditModel {
     private Long id;
 
     @NotBlank
-    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO, name = FIELD_NAME)
+    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO, name = SOULPatch_.NAME)
     @Analyzer(definition = "soulpatch_analyzer")
     private String name;
 
     @Column(columnDefinition = "TEXT")
-    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO, name = FIELD_DESCRIPTION)
+    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO, name = SOULPatch_.DESCRIPTION)
     @Analyzer(definition = "soulpatch_analyzer")
     private String description;
 

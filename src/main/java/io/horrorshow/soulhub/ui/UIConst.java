@@ -49,5 +49,5 @@ public class UIConst {
     public static final String PARAM_SPFILE = "file";
 
     public static final Sort.Direction DEFAULT_SORT_DIRECTION = Sort.Direction.ASC;
-    public static final String[] ORDER_SORT_FIELDS_SOULPATCHES = {"name", "noViews"};
+    public static final String[] DEFAULT_SORT_ORDER = {"name"};
 }

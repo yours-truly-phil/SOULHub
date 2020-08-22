@@ -1,9 +1,6 @@
 package io.horrorshow.soulhub.service;
 
-import io.horrorshow.soulhub.data.AppUser;
-import io.horrorshow.soulhub.data.SOULPatch;
-import io.horrorshow.soulhub.data.SOULPatchRating;
-import io.horrorshow.soulhub.data.SPFile;
+import io.horrorshow.soulhub.data.*;
 import io.horrorshow.soulhub.data.api.SOULPatchParser;
 import io.horrorshow.soulhub.data.records.RecordsConverter;
 import io.horrorshow.soulhub.data.records.SOULPatchRecord;
@@ -141,7 +138,7 @@ public class SOULPatchService {
 
             List<String> keywordList = tokenizeString(customAnalyzer, text);
 
-            Query query = qb.keyword().onFields(SOULPatch.FIELD_NAME, SOULPatch.FIELD_DESCRIPTION)
+            Query query = qb.keyword().onFields(SOULPatch_.NAME, SOULPatch_.DESCRIPTION)
                     .ignoreAnalyzer()
                     .ignoreFieldBridge()
                     .matching(text).createQuery();
@@ -339,35 +336,11 @@ public class SOULPatchService {
         }
     }
 
-    @Deprecated
-    public Page<SOULPatch> findAnyMatchingOld(
-            SOULPatchesFetchFilter filter, Pageable pageable) {
-        if (getFirstSortOrder(pageable).getProperty().equals(SOULPatch.FIELD_RATINGS)) {
-            return findAnyMatching(filter, pageable);
-        }
-        if (filter.getNamesFilter().isPresent() && !filter.getUsersFilter().isEmpty()) {
-            return soulPatchRepository.findSOULPatchesByAuthorIdInAndNameContainingIgnoreCase(
-                    filter.getUsersFilter().stream().map(AppUser::getId).collect(Collectors.toSet()),
-                    filter.getNamesFilter().get(),
-                    pageable);
-        } else if (filter.getNamesFilter().isEmpty() && !filter.getUsersFilter().isEmpty()) {
-            return soulPatchRepository.findSOULPatchesByAuthorIdIn(
-                    filter.getUsersFilter().stream().map(AppUser::getId).collect(Collectors.toSet()),
-                    pageable);
-        } else if (filter.getNamesFilter().isPresent() && filter.getUsersFilter().isEmpty()) {
-            return soulPatchRepository.findSOULPatchesByNameContainingIgnoreCase(
-                    filter.getNamesFilter().get(),
-                    pageable);
-        } else {
-            return soulPatchRepository.findAll(pageable);
-        }
-    }
-
     private Sort.Order getFirstSortOrder(Pageable pageable) {
         if (pageable.getSort().get().findFirst().isPresent()) {
             return pageable.getSort().get().findFirst().get();
         } else {
-            return new Sort.Order(Sort.Direction.ASC, SOULPatch.FIELD_NAME);
+            return new Sort.Order(Sort.Direction.ASC, SOULPatch_.NAME);
         }
     }
 
@@ -377,36 +350,39 @@ public class SOULPatchService {
         var cq = cb.createQuery(SOULPatch.class);
         var root = cq.from(SOULPatch.class);
 
+        Predicate predicate = getPredicate(filter, cb, root);
+        cq.where(getPredicate(filter, cb, root));
 
+        Order order = getOrderBy(pageable, cb, cq, root);
+        cq.orderBy(order);
+
+        var query = em.createQuery(cq);
+        query.setFirstResult(Math.toIntExact(pageable.getOffset()));
+        query.setMaxResults(pageable.getPageSize());
+
+        long count = em.createQuery(countAnyMatching(cb, predicate)).getSingleResult();
+        Page<SOULPatch> pageResult = new PageImpl<>(query.getResultList(), pageable, count);
+        em.close();
+        return pageResult;
+    }
+
+    private Predicate getPredicate(SOULPatchesFetchFilter filter, CriteriaBuilder cb, Root<SOULPatch> root) {
         List<Predicate> predicates = new ArrayList<>();
         if (filter.getNamesFilter().isPresent()) {
-            var namesFilter = cb.like(cb.lower(root.get(SOULPatch.FIELD_NAME)),
+            var namesFilter = cb.like(cb.lower(root.get(SOULPatch_.NAME)),
                     "%" + filter.getNamesFilter().get().toLowerCase(Locale.US) + "%");
             predicates.add(namesFilter);
         }
 
         List<Predicate> userPredicates = new ArrayList<>();
         for (AppUser user : filter.getUsersFilter()) {
-            userPredicates.add(cb.equal(root.get(SOULPatch.FIELD_AUTHOR).get("id"), user.getId()));
+            userPredicates.add(cb.equal(root.get(SOULPatch_.AUTHOR).get(SOULPatchRating_.ID), user.getId()));
         }
         if (userPredicates.size() > 0) {
             var userOrPredicate = cb.or(userPredicates.toArray(new Predicate[0]));
             predicates.add(userOrPredicate);
         }
-        var predicate = cb.and(predicates.toArray(new Predicate[0]));
-        cq.where(predicate);
-
-        Order order = getOrderBy(pageable, cb, cq, root);
-        cq.orderBy(order);
-
-        var typedQuery = em.createQuery(cq);
-        typedQuery.setFirstResult(Math.toIntExact(pageable.getOffset()));
-        typedQuery.setMaxResults(pageable.getPageSize());
-
-        long count = em.createQuery(countAnyMatching(cb, predicate)).getSingleResult();
-        Page<SOULPatch> pageResult = new PageImpl<>(typedQuery.getResultList(), pageable, count);
-        em.close();
-        return pageResult;
+        return cb.and(predicates.toArray(new Predicate[0]));
     }
 
     private CriteriaQuery<Long> countAnyMatching(CriteriaBuilder cb, Predicate predicate) {
@@ -420,17 +396,17 @@ public class SOULPatchService {
     private Order getOrderBy(Pageable pageable, CriteriaBuilder cb, CriteriaQuery<SOULPatch> cq, Root<SOULPatch> root) {
         Sort.Order sortOrder = getFirstSortOrder(pageable);
         Expression<?> sort;
-        if (sortOrder.getProperty().equals(SOULPatch.FIELD_RATINGS)) {
+        if (sortOrder.getProperty().equals(SOULPatch_.RATINGS)) {
             Join<SOULPatch, SOULPatchRating> join = root.join("ratings", JoinType.LEFT);
             var avg = cb.avg(join.get("stars"));
             cq.select(root).groupBy(root.get("id"));
             sort = cb.coalesce(avg, 0);
-        } else if (sortOrder.getProperty().equals(SOULPatch.FIELD_NAME) ||
-                sortOrder.getProperty().equals(SOULPatch.FIELD_DESCRIPTION) ||
-                sortOrder.getProperty().equals(SOULPatch.FIELD_COUNTER)) {
+        } else if (sortOrder.getProperty().equals(SOULPatch_.NAME) ||
+                sortOrder.getProperty().equals(SOULPatch_.DESCRIPTION) ||
+                sortOrder.getProperty().equals(SOULPatch_.NO_VIEWS)) {
             sort = root.get(sortOrder.getProperty());
         } else {
-            sort = root.get(SOULPatch.FIELD_NAME);
+            sort = root.get(SOULPatch_.NAME);
         }
         return (sortOrder.isAscending()) ? cb.asc(sort) : cb.desc(sort);
     }

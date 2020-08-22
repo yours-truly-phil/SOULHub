@@ -33,7 +33,7 @@ public class SOULPatchesGridDataProvider
 
     public SOULPatchesGridDataProvider(@Autowired SOULPatchService soulPatchService) {
         this.soulPatchService = soulPatchService;
-        setSortOrders(UIConst.DEFAULT_SORT_DIRECTION, UIConst.ORDER_SORT_FIELDS_SOULPATCHES);
+        setSortOrders(UIConst.DEFAULT_SORT_DIRECTION, UIConst.DEFAULT_SORT_ORDER);
     }
 
     public void setSortOrders(Sort.Direction direction, String[] properties) {
