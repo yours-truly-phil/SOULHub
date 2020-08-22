@@ -386,26 +386,35 @@ public class SOULPatchService {
         }
 
         List<Predicate> userPredicates = new ArrayList<>();
-        filter.getUsersFilter().forEach(appUser -> {
-            var userFilter = cb.equal(root.get(SOULPatch.FIELD_AUTHOR).get("id"), appUser.getId());
-            userPredicates.add(userFilter);
-        });
+        for (AppUser user : filter.getUsersFilter()) {
+            userPredicates.add(cb.equal(root.get(SOULPatch.FIELD_AUTHOR).get("id"), user.getId()));
+        }
         if (userPredicates.size() > 0) {
             var userOrPredicate = cb.or(userPredicates.toArray(new Predicate[0]));
             predicates.add(userOrPredicate);
         }
-        var wherePredicate = cb.and(predicates.toArray(new Predicate[0]));
-        cq.where(wherePredicate);
+        var predicate = cb.and(predicates.toArray(new Predicate[0]));
+        cq.where(predicate);
 
         Order order = getOrderBy(pageable, cb, cq, root);
         cq.orderBy(order);
 
-        var result = em.createQuery(cq).getResultList();
+        var typedQuery = em.createQuery(cq);
+        typedQuery.setFirstResult(Math.toIntExact(pageable.getOffset()));
+        typedQuery.setMaxResults(pageable.getPageSize());
+
+        long count = em.createQuery(countAnyMatching(cb, predicate)).getSingleResult();
+        Page<SOULPatch> pageResult = new PageImpl<>(typedQuery.getResultList(), pageable, count);
         em.close();
-        // TODO create page from the query so no need to fetch all results and taking a sublist
-        long start = pageable.getOffset();
-        long end = (start + pageable.getPageSize()) > result.size() ? result.size() : (start + pageable.getPageSize());
-        return new PageImpl<>(result.subList((int) start, (int) end), pageable, result.size());
+        return pageResult;
+    }
+
+    private CriteriaQuery<Long> countAnyMatching(CriteriaBuilder cb, Predicate predicate) {
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<SOULPatch> root = cq.from(SOULPatch.class);
+        cq.select(cb.count(root));
+        cq.where(predicate);
+        return cq;
     }
 
     private Order getOrderBy(Pageable pageable, CriteriaBuilder cb, CriteriaQuery<SOULPatch> cq, Root<SOULPatch> root) {
@@ -416,6 +425,10 @@ public class SOULPatchService {
             var avg = cb.avg(join.get("stars"));
             cq.select(root).groupBy(root.get("id"));
             sort = cb.coalesce(avg, 0);
+        } else if (sortOrder.getProperty().equals(SOULPatch.FIELD_NAME) ||
+                sortOrder.getProperty().equals(SOULPatch.FIELD_DESCRIPTION) ||
+                sortOrder.getProperty().equals(SOULPatch.FIELD_COUNTER)) {
+            sort = root.get(sortOrder.getProperty());
         } else {
             sort = root.get(SOULPatch.FIELD_NAME);
         }
