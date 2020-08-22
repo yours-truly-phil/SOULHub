@@ -339,10 +339,11 @@ public class SOULPatchService {
         }
     }
 
-    public Page<SOULPatch> findAnyMatching(
+    @Deprecated
+    public Page<SOULPatch> findAnyMatchingOld(
             SOULPatchesFetchFilter filter, Pageable pageable) {
         if (getFirstSortOrder(pageable).getProperty().equals(SOULPatch.FIELD_RATINGS)) {
-            return findAllSOULPatchesOrderByAverageRating(pageable);
+            return findAnyMatching(filter, pageable);
         }
         if (filter.getNamesFilter().isPresent() && !filter.getUsersFilter().isEmpty()) {
             return soulPatchRepository.findSOULPatchesByAuthorIdInAndNameContainingIgnoreCase(
@@ -370,17 +371,38 @@ public class SOULPatchService {
         }
     }
 
-    public Page<SOULPatch> findAllSOULPatchesOrderByAverageRating(Pageable pageable) {
+    public Page<SOULPatch> findAnyMatching(SOULPatchesFetchFilter filter, Pageable pageable) {
         var em = entityManagerFactory.createEntityManager();
         var cb = em.getCriteriaBuilder();
         var cq = cb.createQuery(SOULPatch.class);
         var root = cq.from(SOULPatch.class);
+
+
+        List<Predicate> predicates = new ArrayList<>();
+        if (filter.getNamesFilter().isPresent()) {
+            var namesFilter = cb.like(cb.lower(root.get(SOULPatch.FIELD_NAME)),
+                    "%" + filter.getNamesFilter().get().toLowerCase(Locale.US) + "%");
+            predicates.add(namesFilter);
+        }
+
+        List<Predicate> userPredicates = new ArrayList<>();
+        filter.getUsersFilter().forEach(appUser -> {
+            var userFilter = cb.equal(root.get(SOULPatch.FIELD_AUTHOR).get("id"), appUser.getId());
+            userPredicates.add(userFilter);
+        });
+        if (userPredicates.size() > 0) {
+            var userOrPredicate = cb.or(userPredicates.toArray(new Predicate[0]));
+            predicates.add(userOrPredicate);
+        }
+        var wherePredicate = cb.and(predicates.toArray(new Predicate[0]));
+        cq.where(wherePredicate);
 
         Order order = getOrderBy(pageable, cb, cq, root);
         cq.orderBy(order);
 
         var result = em.createQuery(cq).getResultList();
         em.close();
+        // TODO create page from the query so no need to fetch all results and taking a sublist
         long start = pageable.getOffset();
         long end = (start + pageable.getPageSize()) > result.size() ? result.size() : (start + pageable.getPageSize());
         return new PageImpl<>(result.subList((int) start, (int) end), pageable, result.size());
