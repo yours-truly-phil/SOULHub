@@ -397,9 +397,9 @@ public class SOULPatchService {
         Sort.Order sortOrder = getFirstSortOrder(pageable);
         Expression<?> sort;
         if (sortOrder.getProperty().equals(SOULPatch_.RATINGS)) {
-            Join<SOULPatch, SOULPatchRating> join = root.join("ratings", JoinType.LEFT);
-            var avg = cb.avg(join.get("stars"));
-            cq.select(root).groupBy(root.get("id"));
+            Join<SOULPatch, SOULPatchRating> join = root.join(SOULPatch_.RATINGS, JoinType.LEFT);
+            var avg = cb.avg(join.get(SOULPatchRating_.STARS));
+            cq.select(root).groupBy(root.get(SOULPatch_.ID));
             sort = cb.coalesce(avg, 0);
         } else if (sortOrder.getProperty().equals(SOULPatch_.NAME) ||
                 sortOrder.getProperty().equals(SOULPatch_.DESCRIPTION) ||
