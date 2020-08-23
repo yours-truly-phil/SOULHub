@@ -17,7 +17,12 @@ import java.util.stream.Collectors;
 
 @Entity
 @Indexed
-@Table(name = "soulpatches")
+@Table(name = "soulpatches", indexes = {
+        @javax.persistence.Index(name = "soulpatches_pkey",
+                columnList = "id", unique = true),
+        @javax.persistence.Index(name = "soulpatches_no_views_index",
+                columnList = "no_views")
+})
 @Data
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @AllArgsConstructor

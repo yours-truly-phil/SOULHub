@@ -89,6 +89,9 @@ create table soulpatches
     no_views    bigint default 0
 );
 
+create index soulpatches_no_views_index
+    on soulpatches (no_views);
+
 alter table soulpatches
     owner to postgres;
 
