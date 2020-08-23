@@ -15,7 +15,12 @@ import javax.persistence.*;
 
 @Entity
 @Indexed
-@Table(name = "spfiles")
+@Table(name = "spfiles", indexes = {
+        @javax.persistence.Index(name = "spfiles_pkey",
+                columnList = "id"),
+        @javax.persistence.Index(name = "spfiles_soulpatch_id_index",
+                columnList = "soulpatch_id")
+})
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @AllArgsConstructor
@@ -30,14 +35,12 @@ import javax.persistence.*;
         })
 public class SPFile extends AuditModel {
 
-    private static final long serialVersionUID = -4509227070431094816L;
-
     public static final String COL_NAME = "name";
     public static final String COL_CONTENT = "content";
     public static final String COL_ID = "id";
     public static final String COL_TYPE = "filetype";
     public static final String COL_SOULPATCH = "soulpatch_id";
-
+    private static final long serialVersionUID = -4509227070431094816L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = COL_ID, updatable = false, nullable = false)

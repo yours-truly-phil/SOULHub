@@ -89,6 +89,9 @@ create table soulpatches
     no_views    bigint default 0
 );
 
+create index soulpatches_author_index
+    on soulpatches (author);
+
 create index soulpatches_no_views_index
     on soulpatches (no_views);
 
@@ -113,6 +116,9 @@ create table spfiles
             references soulpatches
 );
 
+create index spfiles_soulpatch_id_index
+    on spfiles (soulpatch_id);
+
 alter table spfiles
     owner to postgres;
 
@@ -132,6 +138,9 @@ create table soulpatch_ratings
     updated_at   timestamp not null,
     unique (soulpatch_id, app_user_id)
 );
+
+create index soulpatch_ratings_soulpatch_index
+    on soulpatch_ratings (soulpatch_id);
 
 alter table soulpatch_ratings
     owner to postgres;

@@ -15,6 +15,12 @@ import javax.persistence.*;
 @Table(name = "soulpatch_ratings",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"soulpatch_id", "app_user_id"})
+        },
+        indexes = {
+                @javax.persistence.Index(name = "soulppatch_ratings_pkey",
+                        columnList = "id"),
+                @javax.persistence.Index(name = "soulpatch_ratings_soulpatch_index",
+                        columnList = "soulpatch_id")
         })
 public class SOULPatchRating extends AuditModel {
 

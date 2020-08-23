@@ -28,7 +28,11 @@ import java.util.stream.Collectors;
 
         @javax.persistence.Index(
                 name = "soulpatches_name_index",
-                columnList = "name")
+                columnList = "name"),
+
+        @javax.persistence.Index(
+                name = "soulpatches_author_index",
+                columnList = "author")
 })
 @Data
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
