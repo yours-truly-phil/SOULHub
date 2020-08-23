@@ -49,37 +49,45 @@ import java.util.stream.Collectors;
 public class SOULPatch extends AuditModel {
 
     private static final long serialVersionUID = -6746949290547828924L;
+
+    public static final String DB_COL_ID = "id";
+    public static final String DB_COL_NAME = "name";
+    public static final String DB_COL_DESCRIPTION = "description";
+    public static final String DB_COL_AUTHOR = "author";
+    public static final String DB_COL_DOWNLOADS = "no_views";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", updatable = false, nullable = false)
+    @Column(name = DB_COL_ID, updatable = false, nullable = false)
     @DocumentId
     @EqualsAndHashCode.Include
     private Long id;
 
+    @Column(name = DB_COL_NAME)
     @NotBlank
     @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO, name = SOULPatch_.NAME)
     @Analyzer(definition = "soulpatch_analyzer")
     private String name;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", name = DB_COL_DESCRIPTION)
     @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO, name = SOULPatch_.DESCRIPTION)
     @Analyzer(definition = "soulpatch_analyzer")
     private String description;
 
-    @OneToMany(mappedBy = "soulPatch", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = SPFile_.SOUL_PATCH, cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @ToString.Exclude
     @IndexedEmbedded
     private Set<SPFile> spFiles = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @ToString.Exclude
-    @JoinColumn(name = "author", nullable = false)
+    @JoinColumn(name = DB_COL_AUTHOR, nullable = false)
     private AppUser author;
 
-    @Column(name = "no_views")
+    @Column(name = DB_COL_DOWNLOADS)
     private Long noViews = 0L;
 
-    @OneToMany(mappedBy = "soulPatch", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = SOULPatchRating_.SOUL_PATCH, cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @ToString.Exclude
     private Set<SOULPatchRating> ratings = new HashSet<>();
 
