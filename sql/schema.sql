@@ -92,6 +92,9 @@ create table soulpatches
 create index soulpatches_no_views_index
     on soulpatches (no_views);
 
+create index soulpatches_name_index
+    on soulpatches (name);
+
 alter table soulpatches
     owner to postgres;
 
