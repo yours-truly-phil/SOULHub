@@ -395,20 +395,21 @@ public class SOULPatchService {
 
     private Order getOrderBy(Pageable pageable, CriteriaBuilder cb, CriteriaQuery<SOULPatch> cq, Root<SOULPatch> root) {
         Sort.Order sortOrder = getFirstSortOrder(pageable);
-        Expression<?> sort;
+        Expression<?> orderBy;
         if (sortOrder.getProperty().equals(SOULPatch_.RATINGS)) {
             Join<SOULPatch, SOULPatchRating> join = root.join(SOULPatch_.RATINGS, JoinType.LEFT);
             var avg = cb.avg(join.get(SOULPatchRating_.STARS));
             cq.select(root).groupBy(root.get(SOULPatch_.ID));
-            sort = cb.coalesce(avg, 0);
+            orderBy = cb.coalesce(avg, 0);
         } else if (sortOrder.getProperty().equals(SOULPatch_.NAME) ||
-                sortOrder.getProperty().equals(SOULPatch_.DESCRIPTION) ||
-                sortOrder.getProperty().equals(SOULPatch_.NO_VIEWS)) {
-            sort = root.get(sortOrder.getProperty());
+                sortOrder.getProperty().equals(SOULPatch_.DESCRIPTION)) {
+            orderBy = root.get(sortOrder.getProperty());
+        } else if (sortOrder.getProperty().equals(SOULPatch_.NO_VIEWS)) {
+            orderBy = cb.toLong(root.get(SOULPatch_.NO_VIEWS));
         } else {
-            sort = root.get(SOULPatch_.NAME);
+            orderBy = root.get(SOULPatch_.NAME);
         }
-        return (sortOrder.isAscending()) ? cb.asc(sort) : cb.desc(sort);
+        return (sortOrder.isAscending()) ? cb.asc(orderBy) : cb.desc(orderBy);
     }
 
     public int countAnyMatching(SOULPatchesFetchFilter filter) {

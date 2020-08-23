@@ -18,6 +18,8 @@ import io.horrorshow.soulhub.ui.events.SOULPatchRatingEvent;
 import io.horrorshow.soulhub.ui.events.SPFileSelectEvent;
 import org.vaadin.klaudeta.PaginatedGrid;
 
+import java.util.Comparator;
+
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 
@@ -53,14 +55,16 @@ public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
                 .setResizable(true)
                 .setAutoWidth(true)
                 .setFrozen(true)
-                .setSortable(true);
+                .setSortable(true)
+                .setComparator(Comparator.comparing(SOULPatch::getName));
 
         addColumn(getColDescriptionRenderer())
                 .setHeader(COL_DESCRIPTION)
                 .setKey(SOULPatch_.DESCRIPTION)
                 .setResizable(true)
                 .setFlexGrow(10)
-                .setSortable(true);
+                .setSortable(true)
+                .setComparator(Comparator.comparing(SOULPatch::getDescription));
 
         addColumn(getColSpFilesRenderer())
                 .setHeader(COL_FILES)
@@ -74,14 +78,16 @@ public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
                 .setKey(SOULPatch_.RATINGS)
                 .setResizable(true)
                 .setWidth("14em")
-                .setSortable(true);
+                .setSortable(true)
+                .setComparator(Comparator.comparing(SOULPatch::getAverageRating));
 
         addColumn(soulPatch -> valueOf(soulPatch.getNoViews()))
                 .setHeader(COL_NO_DOWNLOADS)
                 .setKey(SOULPatch_.NO_VIEWS)
                 .setResizable(true)
                 .setAutoWidth(true)
-                .setSortable(true);
+                .setSortable(true)
+                .setComparator(Comparator.comparingLong(SOULPatch::getNoViews));
 
         addColumn(soulPatch -> soulPatch.getAuthor().getUserName())
                 .setHeader(COL_AUTHOR)
