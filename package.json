@@ -52,7 +52,9 @@
       "@vaadin/vaadin-lumo-styles": "1.6.0",
       "@granite-elements/ace-widget": "2.2.7-b1",
       "@vaadin/vaadin-material-styles": "1.3.2",
-      "@vaadin/vaadin-rich-text-editor": "1.2.2"
+      "@vaadin/vaadin-rich-text-editor": "1.2.2",
+      "retry": "0.12.0",
+      "tippy.js": "6.2.3"
     },
     "devDependencies": {
       "webpack-babel-multi-target-plugin": "2.3.3",
@@ -65,7 +67,7 @@
       "webpack-merge": "4.2.2",
       "webpack-dev-server": "3.10.3"
     },
-    "hash": "8562d5085cee177055f2dcca31d7544d87211fd4c4225919c5acd5884cc5ed6d"
+    "hash": "e12fc485f6e766f9981fc3d1cf306d6696d983389ce561bd420741b5265e840a"
   },
   "dependencies": {
     "lit-element": "^2.2.1",
@@ -117,7 +119,9 @@
     "@vaadin/vaadin-lumo-styles": "1.6.0",
     "@granite-elements/ace-widget": "2.2.7-b1",
     "@vaadin/vaadin-material-styles": "1.3.2",
-    "@vaadin/vaadin-rich-text-editor": "1.2.2"
+    "@vaadin/vaadin-rich-text-editor": "1.2.2",
+    "retry": "0.12.0",
+    "tippy.js": "6.2.3"
   },
   "devDependencies": {
     "chokidar": "^3.4.0",

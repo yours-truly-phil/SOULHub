@@ -9,6 +9,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.shared.Registration;
+import dev.mett.vaadin.tooltip.mixin.HasTooltip;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SOULPatchRating;
 import io.horrorshow.soulhub.data.SOULPatch_;

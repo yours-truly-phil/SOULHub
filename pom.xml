@@ -28,6 +28,7 @@
     <vaadin-grid-pagination.version>2.0.7</vaadin-grid-pagination.version>
     <spring-data-provider.version>2.1.0</spring-data-provider.version>
     <hibernate-jpamodelgen.version>5.3.7.Final</hibernate-jpamodelgen.version>
+    <tooltip.version>1.6.0</tooltip.version>
   </properties>
 
   <repositories>
@@ -208,6 +209,11 @@
       <groupId>org.vaadin.artur</groupId>
       <artifactId>spring-data-provider</artifactId>
       <version>${spring-data-provider.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>dev.mett.vaadin</groupId>
+      <artifactId>tooltip</artifactId>
+      <version>${tooltip.version}</version>
     </dependency>
 
     <dependency>
