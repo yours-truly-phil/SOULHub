@@ -172,11 +172,6 @@ public class SOULFileEditor extends VerticalLayout
 
         binder.addValueChangeListener(event -> {
             isDirty.setValue(true);
-            // TODO investigate: sets the value to new value, then empty, then value again initially
-            //  firing change twice, fucking up display of save button on changes
-            // TODO investigate: typing rapidly in the ace-editor causes the cursor to jump to end of script
-            log.debug("ValueChangeEvent oldValue: {} newValue: {}",
-                    event.getOldValue(), event.getValue());
         });
         binder.addStatusChangeListener(event -> {
             boolean isValid = event.getBinder().isValid();
