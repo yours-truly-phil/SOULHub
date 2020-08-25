@@ -4,6 +4,7 @@ import io.horrorshow.soulhub.data.SOULPatch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Set;
@@ -28,5 +29,8 @@ public interface SOULPatchRepository extends JpaRepository<SOULPatch, Long> {
 
     long countSOULPatchesByNameContainingIgnoreCase
             (String nameFilter);
+
+    @Query("SELECT SUM (sp.noViews) FROM SOULPatch sp")
+    long totalNoSOULPatchDownloads();
 
 }

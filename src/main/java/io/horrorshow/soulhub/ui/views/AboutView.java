@@ -37,12 +37,17 @@ public class AboutView extends VerticalLayout {
                         soulPatchService.countSOULPatches()));
 
         Span noSPFiles = new Span(
-                format("%s soul files attached",
+                format("%s soul or soulpatch manifest files attached",
                         soulPatchService.countSPFiles()));
+
+        Span totalDownloads = new Span(
+                format("%s soulpatch downloads",
+                        soulPatchService.countTotalDownloads()));
 
         add(title);
         add(noSOULPatches);
         add(noSPFiles);
+        add(totalDownloads);
     }
 
 }

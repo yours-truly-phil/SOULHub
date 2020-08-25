@@ -15,24 +15,26 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static io.horrorshow.soulhub.data.SOULPatch.*;
+
 @Entity
 @Indexed
 @Table(name = "soulpatches", indexes = {
         @javax.persistence.Index(
                 name = "soulpatches_pkey",
-                columnList = "id", unique = true),
+                columnList = DB_COL_ID, unique = true),
 
         @javax.persistence.Index(
                 name = "soulpatches_no_views_index",
-                columnList = "no_views"),
+                columnList = DB_COL_DOWNLOADS),
 
         @javax.persistence.Index(
                 name = "soulpatches_name_index",
-                columnList = "name"),
+                columnList = DB_COL_NAME),
 
         @javax.persistence.Index(
                 name = "soulpatches_author_index",
-                columnList = "author")
+                columnList = DB_COL_AUTHOR)
 })
 @Data
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
@@ -55,6 +57,8 @@ public class SOULPatch extends AuditModel {
     public static final String DB_COL_DESCRIPTION = "description";
     public static final String DB_COL_AUTHOR = "author";
     public static final String DB_COL_DOWNLOADS = "no_views";
+
+    public static final String SOULPATCH_ANALYZER = "soulpatch_analyzer";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

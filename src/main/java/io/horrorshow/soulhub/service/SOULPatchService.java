@@ -460,6 +460,10 @@ public class SOULPatchService {
         save(rating.getSoulPatch());
     }
 
+    public long countTotalDownloads() {
+        return soulPatchRepository.totalNoSOULPatchDownloads();
+    }
+
     @NoArgsConstructor
     @AllArgsConstructor
     @EqualsAndHashCode

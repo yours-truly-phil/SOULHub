@@ -128,7 +128,8 @@ public class SOULPatchesPresenter {
     }
 
     private void spFileSelected(SPFileSelectEvent event) {
-        log.debug("sp file selected {}", event);
+        log.debug("sp file selected, id: {}, name: {}",
+                event.getSpFile().getId(), event.getSpFile().getName());
         view.getSpFileReadOnlyDialog().open(event.getSpFile());
     }
 
