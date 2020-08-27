@@ -43,12 +43,16 @@ public class AppUserPresenter {
     }
 
     public void onNavigation(String parameter, Map<String, List<String>> parameterMap) {
-        // TODO other cases
-        if (SecurityUtils.isUserLoggedIn() && userService.getCurrentAppUser().isPresent()) {
-            var curUser = userService.getCurrentAppUser().get();
-            if (curUser.getUserName().equals(parameter)) {
-                view.getAppUserInfo().setValue(curUser);
-            }
-        }
+        var user = userService.loadAppUser(parameter);
+        var currentUser = userService.getCurrentAppUser();
+
+        view.getAppUserInfo()
+                .setEditable(SecurityUtils.isUserLoggedIn()
+                        && currentUser.isPresent() && user.isPresent()
+                        && currentUser.get().equals(user.get()));
+
+        user.ifPresentOrElse(
+                appUser -> view.getAppUserInfo().setValue(appUser)
+                , () -> view.setError("No user found for given parameter"));
     }
 }

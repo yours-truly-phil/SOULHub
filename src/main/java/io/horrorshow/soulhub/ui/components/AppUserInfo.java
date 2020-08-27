@@ -74,6 +74,9 @@ public class AppUserInfo extends Div
 
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         save.addClickListener(this::saveAppUser);
+        save.setEnabled(false);
+        save.setVisible(false);
+        save.setDisableOnClick(true);
 
         binder.forField(new ReadOnlyHasValue<>(userName::setText, null))
                 .bind(AppUser::getUserName, null);
@@ -94,6 +97,11 @@ public class AppUserInfo extends Div
         binder.addStatusChangeListener(this::binderStatusChanged);
 
         addValueChangeListener(this::valueChanged);
+    }
+
+    public void setEditable(boolean b) {
+        save.setEnabled(b);
+        save.setVisible(b);
     }
 
     private void binderStatusChanged(StatusChangeEvent event) {

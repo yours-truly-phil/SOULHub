@@ -140,12 +140,7 @@ public class SOULPatchesPresenter {
 
     public void onNavigation(String parameter, Map<String, List<String>> parameterMap) {
 
-        if (parameterMap.containsKey(UIConst.PARAM_SHOW_BY_CURRENT_USER)
-                && parameterMap.get(UIConst.PARAM_SHOW_BY_CURRENT_USER).stream()
-                .anyMatch(Boolean.TRUE.toString()::equalsIgnoreCase)) {
-
-            view.getHeader().setValue(SOULPatchFilter.getOnlyCurrentUser());
-        } else if (parameterMap.containsKey(UIConst.PARAM_SHOW_BY_USER)) {
+        if (parameterMap.containsKey(UIConst.PARAM_SHOW_BY_USER)) {
             var filter = SOULPatchFilter.getEmptyFilter();
 
             Set<AppUser> appUserFilter = parameterMap.get(UIConst.PARAM_SHOW_BY_USER)
