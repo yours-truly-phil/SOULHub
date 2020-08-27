@@ -56,28 +56,28 @@ public class SOULPatchesPresenter {
     public void init(SOULPatchesView view) {
         this.view = view;
         view.getGrid().setDataProvider(dataProvider);
-        view.getGrid().addSPFileSelectListener(this::spFileSelected);
-        view.getGrid().addSOULPatchRatingsListener(this::soulpatchRating);
-        view.getGrid().asSingleSelect().addValueChangeListener(this::soulPatchesGridSelection);
-        view.getHeader().addFullTextSearchListener(this::fullTextSearchEvent);
-        view.getHeader().addValueChangeListener(this::soulpatchesHeaderChanged);
+        view.getGrid().addSPFileSelectListener(this::onSPFileSelection);
+        view.getGrid().addSOULPatchRatingsListener(this::onSOULPatchRating);
+        view.getGrid().asSingleSelect().addValueChangeListener(this::onSOULPatchesGridSelection);
+        view.getHeader().addFullTextSearchListener(this::onFullTextSearch);
+        view.getHeader().addValueChangeListener(this::onSOULPatchesHeaderValueChanged);
 
 
         view.getSpFileReadOnlyDialog()
                 .getSpFileReadOnly()
-                .addSPFileDownloadListener(this::spFileDownloaded);
+                .addSPFileDownloadListener(this::onSPFileDownload);
 
-        view.getSoulPatchReadOnlyDialog().addValueChangeListener(this::soulPatchReadOnlyChanged);
+        view.getSoulPatchReadOnlyDialog().addValueChangeListener(this::onSOULPatchReadOnlyValueChanged);
         view.getSoulPatchReadOnlyDialog()
                 .getSoulPatchReadOnly()
                 .setSOULPatchZipInputStreamProvider(soulPatchService::getZipSOULPatchStreamProvider);
 
         view.getSoulPatchReadOnlyDialog()
                 .getSoulPatchReadOnly()
-                .addSOULPatchDownloadListener(this::soulPatchDownloaded);
+                .addSOULPatchDownloadListener(this::onSOULPatchDownload);
     }
 
-    private void soulPatchReadOnlyChanged(
+    private void onSOULPatchReadOnlyValueChanged(
             AbstractField.ComponentValueChangeEvent
                     <SOULPatchReadOnly, SOULPatch> event) {
         view.getSoulPatchReadOnlyDialog()
@@ -85,17 +85,17 @@ public class SOULPatchesPresenter {
                 .setVisible(userService.isCurrentUserOwnerOf(event.getValue()));
     }
 
-    private void soulPatchDownloaded(SOULPatchDownloadEvent event) {
+    private void onSOULPatchDownload(SOULPatchDownloadEvent event) {
         soulPatchService.incrementNoDownloadsAndSave(event.getSoulPatch());
         dataProvider.refreshItem(event.getSoulPatch());
     }
 
-    private void spFileDownloaded(SPFileDownloadEvent event) {
+    private void onSPFileDownload(SPFileDownloadEvent event) {
         soulPatchService.incrementNoDownloadsAndSave(event.getSpFile().getSoulPatch());
         dataProvider.refreshItem(event.getSpFile().getSoulPatch());
     }
 
-    private void soulpatchesHeaderChanged(
+    private void onSOULPatchesHeaderValueChanged(
             AbstractField.ComponentValueChangeEvent<SOULPatchesGridHeader, SOULPatchFilter> event) {
         log.debug("soulpatch header value changed: {}", event.getValue());
         var filter = new SOULPatchService.SOULPatchesFetchFilter();
@@ -108,7 +108,7 @@ public class SOULPatchesPresenter {
         dataProvider.setFilter(filter);
     }
 
-    private void soulPatchesGridSelection(
+    private void onSOULPatchesGridSelection(
             AbstractField.ComponentValueChangeEvent<Grid<SOULPatch>, SOULPatch> event) {
         view.getGrid().asSingleSelect().getOptionalValue()
                 .ifPresentOrElse(
@@ -116,14 +116,14 @@ public class SOULPatchesPresenter {
                         () -> view.getSoulPatchReadOnlyDialog().close());
     }
 
-    private void fullTextSearchEvent(SOULPatchFullTextSearchEvent event) {
+    private void onFullTextSearch(SOULPatchFullTextSearchEvent event) {
         var filter = new SOULPatchService.SOULPatchesFetchFilter();
         filter.setFullTextSearch(event.getValue());
         dataProvider.setFilter(filter);
         log.debug("full text search event: {}", event.getValue());
     }
 
-    private void soulpatchRating(SOULPatchRatingEvent event) {
+    private void onSOULPatchRating(SOULPatchRatingEvent event) {
         log.debug("soulpatch rating {}", event);
         if (SecurityUtils.isUserLoggedIn() && userService.getCurrentAppUser().isPresent()) {
             soulPatchService.soulPatchRating(
@@ -135,7 +135,7 @@ public class SOULPatchesPresenter {
         dataProvider.refreshItem(event.getSoulPatch());
     }
 
-    private void spFileSelected(SPFileSelectEvent event) {
+    private void onSPFileSelection(SPFileSelectEvent event) {
         log.debug("sp file selected, id: {}, name: {}",
                 event.getSpFile().getId(), event.getSpFile().getName());
         view.getSpFileReadOnlyDialog().open(event.getSpFile());
