@@ -1,5 +1,6 @@
 package io.horrorshow.soulhub.ui.presenter;
 
+import com.helger.commons.annotation.VisibleForTesting;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -10,7 +11,6 @@ import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.components.SOULPatchReadOnly;
-import io.horrorshow.soulhub.ui.components.SOULPatchesGridHeader;
 import io.horrorshow.soulhub.ui.dataproviders.SOULPatchesGridDataProvider;
 import io.horrorshow.soulhub.ui.events.*;
 import io.horrorshow.soulhub.ui.filters.SOULPatchFilter;
@@ -60,7 +60,7 @@ public class SOULPatchesPresenter {
         view.getGrid().addSOULPatchRatingsListener(this::onSOULPatchRating);
         view.getGrid().asSingleSelect().addValueChangeListener(this::onSOULPatchesGridSelection);
         view.getHeader().addFullTextSearchListener(this::onFullTextSearch);
-        view.getHeader().addValueChangeListener(this::onSOULPatchesHeaderValueChanged);
+        view.getHeader().addValueChangeListener(event -> onSOULPatchesHeaderValueChanged(event.getValue()));
 
 
         view.getSpFileReadOnlyDialog()
@@ -85,26 +85,28 @@ public class SOULPatchesPresenter {
                 .setVisible(userService.isCurrentUserOwnerOf(event.getValue()));
     }
 
-    private void onSOULPatchDownload(SOULPatchDownloadEvent event) {
+    @VisibleForTesting
+    void onSOULPatchDownload(SOULPatchDownloadEvent event) {
         soulPatchService.incrementNoDownloadsAndSave(event.getSoulPatch());
         dataProvider.refreshItem(event.getSoulPatch());
     }
 
-    private void onSPFileDownload(SPFileDownloadEvent event) {
+    @VisibleForTesting
+    void onSPFileDownload(SPFileDownloadEvent event) {
         soulPatchService.incrementNoDownloadsAndSave(event.getSpFile().getSoulPatch());
         dataProvider.refreshItem(event.getSpFile().getSoulPatch());
     }
 
-    private void onSOULPatchesHeaderValueChanged(
-            AbstractField.ComponentValueChangeEvent<SOULPatchesGridHeader, SOULPatchFilter> event) {
-        log.debug("soulpatch header value changed: {}", event.getValue());
+    @VisibleForTesting
+    void onSOULPatchesHeaderValueChanged(SOULPatchFilter event) {
+        log.debug("soulpatch header value changed: {}", event);
         var filter = new SOULPatchService.SOULPatchesFetchFilter();
-        filter.setNamesFilter(event.getValue().getNamesFilter());
-        if (event.getValue().isOnlyCurUser()) {
+        filter.setNamesFilter(event.getNamesFilter());
+        if (event.isOnlyCurUser()) {
             userService.getCurrentAppUser().ifPresent(appUser ->
                     filter.getUsersFilter().add(appUser));
         }
-        filter.getUsersFilter().addAll(event.getValue().getAppUserFilter());
+        filter.getUsersFilter().addAll(event.getAppUserFilter());
         dataProvider.setFilter(filter);
     }
 
@@ -116,7 +118,8 @@ public class SOULPatchesPresenter {
                         () -> view.getSoulPatchReadOnlyDialog().close());
     }
 
-    private void onFullTextSearch(SOULPatchFullTextSearchEvent event) {
+    @VisibleForTesting
+    void onFullTextSearch(SOULPatchFullTextSearchEvent event) {
         var filter = new SOULPatchService.SOULPatchesFetchFilter();
         filter.setFullTextSearch(event.getValue());
         dataProvider.setFilter(filter);

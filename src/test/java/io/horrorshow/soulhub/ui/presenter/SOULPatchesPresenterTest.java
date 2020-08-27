@@ -1,19 +1,23 @@
 package io.horrorshow.soulhub.ui.presenter;
 
 import io.horrorshow.soulhub.data.AppUser;
+import io.horrorshow.soulhub.data.SOULPatch;
+import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.dataproviders.SOULPatchesGridDataProvider;
+import io.horrorshow.soulhub.ui.events.SOULPatchDownloadEvent;
+import io.horrorshow.soulhub.ui.events.SOULPatchFullTextSearchEvent;
+import io.horrorshow.soulhub.ui.events.SPFileDownloadEvent;
+import io.horrorshow.soulhub.ui.filters.SOULPatchFilter;
 import io.horrorshow.soulhub.ui.views.SOULPatchesView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,11 +40,11 @@ class SOULPatchesPresenterTest {
         MockitoAnnotations.initMocks(this);
         presenter = new SOULPatchesPresenter(dataProvider, userService, soulPatchService);
         view = new SOULPatchesView(presenter);
+        presenter.init(view);
     }
 
     @Test
     void onNavigation_no_filter_without_parameter() {
-        presenter.init(view);
         view.getHeader().addValueChangeListener(event -> fail("no event expected"));
 
         presenter.onNavigation(null, new HashMap<>());
@@ -48,7 +52,6 @@ class SOULPatchesPresenterTest {
 
     @Test
     void onNavigation_filter_by_user() {
-        presenter.init(view);
         view.getHeader().addValueChangeListener(event -> {
             var appUser = event.getValue().getAppUserFilter();
             assertThat(appUser.size() == 1);
@@ -68,7 +71,6 @@ class SOULPatchesPresenterTest {
 
     @Test
     void onNavigation_filter_by_multiple_users() {
-        presenter.init(view);
         view.getHeader().addValueChangeListener(event -> {
             var appUser = event.getValue().getAppUserFilter();
             assertThat(appUser.size() == 3);
@@ -97,11 +99,81 @@ class SOULPatchesPresenterTest {
 
     @Test
     void onNavigation_no_filter_on_illegal_user_param() {
-        presenter.init(view);
         view.getHeader().addValueChangeListener(
                 event -> fail("no event expected"));
         var map = Map.of("user", List.of("invalid_id"));
         verify(userService, never()).findById(any());
         presenter.onNavigation(null, map);
+    }
+
+    @Test
+    void on_full_text_search_event_create_search_filter_for_dataprovider() {
+        String SEARCH_STRING = "find-me";
+        var event = new SOULPatchFullTextSearchEvent(view, SEARCH_STRING);
+        presenter.onFullTextSearch(event);
+
+        var fetchFilterArgumentCaptor
+                = ArgumentCaptor.forClass(SOULPatchService.SOULPatchesFetchFilter.class);
+
+        verify(dataProvider).setFilter(fetchFilterArgumentCaptor.capture());
+
+        var resultFetchFilter
+                = fetchFilterArgumentCaptor.getValue();
+        assertThat(resultFetchFilter.getFullTextSearch().isPresent());
+        assertThat(resultFetchFilter.getFullTextSearch().get().equals(SEARCH_STRING));
+    }
+
+    @Test
+    void on_grid_header_change_set_filters() {
+        var filter = new SOULPatchFilter();
+        filter.setNamesFilter("namesfilter");
+        var u1 = new AppUser();
+        var u2 = new AppUser();
+        u1.setUserName("user 1");
+        u2.setUserName("user 2");
+        filter.setOnlyCurUser(true);
+        filter.setAppUserFilter(Set.of(u1, u2));
+
+        var cu = new AppUser();
+        cu.setUserName("cur user");
+        when(userService.getCurrentAppUser()).thenReturn(Optional.of(cu));
+
+        var captor
+                = ArgumentCaptor.forClass(SOULPatchService.SOULPatchesFetchFilter.class);
+
+        presenter.onSOULPatchesHeaderValueChanged(filter);
+
+        verify(dataProvider).setFilter(captor.capture());
+
+        var res = captor.getValue();
+        assertThat(res.getNamesFilter().isPresent());
+        assertThat(res.getNamesFilter().get().equals("namesfilter"));
+        assertThat(res.getUsersFilter().containsAll(Set.of(cu, u1, u2)));
+    }
+
+    @Test
+    void increment_download_counter_on_soulpatch_download() {
+        var soulPatch = new SOULPatch();
+        soulPatch.setId(4711L);
+        var event = new SOULPatchDownloadEvent(view.getSoulPatchReadOnlyDialog(), soulPatch);
+
+        presenter.onSOULPatchDownload(event);
+
+        verify(soulPatchService).incrementNoDownloadsAndSave(soulPatch);
+        verify(dataProvider).refreshItem(soulPatch);
+    }
+
+    @Test
+    void increment_download_counter_on_spfile_download() {
+        var spFile = new SPFile();
+        var soulPatch = new SOULPatch();
+        soulPatch.setId(4711L);
+        spFile.setSoulPatch(soulPatch);
+        var event = new SPFileDownloadEvent(view.getSpFileReadOnlyDialog(), spFile);
+
+        presenter.onSPFileDownload(event);
+
+        verify(soulPatchService).incrementNoDownloadsAndSave(soulPatch);
+        verify(dataProvider).refreshItem(soulPatch);
     }
 }
