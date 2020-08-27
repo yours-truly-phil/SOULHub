@@ -18,12 +18,14 @@ import org.vaadin.artur.spring.dataprovider.FilterablePageableDataProvider;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static io.horrorshow.soulhub.service.SOULPatchService.SOULPatchesFetchFilter;
+
 @SpringComponent
 @UIScope
 @Log4j2
 public class SOULPatchesGridDataProvider
         extends FilterablePageableDataProvider
-        <SOULPatch, SOULPatchService.SOULPatchesFetchFilter> {
+        <SOULPatch, SOULPatchesFetchFilter> {
 
     private static final long serialVersionUID = 8027534129208314189L;
 
@@ -50,8 +52,8 @@ public class SOULPatchesGridDataProvider
 
     @Override
     protected Page<SOULPatch> fetchFromBackEnd(
-            Query<SOULPatch, SOULPatchService.SOULPatchesFetchFilter> query, Pageable pageable) {
-        SOULPatchService.SOULPatchesFetchFilter filter = query.getFilter().orElse(SOULPatchService.SOULPatchesFetchFilter.getEmptyFilter());
+            Query<SOULPatch, SOULPatchesFetchFilter> query, Pageable pageable) {
+        SOULPatchesFetchFilter filter = query.getFilter().orElse(SOULPatchesFetchFilter.getEmptyFilter());
         Page<SOULPatch> page = soulPatchService.findAnyMatching(filter, pageable);
         if (pageObserver != null) {
             pageObserver.accept(page);
@@ -66,8 +68,8 @@ public class SOULPatchesGridDataProvider
     }
 
     @Override
-    protected int sizeInBackEnd(Query<SOULPatch, SOULPatchService.SOULPatchesFetchFilter> query) {
-        SOULPatchService.SOULPatchesFetchFilter filter = query.getFilter().orElse(SOULPatchService.SOULPatchesFetchFilter.getEmptyFilter());
+    protected int sizeInBackEnd(Query<SOULPatch, SOULPatchesFetchFilter> query) {
+        SOULPatchesFetchFilter filter = query.getFilter().orElse(SOULPatchesFetchFilter.getEmptyFilter());
         int count = soulPatchService.countAnyMatching(filter);
         log.debug("size in backend for query {}: {}", query, count);
         return count;

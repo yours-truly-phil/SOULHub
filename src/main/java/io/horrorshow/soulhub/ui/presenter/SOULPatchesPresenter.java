@@ -117,6 +117,9 @@ public class SOULPatchesPresenter {
     }
 
     private void fullTextSearchEvent(SOULPatchFullTextSearchEvent event) {
+        var filter = new SOULPatchService.SOULPatchesFetchFilter();
+        filter.setFullTextSearch(event.getValue());
+        dataProvider.setFilter(filter);
         log.debug("full text search event: {}", event.getValue());
     }
 

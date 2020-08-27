@@ -57,12 +57,12 @@ public class SPFile extends AuditModel {
     private FileType fileType;
 
     @Column(name = DB_COL_NAME)
-    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO, name = DB_COL_NAME)
+    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO, name = SPFile_.NAME)
     @Analyzer(definition = "soulfile_analyzer")
     private String name;
 
     @Column(columnDefinition = "TEXT", name = DB_COL_CONTENT)
-    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO, name = DB_COL_CONTENT)
+    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO, name = SPFile_.FILE_CONTENT)
     @Analyzer(definition = "soulfile_analyzer")
     private String fileContent;
 

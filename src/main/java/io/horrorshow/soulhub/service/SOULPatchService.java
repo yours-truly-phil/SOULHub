@@ -120,6 +120,47 @@ public class SOULPatchService {
                 .collect(Collectors.toList());
     }
 
+    private Page<SOULPatch> findAnyMatchingFullTextSearch(String s, Pageable pageable) {
+        var em = entityManagerFactory.createEntityManager();
+        var fullTextEM = Search.getFullTextEntityManager(em);
+
+        em.getTransaction().begin();
+
+        var qb = fullTextEM.getSearchFactory()
+                .buildQueryBuilder().forEntity(SOULPatch.class).get();
+        var analyzer = fullTextEM.getSearchFactory()
+                .getAnalyzer(SOULPatch.class);
+
+        var tokens = tokenizeString(analyzer, s);
+
+//        log.debug("Tokens to full text search by: {}", String.join(", ", tokens));
+
+        var query = qb
+                .keyword()
+//                .wildcard()
+                .onFields(SOULPatch_.NAME, SOULPatch_.DESCRIPTION)
+                .andField(SOULPatch_.SP_FILES + "." + SPFile_.FILE_CONTENT)
+                .andField(SOULPatch_.SP_FILES + "." + SPFile_.NAME)
+//                .ignoreFieldBridge()
+//                .ignoreAnalyzer()
+                .matching(s).createQuery();
+
+        var fullTextQuery = fullTextEM.createFullTextQuery(query, SOULPatch.class)
+                .setFirstResult(Math.toIntExact(pageable.getPageNumber() * pageable.getPageSize()))
+                .setMaxResults(Math.toIntExact(pageable.getPageSize()));
+
+        List<?> resultList = fullTextQuery.getResultList();
+        var queryResults = resultList.stream().filter(o -> o instanceof SOULPatch)
+                .map(o -> (SOULPatch) o)
+                .collect(Collectors.toList());
+
+        Page<SOULPatch> pageResult = new PageImpl<>(queryResults, pageable, queryResults.size());
+
+        em.getTransaction().commit();
+        em.close();
+        return pageResult;
+    }
+
     @Transactional
     public List<SOULPatch> fullTextSearchSOULPatches(String text) {
         List<SOULPatch> result = new ArrayList<>();
@@ -344,7 +385,7 @@ public class SOULPatchService {
         }
     }
 
-    public Page<SOULPatch> findAnyMatching(SOULPatchesFetchFilter filter, Pageable pageable) {
+    private Page<SOULPatch> findAnyMatchingFiltered(SOULPatchesFetchFilter filter, Pageable pageable) {
         var em = entityManagerFactory.createEntityManager();
         var cb = em.getCriteriaBuilder();
         var cq = cb.createQuery(SOULPatch.class);
@@ -364,6 +405,14 @@ public class SOULPatchService {
         Page<SOULPatch> pageResult = new PageImpl<>(query.getResultList(), pageable, count);
         em.close();
         return pageResult;
+    }
+
+    public Page<SOULPatch> findAnyMatching(SOULPatchesFetchFilter filter, Pageable pageable) {
+        if (filter.getFullTextSearch().isPresent()) {
+            return findAnyMatchingFullTextSearch(filter.getFullTextSearch().get(), pageable);
+        } else {
+            return findAnyMatchingFiltered(filter, pageable);
+        }
     }
 
     private Predicate getPredicate(SOULPatchesFetchFilter filter, CriteriaBuilder cb, Root<SOULPatch> root) {
@@ -476,6 +525,8 @@ public class SOULPatchService {
 
         private String namesFilter = null;
 
+        private String fullTextSearch = null;
+
         public static SOULPatchesFetchFilter getEmptyFilter() {
             return new SOULPatchesFetchFilter();
         }
@@ -490,6 +541,18 @@ public class SOULPatchService {
 
         public void setNamesFilter(String namesFilter) {
             this.namesFilter = namesFilter;
+        }
+
+        public Optional<String> getFullTextSearch() {
+            if (fullTextSearch != null && !fullTextSearch.isBlank()) {
+                return Optional.of(fullTextSearch);
+            } else {
+                return Optional.empty();
+            }
+        }
+
+        public void setFullTextSearch(String s) {
+            fullTextSearch = s;
         }
 
         public Set<AppUser> getUsersFilter() {
