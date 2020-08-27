@@ -1,8 +1,11 @@
 package io.horrorshow.soulhub.ui.filters;
 
+import io.horrorshow.soulhub.data.AppUser;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -14,6 +17,7 @@ public class SOULPatchFilter implements Serializable {
     private boolean onlyCurUser = false;
     @NonNull
     private String namesFilter = "";
+    private Set<AppUser> appUserFilter = new HashSet<>();
 
     public static SOULPatchFilter getEmptyFilter() {
         return new SOULPatchFilter();

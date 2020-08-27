@@ -44,6 +44,7 @@ public class UIConst {
     public static final String ROLE_USER = "ROLE_USER";
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
+    public static final String PARAM_SHOW_BY_USER = "user";
     public static final String PARAM_SHOW_BY_CURRENT_USER = "curuser";
     public static final String PARAM_TOKEN = "token";
     public static final String PARAM_SPFILE = "file";

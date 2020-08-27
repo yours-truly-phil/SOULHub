@@ -30,7 +30,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/soulpatches",
             "/register",
             "/soulpatch/*",
-            "/playground**"};
+            "/playground**",
+            "/user/*"};
 
     private final UserDetailsService userDetailsService;
 

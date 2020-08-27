@@ -16,11 +16,18 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ReadOnlyHasValue;
 import com.vaadin.flow.data.binder.StatusChangeEvent;
+import com.vaadin.flow.router.QueryParameters;
+import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.AppUser;
+import io.horrorshow.soulhub.ui.UIConst;
 import io.horrorshow.soulhub.ui.events.AppUserSaveEvent;
 
+import java.util.Map;
 import java.util.Objects;
+
+import static java.lang.String.format;
+import static java.lang.String.valueOf;
 
 public class AppUserInfo extends Div
         implements HasValueAndElement<
@@ -38,6 +45,8 @@ public class AppUserInfo extends Div
     private final Label email = new Label();
 
     private final Button save = new Button("save");
+
+    private final RouterLink showSOULPatches = new RouterLink();
 
     public AppUserInfo() {
         fieldSupport = new AbstractFieldSupport<>(
@@ -68,10 +77,19 @@ public class AppUserInfo extends Div
 
         binder.forField(new ReadOnlyHasValue<>(userName::setText, null))
                 .bind(AppUser::getUserName, null);
+
         binder.forField(new ReadOnlyHasValue<>(email::setText, null))
                 .bind(AppUser::getEmail, null);
+
         binder.forField(new ReadOnlyHasValue<>(id::setText, null))
-                .bind(appUser -> String.valueOf(appUser.getId()), null);
+                .bind(appUser -> valueOf(appUser.getId()), null);
+
+        binder.forField(new ReadOnlyHasValue<>(showSOULPatches::setText, null))
+                .bind(appUser -> format("show SOULPatches by %s", appUser.getUserName()), null);
+
+        binder.forField(new ReadOnlyHasValue<>(showSOULPatches::setQueryParameters, null))
+                .bind(appUser -> QueryParameters.simple(
+                        Map.of(UIConst.PARAM_SHOW_BY_USER, appUser.getId().toString())), null);
 
         binder.addStatusChangeListener(this::binderStatusChanged);
 
@@ -109,6 +127,7 @@ public class AppUserInfo extends Div
         formLayout.addFormItem(email, "email");
         formLayout.add(save);
         layout.add(formLayout);
+        layout.add(showSOULPatches);
         add(layout);
     }
 

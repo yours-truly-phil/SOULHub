@@ -3,6 +3,7 @@ package io.horrorshow.soulhub.ui.presenter;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.security.SecurityUtils;
 import io.horrorshow.soulhub.service.SOULPatchService;
@@ -22,6 +23,9 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -100,6 +104,7 @@ public class SOULPatchesPresenter {
             userService.getCurrentAppUser().ifPresent(appUser ->
                     filter.getUsersFilter().add(appUser));
         }
+        filter.getUsersFilter().addAll(event.getValue().getAppUserFilter());
         dataProvider.setFilter(filter);
     }
 
@@ -140,6 +145,25 @@ public class SOULPatchesPresenter {
                 .anyMatch(Boolean.TRUE.toString()::equalsIgnoreCase)) {
 
             view.getHeader().setValue(SOULPatchFilter.getOnlyCurrentUser());
+        } else if (parameterMap.containsKey(UIConst.PARAM_SHOW_BY_USER)) {
+            var filter = SOULPatchFilter.getEmptyFilter();
+
+            Set<AppUser> appUserFilter = parameterMap.get(UIConst.PARAM_SHOW_BY_USER)
+                    .stream()
+                    .filter(s -> s.matches("\\d+"))
+                    .map(Long::parseLong)
+                    .map(l -> userService.findById(l).orElse(null))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+
+            log.debug(String.format("AppUsers to filter: %s",
+                    String.join(", ",
+                            appUserFilter.stream()
+                                    .map(AppUser::getUserName)
+                                    .collect(Collectors.toSet()))));
+
+            filter.setAppUserFilter(appUserFilter);
+            view.getHeader().setValue(filter);
         }
         log.debug("on navigation with parameter: {} and parameterMap {}",
                 parameter, parameterMap.toString());

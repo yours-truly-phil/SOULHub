@@ -49,6 +49,10 @@ public class UserService {
         validator = validatorFactory.getValidator();
     }
 
+    public Optional<AppUser> findById(Long id) {
+        return appUserRepository.findById(id);
+    }
+
     public Optional<AppUser> loadAppUser(String username) {
         return appUserRepository.findByUserName(username);
     }
