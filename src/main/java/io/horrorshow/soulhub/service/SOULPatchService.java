@@ -1,5 +1,6 @@
 package io.horrorshow.soulhub.service;
 
+import com.helger.commons.annotation.VisibleForTesting;
 import io.horrorshow.soulhub.data.*;
 import io.horrorshow.soulhub.data.api.SOULPatchParser;
 import io.horrorshow.soulhub.data.records.RecordsConverter;
@@ -38,6 +39,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -478,12 +480,14 @@ public class SOULPatchService {
         }
     }
 
-    public void soulPatchDownloaded(SOULPatchDownloadEvent soulPatchDownloadEvent) {
-        incrementNoDownloadsAndSave(soulPatchDownloadEvent.getSoulPatch());
+    public void soulPatchDownloaded(@NotNull SOULPatch soulPatch) {
+        incrementNoDownloadsAndSave(soulPatch);
     }
 
-    public void spFileDownloaded(SPFileDownloadEvent spFileDownloadEvent) {
-        incrementNoDownloadsAndSave(spFileDownloadEvent.getSpFile().getSoulPatch());
+    public void spFileDownloaded(@NotNull SPFile spFile) {
+        if(spFile.getSoulPatch() != null) {
+            incrementNoDownloadsAndSave(spFile.getSoulPatch());
+        }
     }
 
     public void soulPatchRating(SOULPatch sp, Integer v, AppUser user) {
@@ -495,7 +499,8 @@ public class SOULPatchService {
                         , () -> createRating(sp, v, user));
     }
 
-    private void createRating(SOULPatch sp, Integer v, AppUser user) {
+    @VisibleForTesting
+    void createRating(SOULPatch sp, Integer v, AppUser user) {
         SOULPatchRating rating = new SOULPatchRating();
         rating.setAppUser(user);
         rating.setSoulPatch(sp);

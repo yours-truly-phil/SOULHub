@@ -4,16 +4,18 @@ import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.data.repository.SOULPatchRepository;
+import io.horrorshow.soulhub.data.repository.SPFileRepository;
 import io.horrorshow.soulhub.xml.SOULPatchXMLType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.EntityManagerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
@@ -24,14 +26,19 @@ import java.util.zip.ZipInputStream;
 import static io.horrorshow.soulhub.data.SPFile.FileType.MANIFEST;
 import static io.horrorshow.soulhub.data.SPFile.FileType.SOUL;
 import static java.lang.String.format;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class SOULPatchServiceTest {
 
     @Mock
     SOULPatchRepository soulPatchRepository;
+    @Mock
+    SPFileRepository spFileRepository;
+    @Mock
+    EntityManagerFactory entityManagerFactory;
 
     SOULPatchService service;
 
@@ -76,7 +83,101 @@ public class SOULPatchServiceTest {
     @BeforeEach
     void init() {
         MockitoAnnotations.initMocks(this);
-        service = new SOULPatchService(soulPatchRepository, null, null);
+        service = new SOULPatchService(soulPatchRepository, spFileRepository, entityManagerFactory);
+    }
+
+    @Test
+    void findAll_returns_all() {
+        var sp1 = createTestSoulPatch(1L);
+        var sp2 = createTestSoulPatch(2L);
+
+        when(soulPatchRepository.findAll()).thenReturn(List.of(sp1, sp2));
+
+        var spList = service.findAll();
+
+        assertTrue(spList.containsAll(List.of(sp1, sp2)));
+    }
+
+    @Test
+    void createSOULPatch_adds_created_app_user() {
+        var testUser = new AppUser();
+        testUser.setId(4711L);
+
+        when(soulPatchRepository.saveAndFlush(any(SOULPatch.class))).then(returnsFirstArg());
+
+        SOULPatch soulPatch = service.createSOULPatch(testUser);
+        assertEquals(testUser, soulPatch.getAuthor());
+    }
+
+    @Test
+    void incrementNoDownloadsAndSave() {
+        var soulPatch = new SOULPatch();
+        long counter = 1337L;
+        soulPatch.setNoViews(counter);
+
+        when(soulPatchRepository.saveAndFlush(any(SOULPatch.class))).then(returnsFirstArg());
+
+        var res = service.incrementNoDownloadsAndSave(soulPatch);
+        assertEquals(res.getNoViews(), counter + 1L);
+    }
+
+    @Test
+    void isPossibleSOULPatchId() {
+        assertFalse(service.isPossibleSOULPatchId(null));
+        assertFalse(service.isPossibleSOULPatchId(""));
+        assertFalse(service.isPossibleSOULPatchId("a"));
+        assertFalse(service.isPossibleSOULPatchId("§&§$&%"));
+
+        when(soulPatchRepository.existsById(anyLong())).thenReturn(Boolean.TRUE);
+        assertTrue(service.isPossibleSOULPatchId("1"));
+        assertTrue(service.isPossibleSOULPatchId(String.valueOf(Long.MAX_VALUE)));
+        when(soulPatchRepository.existsById(-1L)).thenReturn(Boolean.FALSE);
+        assertFalse(service.isPossibleSOULPatchId("-1"));
+    }
+
+    @Test
+    void isPossibleSPFileId() {
+        assertFalse(service.isPossibleSPFileId(null));
+        assertFalse(service.isPossibleSPFileId(""));
+        assertFalse(service.isPossibleSPFileId("a"));
+        assertFalse(service.isPossibleSPFileId("§&§$&%"));
+
+        when(spFileRepository.existsById(anyLong())).thenReturn(Boolean.TRUE);
+        assertTrue(service.isPossibleSPFileId("1"));
+        assertTrue(service.isPossibleSPFileId(String.valueOf(Long.MAX_VALUE)));
+        when(spFileRepository.existsById(-1L)).thenReturn(Boolean.FALSE);
+        assertFalse(service.isPossibleSPFileId("-1"));
+    }
+
+    @Test
+    void downloading_soulpatches_increments_download_counter() {
+        var soulPatch = new SOULPatch();
+        soulPatch.setNoViews(0L);
+
+        var captor = ArgumentCaptor.forClass(SOULPatch.class);
+        service.soulPatchDownloaded(soulPatch);
+        verify(soulPatchRepository).saveAndFlush(captor.capture());
+
+        var savedResult = captor.getValue();
+
+        assertEquals(savedResult.getNoViews(), 1L);
+    }
+
+    @Test
+    void downloading_spfiles_increments_download_counter() {
+        var spFile = new SPFile();
+        var soulPatch = new SOULPatch();
+        soulPatch.getSpFiles().add(spFile);
+        spFile.setSoulPatch(soulPatch);
+        soulPatch.setNoViews(0L);
+
+        var captor = ArgumentCaptor.forClass(SOULPatch.class);
+        service.spFileDownloaded(spFile);
+        verify(soulPatchRepository).saveAndFlush(captor.capture());
+
+        var savedResultSOULPatch = captor.getValue();
+
+        assertEquals(savedResultSOULPatch.getNoViews(), 1L);
     }
 
     @Test
@@ -87,10 +188,10 @@ public class SOULPatchServiceTest {
             testSoulPatches.add(createTestSoulPatch(id));
             testSoulPatches.add(createTestSoulPatch(Long.MAX_VALUE - id));
         }
-        Mockito.doReturn(testSoulPatches).when(soulPatchRepository).findAll();
+        doReturn(testSoulPatches).when(soulPatchRepository).findAll();
 
         List<SOULPatchXMLType> xmlSPs = service.findAllXML();
-        Mockito.verify(soulPatchRepository).findAll();
+        verify(soulPatchRepository).findAll();
 
         Map<String, SOULPatchXMLType> xmlSPMap =
                 xmlSPs.stream().collect(
@@ -113,7 +214,7 @@ public class SOULPatchServiceTest {
             testSoulPatches.add(createTestSoulPatch((long) i));
             testSoulPatches.add(createTestSoulPatch((long) i));
         }
-        Mockito.doReturn(testSoulPatches).when(soulPatchRepository).findAll();
+        doReturn(testSoulPatches).when(soulPatchRepository).findAll();
 
         assertEquals(24, service.findAll("").size());
         assertEquals(24, service.findAll("ption ").size());
@@ -170,5 +271,25 @@ public class SOULPatchServiceTest {
         zis.closeEntry();
         zis.close();
         return result;
+    }
+
+    @Test
+    void createRating_puts_app_user_and_no_stars_as_rating_into_soulpatch() {
+        var sp = new SOULPatch();
+        int rating = 5;
+        var appUser = new AppUser();
+        appUser.setId(4711L);
+        var captor = ArgumentCaptor.forClass(SOULPatch.class);
+
+        service.createRating(sp, rating, appUser);
+        verify(soulPatchRepository).saveAndFlush(captor.capture());
+
+        var resultSoulPatch = captor.getValue();
+        var ratingsWithCorrectUser = resultSoulPatch
+                .getRatings().stream()
+                .filter(r -> r.getAppUser().getId() == 4711L)
+                .collect(Collectors.toList());
+        assertEquals(ratingsWithCorrectUser.size(), 1);
+        assertEquals(ratingsWithCorrectUser.get(0).getStars(), 5);
     }
 }
