@@ -49,11 +49,6 @@ public class SOULPatchesGridHeader extends Div
         arrangeComponents();
     }
 
-    private void valueChanged(
-            AbstractField.ComponentValueChangeEvent<SOULPatchesGridHeader, SOULPatchFilter> event) {
-
-    }
-
     private void setupFullTextSearch() {
         fullTextBtn.addClickListener(this::fullTextSearchBtnClicked);
     }

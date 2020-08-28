@@ -19,6 +19,7 @@ import javax.management.relation.RoleNotFoundException;
 import javax.validation.ValidationException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -100,7 +101,7 @@ public class UserServiceTest {
         assertEquals(sentMails.size(), 1);
         List<VerificationToken> tokensSaved = tokenCaptor.getAllValues();
         assertEquals(tokensSaved.size(), 1);
-        assertTrue(sentMails.get(0).getText().contains(tokensSaved.get(0).getToken()));
+        assertTrue(Objects.requireNonNull(sentMails.get(0).getText()).contains(tokensSaved.get(0).getToken()));
     }
 
     @Test

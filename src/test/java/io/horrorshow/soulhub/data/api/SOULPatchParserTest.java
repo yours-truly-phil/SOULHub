@@ -11,7 +11,7 @@ public class SOULPatchParserTest {
     @Test
     void parse_SOULPatch_by_file_name_ending() {
         SPFile file = new SPFile();
-        String name = null;
+        String name;
         file.setName(null);
         assertEquals(UNKNOWN, SOULPatchParser.guessFileType(file), "null");
         name = "";

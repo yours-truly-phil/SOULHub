@@ -170,9 +170,7 @@ public class SOULFileEditor extends VerticalLayout
                         ? it.getFileType().toString()
                         : "unknown", null);
 
-        binder.addValueChangeListener(event -> {
-            isDirty.setValue(true);
-        });
+        binder.addValueChangeListener(event -> isDirty.setValue(true));
         binder.addStatusChangeListener(event -> {
             boolean isValid = event.getBinder().isValid();
             boolean hasChanges = event.getBinder().hasChanges();
