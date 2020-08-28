@@ -1,14 +1,16 @@
 package io.horrorshow.soulhub.ui.presenter;
 
+import com.vaadin.flow.component.button.Button;
 import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.service.UserService;
+import io.horrorshow.soulhub.ui.components.SOULPatchReadOnlyDialog;
+import io.horrorshow.soulhub.ui.components.SPFileReadOnly;
+import io.horrorshow.soulhub.ui.components.SPFileReadOnlyDialog;
 import io.horrorshow.soulhub.ui.dataproviders.SOULPatchesGridDataProvider;
-import io.horrorshow.soulhub.ui.events.SOULPatchDownloadEvent;
-import io.horrorshow.soulhub.ui.events.SOULPatchFullTextSearchEvent;
-import io.horrorshow.soulhub.ui.events.SPFileDownloadEvent;
+import io.horrorshow.soulhub.ui.events.*;
 import io.horrorshow.soulhub.ui.filters.SOULPatchFilter;
 import io.horrorshow.soulhub.ui.views.SOULPatchesView;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,9 +33,19 @@ class SOULPatchesPresenterTest {
     UserService userService;
     @Mock
     SOULPatchService soulPatchService;
+    @Mock
+    SOULPatchesView mockView;
+    @Mock
+    SPFileReadOnlyDialog mockSpReadOnlyDialog;
+    @Mock
+    SOULPatchReadOnlyDialog mockSOULPatchReadOnlyDialog;
+    @Mock
+    SPFileReadOnly mockSpReadOnly;
+
 
     SOULPatchesPresenter presenter;
     SOULPatchesView view;
+
 
     @BeforeEach
     void init() {
@@ -175,5 +187,93 @@ class SOULPatchesPresenterTest {
 
         verify(soulPatchService).incrementNoDownloadsAndSave(soulPatch);
         verify(dataProvider).refreshItem(soulPatch);
+    }
+
+    @Test
+    void soulpatch_rating_and_refresh_on_rating_event() {
+        SOULPatch soulPatch = new SOULPatch();
+        soulPatch.setId(1L);
+        Integer value = 5;
+        Integer oldValue = 3;
+
+        AppUser appUser = new AppUser();
+
+        var event = new SOULPatchRatingEvent(view.getGrid(), soulPatch, value, oldValue);
+
+        when(userService.getCurrentAppUser()).thenReturn(Optional.of(appUser));
+
+        presenter.onSOULPatchRating(event);
+
+        verify(soulPatchService).soulPatchRating(soulPatch, value, appUser);
+        verify(dataProvider).refreshItem(soulPatch);
+    }
+
+    @Test
+    void no_soulpatch_rating_if_user_not_logged_in() {
+        SOULPatch sp = new SOULPatch();
+        Integer value = 0;
+        Integer oldValue = 0;
+
+        var event = new SOULPatchRatingEvent(view.getGrid(), sp, value, oldValue);
+
+        when(userService.getCurrentAppUser()).thenReturn(Optional.empty());
+
+        presenter.onSOULPatchRating(event);
+
+        verify(dataProvider).refreshItem(sp);
+        verify(soulPatchService, never()).soulPatchRating(any(), any(), any());
+    }
+
+    @Test
+    void show_spfile_on_spfile_selection() {
+        init_presenter_with_mock_view();
+
+        SPFile file = new SPFile();
+        file.setId(1337L);
+        var event = new SPFileSelectEvent(mockView.getGrid(), file);
+
+        presenter.onSPFileSelection(event);
+
+        verify(mockSpReadOnlyDialog).open(file);
+    }
+
+    private void init_presenter_with_mock_view() {
+        when(mockView.getGrid()).thenReturn(view.getGrid());
+        when(mockView.getHeader()).thenReturn(view.getHeader());
+
+        when(mockSpReadOnlyDialog.getSpFileReadOnly()).thenReturn(mockSpReadOnly);
+        when(mockView.getSpFileReadOnlyDialog()).thenReturn(mockSpReadOnlyDialog);
+
+        when(mockView.getSoulPatchReadOnlyDialog()).thenReturn(mockSOULPatchReadOnlyDialog);
+        when(mockSOULPatchReadOnlyDialog.getSoulPatchReadOnly()).thenReturn(view.getSoulPatchReadOnlyDialog().getSoulPatchReadOnly());
+
+        presenter.init(mockView);
+    }
+
+    @Test
+    void set_edit_button_visibility_on_soulpatch_dialog_display() {
+        init_presenter_with_mock_view();
+
+        var owned = new SOULPatch();
+        owned.setId(4711L);
+
+        var notOwned = new SOULPatch();
+        notOwned.setId(1L);
+
+        Button editSOULPatchBtn = new Button();
+        editSOULPatchBtn.setVisible(false);
+
+        when(mockSOULPatchReadOnlyDialog.getEditSOULPatchBtn()).thenReturn(editSOULPatchBtn);
+        when(userService.isCurrentUserOwnerOf(owned)).thenReturn(true);
+        when(userService.isCurrentUserOwnerOf(notOwned)).thenReturn(false);
+
+        presenter.onSOULPatchDialogChange(owned);
+
+        assertThat(editSOULPatchBtn.isVisible());
+
+        presenter.onSOULPatchDialogChange(notOwned);
+
+        assertThat(!editSOULPatchBtn.isVisible());
+
     }
 }

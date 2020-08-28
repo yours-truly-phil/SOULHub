@@ -107,23 +107,27 @@ public class SPFileReadOnly extends Div
 
         ReadOnlyHasValue<SPFile> downloadBinding =
                 new ReadOnlyHasValue<>(spFile -> {
-                    String filename =
-                            String.format("%s", StringUtils.toValidFilename(spFile.getName()));
-                    StreamResource sr = new StreamResource(
-                            filename,
-                            () -> downloadSPFile(spFile));
-                    downloadLink.setHref(sr);
-                    downloadLink.setText(filename);
+                    if (spFile.getName() != null && spFile.getFileContent() != null) {
+                        String filename =
+                                String.format("%s", StringUtils.toValidFilename(spFile.getName()));
+                        StreamResource sr = new StreamResource(
+                                filename,
+                                () -> downloadSPFile(spFile));
+                        downloadLink.setHref(sr);
+                        downloadLink.setText(filename);
+                    }
                 });
 
         binder.forField(new ReadOnlyHasValue<>(name::setText, null))
                 .bind(SPFile::getName, null);
         binder.forField(new ReadOnlyHasValue<>(createdAt::setText, null))
-                .bind(spFile -> spFile.getCreatedAt()
-                        .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), null);
+                .bind(spFile -> (spFile.getCreatedAt() != null)
+                        ? spFile.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                        : "", null);
         binder.forField(new ReadOnlyHasValue<>(updatedAt::setText, null))
-                .bind(spFile -> spFile.getUpdatedAt()
-                        .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), null);
+                .bind(spFile -> (spFile.getUpdatedAt() != null)
+                        ? spFile.getUpdatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                        : "", null);
         binder.forField(new ReadOnlyHasValue<>(fileType::setText, null))
                 .bind(spFile -> (spFile.getFileType() != null)
                         ? spFile.getFileType().toString()

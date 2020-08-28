@@ -6,11 +6,9 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
-import io.horrorshow.soulhub.security.SecurityUtils;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.UIConst;
-import io.horrorshow.soulhub.ui.components.SOULPatchReadOnly;
 import io.horrorshow.soulhub.ui.dataproviders.SOULPatchesGridDataProvider;
 import io.horrorshow.soulhub.ui.events.*;
 import io.horrorshow.soulhub.ui.filters.SOULPatchFilter;
@@ -67,7 +65,7 @@ public class SOULPatchesPresenter {
                 .getSpFileReadOnly()
                 .addSPFileDownloadListener(this::onSPFileDownload);
 
-        view.getSoulPatchReadOnlyDialog().addValueChangeListener(this::onSOULPatchReadOnlyValueChanged);
+        view.getSoulPatchReadOnlyDialog().addValueChangeListener(event -> onSOULPatchDialogChange(event.getValue()));
         view.getSoulPatchReadOnlyDialog()
                 .getSoulPatchReadOnly()
                 .setSOULPatchZipInputStreamProvider(soulPatchService::getZipSOULPatchStreamProvider);
@@ -77,12 +75,11 @@ public class SOULPatchesPresenter {
                 .addSOULPatchDownloadListener(this::onSOULPatchDownload);
     }
 
-    private void onSOULPatchReadOnlyValueChanged(
-            AbstractField.ComponentValueChangeEvent
-                    <SOULPatchReadOnly, SOULPatch> event) {
+    @VisibleForTesting
+    void onSOULPatchDialogChange(SOULPatch soulPatch) {
         view.getSoulPatchReadOnlyDialog()
                 .getEditSOULPatchBtn()
-                .setVisible(userService.isCurrentUserOwnerOf(event.getValue()));
+                .setVisible(userService.isCurrentUserOwnerOf(soulPatch));
     }
 
     @VisibleForTesting
@@ -126,9 +123,10 @@ public class SOULPatchesPresenter {
         log.debug("full text search event: {}", event.getValue());
     }
 
-    private void onSOULPatchRating(SOULPatchRatingEvent event) {
+    @VisibleForTesting
+    void onSOULPatchRating(SOULPatchRatingEvent event) {
         log.debug("soulpatch rating {}", event);
-        if (SecurityUtils.isUserLoggedIn() && userService.getCurrentAppUser().isPresent()) {
+        if (userService.getCurrentAppUser().isPresent()) {
             soulPatchService.soulPatchRating(
                     event.getSoulPatch(),
                     event.getValue(),
@@ -138,7 +136,8 @@ public class SOULPatchesPresenter {
         dataProvider.refreshItem(event.getSoulPatch());
     }
 
-    private void onSPFileSelection(SPFileSelectEvent event) {
+    @VisibleForTesting
+    void onSPFileSelection(SPFileSelectEvent event) {
         log.debug("sp file selected, id: {}, name: {}",
                 event.getSpFile().getId(), event.getSpFile().getName());
         view.getSpFileReadOnlyDialog().open(event.getSpFile());
