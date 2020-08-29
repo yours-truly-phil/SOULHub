@@ -6,6 +6,7 @@ import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -25,6 +26,13 @@ public class AppUser implements Serializable {
 
     private static final long serialVersionUID = -4675920971250068707L;
 
+    private static final String USERNAME_PATTERN =
+            "[a-zA-Z\\x7f-\\xff]+[a-zA-Z0-9\\x7f-\\xff_-]*[a-zA-Z0-9\\x7f-\\xff]+";
+    private static final String USERNAME_PATTERN_VALIDATION_MESSAGE =
+            "Invalid Username: only a-z and A-Z and üöänµ(etc....) " +
+                    "and -_ (not at beginning or end though), " +
+                    "but no special characters allowed";
+
     @Id
     @SequenceGenerator(name = "seq_gen", sequenceName = "hibernate_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_gen")
@@ -33,6 +41,7 @@ public class AppUser implements Serializable {
 
     @Column(name = "user_name", nullable = false, unique = true)
     @Size(min = 3, max = 255, message = "Username must be between 3 and 255 chars")
+    @Pattern(regexp = USERNAME_PATTERN, message = USERNAME_PATTERN_VALIDATION_MESSAGE)
     @NaturalId
     @EqualsAndHashCode.Include
     private String userName;

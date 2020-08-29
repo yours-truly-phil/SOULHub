@@ -56,7 +56,7 @@ public class UserServiceTest {
     @Test
     void register_new_user_saves_with_user_role() throws RoleNotFoundException {
 
-        String userName = "new user";
+        String userName = "new_über-user";
         String userClearPassword = "password";
         String email = "mail@mail.com";
 
@@ -154,7 +154,8 @@ public class UserServiceTest {
                         "ggggggggggggggggguuuuuuuuuuuuuuuuuuuuuuuuuuuuuu" +
                         "uuuuuuussssssssssssssssssssseeeeeeeeeeeeeeeeeeerrrr" +
                         "rrrrrrrrrrrrrrrnnnnnnnnnnnnnnnnaaaaaaaaaaaaaaaaaa" +
-                        "mmmmmmmmmmmmmmmmmmeeeeeeeeeeeeeeeeeeeeeeeeeeee"};
+                        "mmmmmmmmmmmmmmmmmmeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                        , "§$%&", "user-", "-user!"};
 
         Arrays.asList(invalidUsernames).forEach(username -> {
             user.setUserName(username);
