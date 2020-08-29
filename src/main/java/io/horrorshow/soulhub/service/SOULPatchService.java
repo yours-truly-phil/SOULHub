@@ -8,8 +8,6 @@ import io.horrorshow.soulhub.data.records.SOULPatchRecord;
 import io.horrorshow.soulhub.data.repository.SOULPatchRepository;
 import io.horrorshow.soulhub.data.repository.SPFileRepository;
 import io.horrorshow.soulhub.exception.ResourceNotFound;
-import io.horrorshow.soulhub.ui.events.SOULPatchDownloadEvent;
-import io.horrorshow.soulhub.ui.events.SPFileDownloadEvent;
 import io.horrorshow.soulhub.xml.SOULFileXMLType;
 import io.horrorshow.soulhub.xml.SOULPatchFileXMLType;
 import io.horrorshow.soulhub.xml.SOULPatchXMLType;
@@ -39,6 +37,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
+import javax.validation.ValidationException;
 import javax.validation.constraints.NotNull;
 import java.io.*;
 import java.time.LocalDateTime;
@@ -50,6 +49,9 @@ import java.util.zip.ZipOutputStream;
 @Service
 @Log4j2
 public class SOULPatchService {
+
+    private static final int MIN_RATING_STARS = 0;
+    private static final int MAX_RATING_STARS = 5;
 
     private final SOULPatchRepository soulPatchRepository;
     private final SPFileRepository spFileRepository;
@@ -485,12 +487,19 @@ public class SOULPatchService {
     }
 
     public void spFileDownloaded(@NotNull SPFile spFile) {
-        if(spFile.getSoulPatch() != null) {
+        if (spFile.getSoulPatch() != null) {
             incrementNoDownloadsAndSave(spFile.getSoulPatch());
         }
     }
 
     public void soulPatchRating(SOULPatch sp, Integer v, AppUser user) {
+        if (v == null || v < MIN_RATING_STARS || v > MAX_RATING_STARS)
+            throw new ValidationException(String.format(
+                    "invalid value %d, must be between %d and %d",
+                    v, MIN_RATING_STARS, MAX_RATING_STARS));
+        if (sp == null) throw new ValidationException("sp must not be null");
+        if (user == null) throw new ValidationException("user must not be null");
+
         sp.getRatings().stream()
                 .filter(rating -> rating.getAppUser().equals(user)).distinct()
                 .findAny()

@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityManagerFactory;
+import javax.validation.ValidationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
@@ -274,7 +275,7 @@ public class SOULPatchServiceTest {
     }
 
     @Test
-    void createRating_puts_app_user_and_no_stars_as_rating_into_soulpatch() {
+    void createRating_puts_app_user_and_stars_as_rating_into_soulpatch() {
         var sp = new SOULPatch();
         int rating = 5;
         var appUser = new AppUser();
@@ -291,5 +292,23 @@ public class SOULPatchServiceTest {
                 .collect(Collectors.toList());
         assertEquals(ratingsWithCorrectUser.size(), 1);
         assertEquals(ratingsWithCorrectUser.get(0).getStars(), 5);
+    }
+
+    @Test
+    void soulpatch_rating_throws_validation_exception_if_invalid_input() {
+        var sp = new SOULPatch();
+        var appUser = new AppUser();
+
+        assertThrows(ValidationException.class,
+                () -> service.soulPatchRating(sp, -1, appUser));
+        assertThrows(ValidationException.class,
+                () -> service.soulPatchRating(sp, 6, appUser));
+        assertThrows(ValidationException.class,
+                () -> service.soulPatchRating(sp, null, appUser));
+
+        assertThrows(ValidationException.class,
+                () -> service.soulPatchRating(null, 0, appUser));
+        assertThrows(ValidationException.class,
+                () -> service.soulPatchRating(sp, 0, null));
     }
 }
