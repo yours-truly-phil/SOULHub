@@ -1,5 +1,6 @@
 package io.horrorshow.soulhub.ui.components;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Paragraph;
@@ -9,7 +10,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.shared.Registration;
-import dev.mett.vaadin.tooltip.mixin.HasTooltip;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SOULPatchRating;
 import io.horrorshow.soulhub.data.SOULPatch_;
@@ -59,7 +59,7 @@ public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
                 .setSortable(true)
                 .setComparator(Comparator.comparing(SOULPatch::getName));
 
-        addColumn(getColDescriptionRenderer())
+        addColumn(new ComponentRenderer<>(this::getDescriptionCellLayout))
                 .setHeader(COL_DESCRIPTION)
                 .setKey(SOULPatch_.DESCRIPTION)
                 .setResizable(true)
@@ -67,14 +67,14 @@ public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
                 .setSortable(true)
                 .setComparator(Comparator.comparing(SOULPatch::getDescription));
 
-        addColumn(getColSpFilesRenderer())
+        addColumn(new ComponentRenderer<>(this::getSpFilesCellLayout))
                 .setHeader(COL_FILES)
                 .setKey(SOULPatch_.SP_FILES)
                 .setResizable(true)
                 .setAutoWidth(true)
                 .setSortable(false);
 
-        addColumn(getColRatingRenderer())
+        addColumn(new ComponentRenderer<>(this::getRatingCellLayout))
                 .setHeader(COL_RATINGS)
                 .setKey(SOULPatch_.RATINGS)
                 .setResizable(true)
@@ -98,52 +98,46 @@ public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
                 .setSortable(false);
     }
 
-    private ComponentRenderer<VerticalLayout, SOULPatch> getColSpFilesRenderer() {
-        return new ComponentRenderer<>(sp -> {
-            VerticalLayout spFilesLayout = new VerticalLayout();
-            if (!sp.getSpFiles().isEmpty()) {
-                sp.getSpFiles().forEach(spFile -> {
-                    HorizontalLayout layout = new HorizontalLayout();
-                    layout.add(
-                            new Button(
-                                    format("%s [%s]", spFile.getName(),
-                                            (spFile.getFileType() != null) ? spFile.getFileType().toString() : ""),
-                                    VaadinIcon.FILE_CODE.create(),
-                                    event -> spFileButtonClicked(spFile)));
+    private Component getSpFilesCellLayout(SOULPatch sp) {
+        VerticalLayout spFilesLayout = new VerticalLayout();
+        if (!sp.getSpFiles().isEmpty()) {
+            sp.getSpFiles().forEach(spFile -> {
+                HorizontalLayout layout = new HorizontalLayout();
+                layout.add(
+                        new Button(
+                                format("%s [%s]", spFile.getName(),
+                                        (spFile.getFileType() != null) ? spFile.getFileType().toString() : ""),
+                                VaadinIcon.FILE_CODE.create(),
+                                event -> spFileButtonClicked(spFile)));
 
-                    spFilesLayout.add(layout);
-                });
-            } else {
-                spFilesLayout.add(new Span("no files attached"));
-            }
-            return spFilesLayout;
-        });
+                spFilesLayout.add(layout);
+            });
+        } else {
+            spFilesLayout.add(new Span("no files attached"));
+        }
+        return spFilesLayout;
     }
 
-    private ComponentRenderer<HorizontalLayout, SOULPatch> getColRatingRenderer() {
-        return new ComponentRenderer<>(sp -> {
-            Span rating = new Span(String.format("%.2f", sp.getAverageRating()));
-            StarsRating starsRating = new StarsRating();
-            starsRating.setValue((int) Math.round(sp.getRatings().stream()
-                    .mapToDouble(SOULPatchRating::getStars)
-                    .average().orElse(0d)));
-            starsRating.setNumstars(5);
-            starsRating.setManual(true);
-            starsRating.setReadOnly(!SecurityUtils.isUserLoggedIn());
-            starsRating.addValueChangeListener(
-                    event -> fireEvent(new SOULPatchRatingEvent(this, sp, event.getValue(), event.getOldValue())));
-            return new HorizontalLayout(rating, starsRating);
-        });
+    private Component getRatingCellLayout(SOULPatch sp) {
+        Span rating = new Span(String.format("%.2f", sp.getAverageRating()));
+        StarsRating starsRating = new StarsRating();
+        starsRating.setValue((int) Math.round(sp.getRatings().stream()
+                .mapToDouble(SOULPatchRating::getStars)
+                .average().orElse(0d)));
+        starsRating.setNumstars(5);
+        starsRating.setManual(true);
+        starsRating.setReadOnly(!SecurityUtils.isUserLoggedIn());
+        starsRating.addValueChangeListener(
+                event -> fireEvent(new SOULPatchRatingEvent(this, sp, event.getValue(), event.getOldValue())));
+        return new HorizontalLayout(rating, starsRating);
     }
 
-    private ComponentRenderer<Paragraph, SOULPatch> getColDescriptionRenderer() {
-        return new ComponentRenderer<>(sp -> {
-            Paragraph p = new Paragraph();
-            p.setText(sp.getDescription());
-            p.addClassName("sp-grid-col-description");
-            p.setWidthFull();
-            return p;
-        });
+    private Component getDescriptionCellLayout(SOULPatch sp) {
+        Paragraph p = new Paragraph();
+        p.setText(sp.getDescription());
+        p.addClassName("sp-grid-col-description");
+        p.setWidthFull();
+        return p;
     }
 
     private void spFileButtonClicked(SPFile spFile) {
