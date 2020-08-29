@@ -6,6 +6,7 @@ import com.vaadin.flow.data.provider.QuerySortOrderBuilder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import io.horrorshow.soulhub.data.SOULPatch;
+import io.horrorshow.soulhub.data.util.SOULPatchesFetchFilter;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.ui.UIConst;
 import lombok.extern.log4j.Log4j2;
@@ -17,8 +18,6 @@ import org.vaadin.artur.spring.dataprovider.FilterablePageableDataProvider;
 
 import java.util.List;
 import java.util.function.Consumer;
-
-import static io.horrorshow.soulhub.service.SOULPatchService.SOULPatchesFetchFilter;
 
 @SpringComponent
 @UIScope

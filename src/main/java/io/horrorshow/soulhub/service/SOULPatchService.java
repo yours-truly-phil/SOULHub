@@ -7,14 +7,11 @@ import io.horrorshow.soulhub.data.records.RecordsConverter;
 import io.horrorshow.soulhub.data.records.SOULPatchRecord;
 import io.horrorshow.soulhub.data.repository.SOULPatchRepository;
 import io.horrorshow.soulhub.data.repository.SPFileRepository;
+import io.horrorshow.soulhub.data.util.SOULPatchesFetchFilter;
 import io.horrorshow.soulhub.exception.ResourceNotFound;
 import io.horrorshow.soulhub.xml.SOULFileXMLType;
 import io.horrorshow.soulhub.xml.SOULPatchFileXMLType;
 import io.horrorshow.soulhub.xml.SOULPatchXMLType;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.lucene.analysis.Analyzer;
@@ -41,7 +38,10 @@ import javax.validation.ValidationException;
 import javax.validation.constraints.NotNull;
 import java.io.*;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -525,52 +525,5 @@ public class SOULPatchService {
 
     public long countTotalDownloads() {
         return soulPatchRepository.totalNoSOULPatchDownloads();
-    }
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @EqualsAndHashCode
-    @ToString
-    public static class SOULPatchesFetchFilter implements Serializable {
-
-        private static final long serialVersionUID = -1706756888052669980L;
-
-        private final Set<AppUser> usersFilter = new HashSet<>();
-
-        private String namesFilter = null;
-
-        private String fullTextSearch = null;
-
-        public static SOULPatchesFetchFilter getEmptyFilter() {
-            return new SOULPatchesFetchFilter();
-        }
-
-        public Optional<String> getNamesFilter() {
-            if (namesFilter != null && !namesFilter.isBlank()) {
-                return Optional.of(namesFilter);
-            } else {
-                return Optional.empty();
-            }
-        }
-
-        public void setNamesFilter(String namesFilter) {
-            this.namesFilter = namesFilter;
-        }
-
-        public Optional<String> getFullTextSearch() {
-            if (fullTextSearch != null && !fullTextSearch.isBlank()) {
-                return Optional.of(fullTextSearch);
-            } else {
-                return Optional.empty();
-            }
-        }
-
-        public void setFullTextSearch(String s) {
-            fullTextSearch = s;
-        }
-
-        public Set<AppUser> getUsersFilter() {
-            return usersFilter;
-        }
     }
 }

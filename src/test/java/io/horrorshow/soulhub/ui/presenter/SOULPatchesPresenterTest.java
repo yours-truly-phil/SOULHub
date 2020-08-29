@@ -4,6 +4,7 @@ import com.vaadin.flow.component.button.Button;
 import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
 import io.horrorshow.soulhub.data.SPFile;
+import io.horrorshow.soulhub.data.util.SOULPatchesFetchFilter;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.components.SOULPatchReadOnlyDialog;
@@ -125,7 +126,7 @@ class SOULPatchesPresenterTest {
         presenter.onFullTextSearch(event);
 
         var fetchFilterArgumentCaptor
-                = ArgumentCaptor.forClass(SOULPatchService.SOULPatchesFetchFilter.class);
+                = ArgumentCaptor.forClass(SOULPatchesFetchFilter.class);
 
         verify(dataProvider).setFilter(fetchFilterArgumentCaptor.capture());
 
@@ -151,7 +152,7 @@ class SOULPatchesPresenterTest {
         when(userService.getCurrentAppUser()).thenReturn(Optional.of(cu));
 
         var captor
-                = ArgumentCaptor.forClass(SOULPatchService.SOULPatchesFetchFilter.class);
+                = ArgumentCaptor.forClass(SOULPatchesFetchFilter.class);
 
         presenter.onSOULPatchesHeaderValueChanged(filter);
 

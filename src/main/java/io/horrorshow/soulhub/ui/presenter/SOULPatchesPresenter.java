@@ -6,6 +6,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import io.horrorshow.soulhub.data.AppUser;
 import io.horrorshow.soulhub.data.SOULPatch;
+import io.horrorshow.soulhub.data.util.SOULPatchesFetchFilter;
 import io.horrorshow.soulhub.service.SOULPatchService;
 import io.horrorshow.soulhub.service.UserService;
 import io.horrorshow.soulhub.ui.UIConst;
@@ -97,7 +98,7 @@ public class SOULPatchesPresenter {
     @VisibleForTesting
     void onSOULPatchesHeaderValueChanged(SOULPatchFilter event) {
         log.debug("soulpatch header value changed: {}", event);
-        var filter = new SOULPatchService.SOULPatchesFetchFilter();
+        var filter = new SOULPatchesFetchFilter();
         filter.setNamesFilter(event.getNamesFilter());
         if (event.isOnlyCurUser()) {
             userService.getCurrentAppUser().ifPresent(appUser ->
@@ -117,7 +118,7 @@ public class SOULPatchesPresenter {
 
     @VisibleForTesting
     void onFullTextSearch(SOULPatchFullTextSearchEvent event) {
-        var filter = new SOULPatchService.SOULPatchesFetchFilter();
+        var filter = new SOULPatchesFetchFilter();
         filter.setFullTextSearch(event.getValue());
         dataProvider.setFilter(filter);
         log.debug("full text search event: {}", event.getValue());
