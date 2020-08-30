@@ -17,11 +17,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.search.Query;
-import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
-import org.hibernate.search.query.dsl.QueryBuilder;
-import org.jsoup.helper.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,7 +25,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.criteria.*;
@@ -47,6 +42,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @Service
+@Transactional
 @Log4j2
 public class SOULPatchService {
 
@@ -94,36 +90,6 @@ public class SOULPatchService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public List<SPFile> fullTextSearchSPFiles(String text) {
-        EntityManager em = entityManagerFactory.createEntityManager();
-        Validate.notNull(em, "Entity manager must not be null");
-        FullTextEntityManager fullTextEntityManager =
-                Search.getFullTextEntityManager(em);
-
-        em.getTransaction().begin();
-
-        QueryBuilder qb = fullTextEntityManager.getSearchFactory().buildQueryBuilder()
-                .forEntity(SPFile.class).get();
-
-        Query query = qb.keyword().onFields(SPFile.DB_COL_NAME, SPFile.DB_COL_CONTENT)
-                .ignoreAnalyzer()
-                .ignoreFieldBridge()
-                .matching(text).createQuery();
-
-        List<?> queryResultList = fullTextEntityManager
-                .createFullTextQuery(query, SPFile.class)
-                .getResultList();
-
-        em.getTransaction().commit();
-        em.close();
-
-        return queryResultList.stream()
-                .filter(SPFile.class::isInstance)
-                .map(SPFile.class::cast)
-                .collect(Collectors.toList());
-    }
-
     private Page<SOULPatch> findAnyMatchingFullTextSearch(String s, Pageable pageable) {
         var em = entityManagerFactory.createEntityManager();
         var fullTextEM = Search.getFullTextEntityManager(em);
@@ -137,16 +103,11 @@ public class SOULPatchService {
 
         var tokens = tokenizeString(analyzer, s);
 
-//        log.debug("Tokens to full text search by: {}", String.join(", ", tokens));
-
         var query = qb
                 .keyword()
-//                .wildcard()
                 .onFields(SOULPatch_.NAME, SOULPatch_.DESCRIPTION)
                 .andField(SOULPatch_.SP_FILES + "." + SPFile_.FILE_CONTENT)
                 .andField(SOULPatch_.SP_FILES + "." + SPFile_.NAME)
-//                .ignoreFieldBridge()
-//                .ignoreAnalyzer()
                 .matching(s).createQuery();
 
         var fullTextQuery = fullTextEM.createFullTextQuery(query, SOULPatch.class)
@@ -163,46 +124,6 @@ public class SOULPatchService {
         em.getTransaction().commit();
         em.close();
         return pageResult;
-    }
-
-    @Transactional
-    public List<SOULPatch> fullTextSearchSOULPatches(String text) {
-        List<SOULPatch> result = new ArrayList<>();
-        try {
-            EntityManager entityManager = entityManagerFactory.createEntityManager();
-            Validate.notNull(entityManager, "Entity manager can't be null");
-            FullTextEntityManager fullTextEntityManager =
-                    Search.getFullTextEntityManager(entityManager);
-            entityManager.getTransaction().begin();
-
-            QueryBuilder qb = fullTextEntityManager.getSearchFactory().buildQueryBuilder()
-                    .forEntity(SOULPatch.class).get();
-
-            Analyzer customAnalyzer = fullTextEntityManager.getSearchFactory()
-                    .getAnalyzer(SOULPatch.class);
-
-            List<String> keywordList = tokenizeString(customAnalyzer, text);
-
-            Query query = qb.keyword().onFields(SOULPatch_.NAME, SOULPatch_.DESCRIPTION)
-                    .ignoreAnalyzer()
-                    .ignoreFieldBridge()
-                    .matching(text).createQuery();
-
-            List<?> queryResultList = fullTextEntityManager
-                    .createFullTextQuery(query, SOULPatch.class)
-                    .getResultList();
-
-            entityManager.getTransaction().commit();
-            entityManager.close();
-
-            result.addAll(queryResultList.stream()
-                    .filter(SOULPatch.class::isInstance)
-                    .map(SOULPatch.class::cast)
-                    .collect(Collectors.toList()));
-        } catch (Exception e) {
-            log.debug("Error fulltext searching for soulpatch", e);
-        }
-        return result;
     }
 
     private List<String> tokenizeString(Analyzer analyzer, String string) {
