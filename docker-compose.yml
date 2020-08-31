@@ -5,6 +5,8 @@ services:
     image: "postgres"
     ports:
       - "5432:5432"
+    env_file:
+      - database.env
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
