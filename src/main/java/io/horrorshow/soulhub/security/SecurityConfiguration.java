@@ -72,6 +72,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // Allow all flow internal requests.
                 .requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll() //
 
+                .antMatchers("/api/**").hasAuthority("REST")
+                .antMatchers("/ws/**").hasAuthority("SOAP")
+
                 .antMatchers(PERMIT_URLS).permitAll()
 
                 // Allow all requests by logged in users.
