@@ -61,7 +61,6 @@ public class SOULPatchesPresenter {
         view.getHeader().addFullTextSearchListener(this::onFullTextSearch);
         view.getHeader().addValueChangeListener(event -> onSOULPatchesHeaderValueChanged(event.getValue()));
 
-
         view.getSpFileReadOnlyDialog()
                 .getSpFileReadOnly()
                 .addSPFileDownloadListener(this::onSPFileDownload);
