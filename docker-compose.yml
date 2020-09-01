@@ -7,19 +7,28 @@ services:
       - "5432:5432"
     env_file:
       - database.env
-    environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+#    environment:
+#      POSTGRES_DB: postgres
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: postgres
     volumes:
-      - '/home/phil/docker/volumes/postgres:/var/lib/postgresql/data'
+      - database-data:/var/lib/postgresql/data'
   app:
     build: .
     ports:
       - "8080:8080"
     environment:
+      SPRING_JPA_HIBERNATE_DDL-AUTO: validate
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_PROPERTIES_HIBERNATE_SEARCH_DEFAULT_INDEXBASE: /lucene
+    volumes:
+      - logs:/logs
+      - lucene:/lucene
     depends_on:
       - db
+volumes:
+  database-data:
+  lucene:
+  logs:
