@@ -1,3 +1,4 @@
+# verify that the with 'set this!' marked lines fit your environment
 server:
   port: 8080
 spring:
@@ -12,11 +13,11 @@ spring:
           lucene_version: LATEST
           default:
             directory_provider: filesystem
-            indexBase: /D_AppContent/SOULHub/hibernate-search-idx
+            indexBase: /D_AppContent/SOULHub/hibernate-search-idx # set this!
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://localhost:5432/postgres # set this!
+    username: postgres # set this!
+    password: postgres # set this!
     hikari:
       connection-timeout: 20000
       maximum-pool-size: 5
@@ -26,11 +27,11 @@ spring:
       poll-interval: 2s
       quiet-period: 1s
   mail:
-    host: host.host.com
-    port: 587
+    host: host.host.com # set this!
+    port: 587 # set this!
     protocol: smtp
-    username: USERNAME
-    password: PASSWORD
+    username: USERNAME # set this!
+    password: PASSWORD # set this!
     properties:
       mail:
         transport:
@@ -51,3 +52,6 @@ logging:
     io.horrorshow: DEBUG
     com.zaxxer: INFO
     root: INFO
+  file:
+    name: /D_AppContent/SOULHub/logs/soulhub.log # set this!
+    clean-history-on-start: true
