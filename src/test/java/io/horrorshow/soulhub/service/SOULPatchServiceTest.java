@@ -27,7 +27,9 @@ import java.util.zip.ZipInputStream;
 import static io.horrorshow.soulhub.data.SPFile.FileType.MANIFEST;
 import static io.horrorshow.soulhub.data.SPFile.FileType.SOUL;
 import static java.lang.String.format;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Mockito.*;
 
@@ -96,7 +98,7 @@ public class SOULPatchServiceTest {
 
         var spList = service.findAll();
 
-        assertTrue(spList.containsAll(List.of(sp1, sp2)));
+        assertThat(spList).containsAll(List.of(sp1, sp2));
     }
 
     @Test
@@ -107,7 +109,8 @@ public class SOULPatchServiceTest {
         when(soulPatchRepository.saveAndFlush(any(SOULPatch.class))).then(returnsFirstArg());
 
         SOULPatch soulPatch = service.createSOULPatch(testUser);
-        assertEquals(testUser, soulPatch.getAuthor());
+
+        assertThat(soulPatch.getAuthor()).isEqualTo(testUser);
     }
 
     @Test
@@ -119,35 +122,36 @@ public class SOULPatchServiceTest {
         when(soulPatchRepository.saveAndFlush(any(SOULPatch.class))).then(returnsFirstArg());
 
         var res = service.incrementNoDownloadsAndSave(soulPatch);
-        assertEquals(res.getNoViews(), counter + 1L);
+        assertThat(res.getNoViews()).isEqualTo(counter + 1L);
     }
 
     @Test
     void isPossibleSOULPatchId() {
-        assertFalse(service.isPossibleSOULPatchId(null));
-        assertFalse(service.isPossibleSOULPatchId(""));
-        assertFalse(service.isPossibleSOULPatchId("a"));
-        assertFalse(service.isPossibleSOULPatchId("§&§$&%"));
+        assertThat(service.isPossibleSOULPatchId(null)).isFalse();
+        assertThat(service.isPossibleSOULPatchId(null)).isFalse();
+        assertThat(service.isPossibleSOULPatchId("")).isFalse();
+        assertThat(service.isPossibleSOULPatchId("a")).isFalse();
+        assertThat(service.isPossibleSOULPatchId("§&§$&%")).isFalse();
 
         when(soulPatchRepository.existsById(anyLong())).thenReturn(Boolean.TRUE);
-        assertTrue(service.isPossibleSOULPatchId("1"));
-        assertTrue(service.isPossibleSOULPatchId(String.valueOf(Long.MAX_VALUE)));
+        assertThat(service.isPossibleSOULPatchId("1")).isTrue();
+        assertThat(service.isPossibleSOULPatchId(String.valueOf(Long.MAX_VALUE))).isTrue();
         when(soulPatchRepository.existsById(-1L)).thenReturn(Boolean.FALSE);
-        assertFalse(service.isPossibleSOULPatchId("-1"));
+        assertThat(service.isPossibleSOULPatchId("-1")).isFalse();
     }
 
     @Test
     void isPossibleSPFileId() {
-        assertFalse(service.isPossibleSPFileId(null));
-        assertFalse(service.isPossibleSPFileId(""));
-        assertFalse(service.isPossibleSPFileId("a"));
-        assertFalse(service.isPossibleSPFileId("§&§$&%"));
+        assertThat(service.isPossibleSPFileId(null)).isFalse();
+        assertThat(service.isPossibleSPFileId("")).isFalse();
+        assertThat(service.isPossibleSPFileId("a")).isFalse();
+        assertThat(service.isPossibleSPFileId("§&§$&%")).isFalse();
 
         when(spFileRepository.existsById(anyLong())).thenReturn(Boolean.TRUE);
-        assertTrue(service.isPossibleSPFileId("1"));
-        assertTrue(service.isPossibleSPFileId(String.valueOf(Long.MAX_VALUE)));
+        assertThat(service.isPossibleSPFileId("1")).isTrue();
+        assertThat(service.isPossibleSPFileId(String.valueOf(Long.MAX_VALUE))).isTrue();
         when(spFileRepository.existsById(-1L)).thenReturn(Boolean.FALSE);
-        assertFalse(service.isPossibleSPFileId("-1"));
+        assertThat(service.isPossibleSPFileId("-1")).isFalse();
     }
 
     @Test
@@ -161,7 +165,7 @@ public class SOULPatchServiceTest {
 
         var savedResult = captor.getValue();
 
-        assertEquals(savedResult.getNoViews(), 1L);
+        assertThat(savedResult.getNoViews()).isEqualTo(1L);
     }
 
     @Test
@@ -178,7 +182,7 @@ public class SOULPatchServiceTest {
 
         var savedResultSOULPatch = captor.getValue();
 
-        assertEquals(savedResultSOULPatch.getNoViews(), 1L);
+        assertThat(savedResultSOULPatch.getNoViews()).isEqualTo(1L);
     }
 
     @Test
@@ -200,11 +204,10 @@ public class SOULPatchServiceTest {
                                 (oldValue, newValue) -> oldValue,
                                 LinkedHashMap::new)
                 );
-
         testSoulPatches.forEach(
                 soulPatch -> {
                     SOULPatchXMLType xmlPatch = xmlSPMap.get(soulPatch.getId().toString());
-                    assertTrue(service.isSPXmlMatchSPData(soulPatch, xmlPatch));
+                    assertThat(service.isSPXmlMatchSPData(soulPatch, xmlPatch)).isTrue();
                 });
     }
 
@@ -217,14 +220,14 @@ public class SOULPatchServiceTest {
         }
         doReturn(testSoulPatches).when(soulPatchRepository).findAll();
 
-        assertEquals(24, service.findAll("").size());
-        assertEquals(24, service.findAll("ption ").size());
-        assertEquals(24, service.findAll("PTION ").size());
-        assertEquals(18, service.findAll("1").size());
-        assertEquals(2, service.findAll("23").size());
-        assertEquals(6, service.findAll("name 1").size());
-        assertEquals(24, service.findAll("name \\d").size());
-        assertEquals(2, service.findAll("name 1$").size());
+        assertThat(service.findAll("").size()).isEqualTo(24);
+        assertThat(service.findAll("ption ").size()).isEqualTo(24);
+        assertThat(service.findAll("PTION ").size()).isEqualTo(24);
+        assertThat(service.findAll("1").size()).isEqualTo(18);
+        assertThat(service.findAll("23").size()).isEqualTo(2);
+        assertThat(service.findAll("name 1").size()).isEqualTo(6);
+        assertThat(service.findAll("name \\d").size()).isEqualTo(24);
+        assertThat(service.findAll("name 1$").size()).isEqualTo(2);
     }
 
     @Test
@@ -290,8 +293,8 @@ public class SOULPatchServiceTest {
                 .getRatings().stream()
                 .filter(r -> r.getAppUser().getId() == 4711L)
                 .collect(Collectors.toList());
-        assertEquals(ratingsWithCorrectUser.size(), 1);
-        assertEquals(ratingsWithCorrectUser.get(0).getStars(), 5);
+        assertThat(ratingsWithCorrectUser.size()).isEqualTo(1);
+        assertThat(ratingsWithCorrectUser.get(0).getStars()).isEqualTo(5);
     }
 
     @Test

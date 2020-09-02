@@ -2,22 +2,22 @@ package io.horrorshow.soulhub.data.util;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class StringUtilsTest {
 
     @Test
     void toValidFilename() {
-        assertEquals("hello", StringUtils.toValidFilename("hello"));
-        assertEquals("my_file", StringUtils.toValidFilename("my file"));
-        assertEquals("filename", StringUtils.toValidFilename(""));
-        assertEquals("filename", StringUtils.toValidFilename(null));
-        assertEquals("asdf", StringUtils.toValidFilename("a\\s-`´d§$%&f/\""));
-        assertEquals("filename", StringUtils.toValidFilename("=)(/&%$§!"));
-        assertEquals("asdf.soul", StringUtils.toValidFilename("asdf.soul"));
-        assertEquals("asdf.soulpatch", StringUtils.toValidFilename("asdf.soulpatch"));
-        assertEquals("_.._", StringUtils.toValidFilename(".."));
-        assertEquals("_._", StringUtils.toValidFilename("."));
-        assertEquals("_.asdf.asdf._", StringUtils.toValidFilename(".asdf.asdf."));
+        assertThat(StringUtils.toValidFilename("hello")).isEqualTo("hello");
+        assertThat(StringUtils.toValidFilename("my file")).isEqualTo("my_file");
+        assertThat(StringUtils.toValidFilename("")).isEqualTo("filename");
+        assertThat(StringUtils.toValidFilename(null)).isEqualTo("filename");
+        assertThat(StringUtils.toValidFilename("a\\s-`´d§$%&f/\"")).isEqualTo("asdf");
+        assertThat(StringUtils.toValidFilename("=)(/&%$§!")).isEqualTo("filename");
+        assertThat(StringUtils.toValidFilename("asdf.soul")).isEqualTo("asdf.soul");
+        assertThat(StringUtils.toValidFilename("asdf.soulpatch")).isEqualTo("asdf.soulpatch");
+        assertThat(StringUtils.toValidFilename("..")).isEqualTo("_.._");
+        assertThat(StringUtils.toValidFilename(".")).isEqualTo("_._");
+        assertThat(StringUtils.toValidFilename(".asdf.asdf.")).isEqualTo("_.asdf.asdf._");
     }
 }
