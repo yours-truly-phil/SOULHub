@@ -32,8 +32,6 @@
   </properties>
 
   <repositories>
-    <!-- The order of definitions matters. Explicitly defining central here to make sure it has the highest priority. -->
-
     <!-- Main Maven repository -->
     <repository>
       <id>central</id>
@@ -117,7 +115,6 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <!--      <scope>runtime</scope>-->
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -146,7 +143,6 @@
       <version>${hibernate-jpamodelgen.version}</version>
     </dependency>
 
-    <!-- copied from Vaadin start project -->
     <dependency>
       <groupId>com.vaadin</groupId>
       <!-- Replace artifactId with vaadin-core to use only free components -->
@@ -257,24 +253,9 @@
         <configuration>
           <wait>500</wait>
           <maxAttempts>240</maxAttempts>
-          <!--          <layers>-->
-          <!--            <enabled>true</enabled>-->
-          <!--          </layers>-->
         </configuration>
-        <!--        <executions>-->
-        <!--          <execution>-->
-        <!--            <goals>-->
-        <!--              <goal>build-image</goal>-->
-        <!--            </goals>-->
-        <!--          </execution>-->
-        <!--        </executions>-->
       </plugin>
 
-      <!--
-                Take care of synchronizing java dependencies and imports in
-                package.json and main.js files.
-                It also creates webpack.config.js if not exists yet.
-            -->
       <plugin>
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin-maven-plugin</artifactId>
@@ -306,15 +287,6 @@
           </sources>
         </configuration>
       </plugin>
-      <!--      <plugin>-->
-      <!--        <groupId>org.apache.maven.plugins</groupId>-->
-      <!--        <artifactId>maven-compiler-plugin</artifactId>-->
-      <!--        <configuration>-->
-      <!--          <source>14</source>-->
-      <!--          <target>14</target>-->
-      <!--          <compilerArgs>&#45;&#45;enable-preview</compilerArgs>-->
-      <!--        </configuration>-->
-      <!--      </plugin>-->
     </plugins>
   </build>
 
