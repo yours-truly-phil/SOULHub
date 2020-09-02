@@ -19,10 +19,10 @@ import javax.management.relation.RoleNotFoundException;
 import javax.validation.ValidationException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -78,19 +78,17 @@ public class UserServiceTest {
         AppUser userAccount = userDetailsService.registerAppUser(newUser);
         System.out.println(userAccount);
         // user name
-        assertEquals(userName, userAccount.getUserName());
+        assertThat(userAccount.getUserName()).isEqualTo(userName);
         // user email
-        assertEquals(email, userAccount.getEmail());
+        assertThat(userAccount.getEmail()).isEqualTo(email);
         // password encoded
-        assertTrue(SecurityUtils.passwordEncoder()
-                        .matches(userClearPassword, userAccount.getEncryptedPassword()),
-                "Password encoded");
+        assertThat(SecurityUtils.passwordEncoder()
+                .matches(userClearPassword, userAccount.getEncryptedPassword())).isTrue();
+
         // role names
-        assertTrue(userAccount
-                .getRoles().stream().map(AppRole::getRoleName)
-                .allMatch(s -> s.equals("USER")));
+        assertThat(userAccount.getRoles().stream().map(AppRole::getRoleName)).allMatch(s -> s.equals("USER"));
         // user status
-        assertEquals(AppUser.UserStatus.UNCONFIRMED, userAccount.getStatus());
+        assertThat(userAccount.getStatus()).isEqualTo(AppUser.UserStatus.UNCONFIRMED);
         // try to send the confirmation mail
         ArgumentCaptor<VerificationToken> tokenCaptor = ArgumentCaptor.forClass(VerificationToken.class);
         ArgumentCaptor<SimpleMailMessage> emailCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
@@ -98,10 +96,10 @@ public class UserServiceTest {
         Mockito.verify(mailSender).send(emailCaptor.capture());
 
         List<SimpleMailMessage> sentMails = emailCaptor.getAllValues();
-        assertEquals(sentMails.size(), 1);
+        assertThat(sentMails.size()).isOne();
         List<VerificationToken> tokensSaved = tokenCaptor.getAllValues();
-        assertEquals(tokensSaved.size(), 1);
-        assertTrue(Objects.requireNonNull(sentMails.get(0).getText()).contains(tokensSaved.get(0).getToken()));
+        assertThat(tokensSaved.size()).isOne();
+        assertThat(sentMails.get(0).getText()).contains(tokensSaved.get(0).getToken());
     }
 
     @Test
@@ -115,8 +113,8 @@ public class UserServiceTest {
                 .when(roleRepository)
                 .findByRoleName(Mockito.anyString());
 
-        assertThrows(RoleNotFoundException.class,
-                () -> userDetailsService.registerAppUser(user));
+        assertThatThrownBy(() -> userDetailsService.registerAppUser(user))
+                .isInstanceOf(RoleNotFoundException.class);
     }
 
     @Test
@@ -135,8 +133,8 @@ public class UserServiceTest {
 
         Arrays.asList(invalidEmails).forEach(email -> {
             user.setEmail(email);
-            assertThrows(ValidationException.class,
-                    () -> userDetailsService.registerAppUser(user));
+            assertThatThrownBy(() -> userDetailsService.registerAppUser(user))
+                    .isInstanceOf(ValidationException.class);
         });
     }
 
@@ -159,8 +157,8 @@ public class UserServiceTest {
 
         Arrays.asList(invalidUsernames).forEach(username -> {
             user.setUserName(username);
-            assertThrows(ValidationException.class,
-                    () -> userDetailsService.registerAppUser(user));
+            assertThatThrownBy(() -> userDetailsService.registerAppUser(user))
+                    .isInstanceOf(ValidationException.class);
         });
     }
 
