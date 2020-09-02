@@ -10,7 +10,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.vaadin.googleanalytics.tracking.GoogleAnalyticsTracker;
 
 import java.util.List;
 import java.util.Map;
@@ -44,13 +43,11 @@ public class SOULPatchPresenter {
     private void spFileDownloaded(SPFileDownloadEvent event) {
         var sp = soulPatchService.incrementNoDownloadsAndSave(event.getSpFile().getSoulPatch());
         view.setValue(sp);
-        GoogleAnalyticsTracker.getCurrent().sendEvent("download", "SPFile download");
     }
 
     private void soulPatchDownloaded(SOULPatchDownloadEvent event) {
         var sp = soulPatchService.incrementNoDownloadsAndSave(event.getSoulPatch());
         view.setValue(sp);
-        GoogleAnalyticsTracker.getCurrent().sendEvent("download", "SOULPatch download");
     }
 
     public void onNavigation(String parameter, Map<String, List<String>> parameterMap) {
