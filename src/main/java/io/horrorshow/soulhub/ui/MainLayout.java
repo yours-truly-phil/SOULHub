@@ -25,6 +25,7 @@ import io.horrorshow.soulhub.ui.views.AboutView;
 import io.horrorshow.soulhub.ui.views.AdminView;
 import io.horrorshow.soulhub.ui.views.SOULPatchesView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.googleanalytics.tracking.EnableGoogleAnalytics;
 
 @PWA(name = UIConst.TITLE,
         shortName = UIConst.TITLE,
@@ -35,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @CssImport(value = "./styles/vaadin-text-field-styles.css",
         themeFor = "vaadin-text-field")
 @Theme(value = Lumo.class, variant = Lumo.DARK)
+@EnableGoogleAnalytics(value = "UA-177188327-1")
 public class MainLayout extends AppLayout {
 
     private static final long serialVersionUID = -4791247729805265577L;

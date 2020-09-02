@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
+import org.vaadin.googleanalytics.tracking.GoogleAnalyticsTracker;
 
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,7 @@ public class SOULPatchesPresenter {
     }
 
     private void observePage(Page<SOULPatch> soulPatchPage) {
+        GoogleAnalyticsTracker.getCurrent().sendEvent("paging", "soulpatches grid");
         log.debug("page observer soulpatches: {}, pages: {}",
                 soulPatchPage.getTotalElements(),
                 soulPatchPage.getTotalPages());
@@ -80,18 +82,27 @@ public class SOULPatchesPresenter {
         view.getSoulPatchReadOnlyDialog()
                 .getEditSOULPatchBtn()
                 .setVisible(userService.isCurrentUserOwnerOf(soulPatch));
+        GoogleAnalyticsTracker.getCurrent().sendEvent(
+                "soulpatch-read-only", "SOULPatch " + soulPatch.getId()
+        );
     }
 
     @VisibleForTesting
     void onSOULPatchDownload(SOULPatchDownloadEvent event) {
         soulPatchService.incrementNoDownloadsAndSave(event.getSoulPatch());
         dataProvider.refreshItem(event.getSoulPatch());
+        GoogleAnalyticsTracker.getCurrent().sendEvent(
+                "download", "SOULPatch " + event.getSoulPatch().getId()
+        );
     }
 
     @VisibleForTesting
     void onSPFileDownload(SPFileDownloadEvent event) {
         soulPatchService.incrementNoDownloadsAndSave(event.getSpFile().getSoulPatch());
         dataProvider.refreshItem(event.getSpFile().getSoulPatch());
+        GoogleAnalyticsTracker.getCurrent().sendEvent(
+                "download", "SPFile " + event.getSpFile().getId()
+        );
     }
 
     @VisibleForTesting
@@ -105,6 +116,9 @@ public class SOULPatchesPresenter {
         }
         filter.getUsersFilter().addAll(event.getAppUserFilter());
         dataProvider.setFilter(filter);
+        GoogleAnalyticsTracker.getCurrent().sendEvent(
+                "soulpatches-grid", "filter"
+        );
     }
 
     private void onSOULPatchesGridSelection(
@@ -121,6 +135,9 @@ public class SOULPatchesPresenter {
         filter.setFullTextSearch(event.getValue());
         dataProvider.setFilter(filter);
         log.debug("full text search event: {}", event.getValue());
+        GoogleAnalyticsTracker.getCurrent().sendEvent(
+                "search", "full-text-search"
+        );
     }
 
     @VisibleForTesting
@@ -134,6 +151,9 @@ public class SOULPatchesPresenter {
         }
 
         dataProvider.refreshItem(event.getSoulPatch());
+        GoogleAnalyticsTracker.getCurrent().sendEvent(
+                "rating", "soulpatch-rating"
+        );
     }
 
     @VisibleForTesting
@@ -141,6 +161,9 @@ public class SOULPatchesPresenter {
         log.debug("sp file selected, id: {}, name: {}",
                 event.getSpFile().getId(), event.getSpFile().getName());
         view.getSpFileReadOnlyDialog().open(event.getSpFile());
+        GoogleAnalyticsTracker.getCurrent().sendEvent(
+                "spfile-read-only", "SPFile " + event.getSpFile().getId()
+        );
     }
 
     public void onNavigation(String parameter, Map<String, List<String>> parameterMap) {

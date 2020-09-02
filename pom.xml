@@ -29,6 +29,7 @@
     <spring-data-provider.version>2.1.0</spring-data-provider.version>
     <hibernate-jpamodelgen.version>5.3.7.Final</hibernate-jpamodelgen.version>
     <tooltip.version>1.6.0</tooltip.version>
+    <googleanalyticstracker.version>4.0.1</googleanalyticstracker.version>
   </properties>
 
   <repositories>
@@ -210,6 +211,11 @@
       <groupId>dev.mett.vaadin</groupId>
       <artifactId>tooltip</artifactId>
       <version>${tooltip.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>googleanalyticstracker</artifactId>
+      <version>${googleanalyticstracker.version}</version>
     </dependency>
 
     <dependency>
