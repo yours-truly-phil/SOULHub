@@ -6,6 +6,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -128,7 +129,13 @@ public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
         starsRating.setManual(true);
         starsRating.setReadOnly(!SecurityUtils.isUserLoggedIn());
         starsRating.addValueChangeListener(
-                event -> fireEvent(new SOULPatchRatingEvent(this, sp, event.getValue(), event.getOldValue())));
+                event -> {
+                    fireEvent(new SOULPatchRatingEvent(this, sp, event.getValue(), event.getOldValue()));
+                    new Notification(String.format("%dStar%s!",
+                            event.getValue(), (event.getValue() > 1) ? "s" : ""),
+                            3000, Notification.Position.MIDDLE)
+                            .open();
+                });
         return new HorizontalLayout(rating, starsRating);
     }
 
