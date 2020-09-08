@@ -135,6 +135,7 @@ public class RegistrationView extends VerticalLayout
                         .map(BindingValidationStatus::getMessage)
                         .map(java.util.Optional::get).distinct()
                         .collect(Collectors.joining(", "));
+                register.setEnabled(true);
                 new Notification(errorText, 3000, Notification.Position.MIDDLE).open();
             }
         } catch (RoleNotFoundException e) {
