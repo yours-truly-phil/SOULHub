@@ -15,7 +15,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.shared.Registration;
 import io.horrorshow.soulhub.data.AppUser;
@@ -225,9 +224,8 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
     }
 
     private void saveSOULPatch() {
-        try {
-            SOULPatch soulPatch = fieldSupport.getValue();
-            binder.writeBean(soulPatch);
+        SOULPatch soulPatch = fieldSupport.getValue();
+        if (binder.writeBeanIfValid(soulPatch)) {
             SOULPatch savedSoulPatch = soulPatchService.save(soulPatch);
             if (savedSoulPatch != null) {
                 setValue(savedSoulPatch);
@@ -236,8 +234,9 @@ public class EditSOULPatchView extends VerticalLayout implements HasUrlParameter
             } else {
                 new Notification(format("problem saving soulpatch %s", soulPatch.toString()));
             }
-        } catch (ValidationException e) {
-            log.debug(e.getMessage());
+        } else {
+            new Notification("Not saved! Validation errors!",
+                    5000, Notification.Position.MIDDLE).open();
         }
     }
 

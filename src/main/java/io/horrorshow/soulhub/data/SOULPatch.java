@@ -50,16 +50,13 @@ import static io.horrorshow.soulhub.data.SOULPatch.*;
         })
 public class SOULPatch extends AuditModel {
 
-    private static final long serialVersionUID = -6746949290547828924L;
-
     public static final String DB_COL_ID = "id";
     public static final String DB_COL_NAME = "name";
     public static final String DB_COL_DESCRIPTION = "description";
     public static final String DB_COL_AUTHOR = "author";
     public static final String DB_COL_DOWNLOADS = "no_views";
-
     public static final String SOULPATCH_ANALYZER = "soulpatch_analyzer";
-
+    private static final long serialVersionUID = -6746949290547828924L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = DB_COL_ID, updatable = false, nullable = false)
@@ -67,16 +64,16 @@ public class SOULPatch extends AuditModel {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(name = DB_COL_NAME)
+    @Column(name = DB_COL_NAME, nullable = false)
     @NotBlank
     @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO, name = SOULPatch_.NAME)
     @Analyzer(definition = "soulpatch_analyzer")
-    private String name;
+    private String name = "";
 
-    @Column(columnDefinition = "TEXT", name = DB_COL_DESCRIPTION)
+    @Column(columnDefinition = "TEXT", name = DB_COL_DESCRIPTION, nullable = false)
     @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO, name = SOULPatch_.DESCRIPTION)
     @Analyzer(definition = "soulpatch_analyzer")
-    private String description;
+    private String description = "";
 
     @OneToMany(mappedBy = SPFile_.SOUL_PATCH, cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @ToString.Exclude

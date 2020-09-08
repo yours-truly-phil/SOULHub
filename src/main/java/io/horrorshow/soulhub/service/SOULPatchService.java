@@ -173,6 +173,7 @@ public class SOULPatchService {
     public SOULPatch createSOULPatch(AppUser creator) {
         SOULPatch soulPatch = new SOULPatch();
         soulPatch.setName("my new SOULPatch");
+        soulPatch.setDescription("describe your SOULPatch");
         soulPatch.setAuthor(creator);
         return save(soulPatch);
     }
