@@ -2,11 +2,11 @@ package io.horrorshow.soulhub.ui.views;
 
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.HasValueAndElement;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.internal.AbstractFieldSupport;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -127,7 +127,7 @@ public class RegistrationView extends VerticalLayout
             if (binder.writeBeanIfValid(appUser)) {
                 AppUser user = userDetailsService.registerAppUser(appUser);
                 new Notification(format("registered %s", user));
-                UI.getCurrent().navigate(UserInfoView.class, user.getUserName());
+                registrationSuccessful(user);
             } else {
                 BinderValidationStatus<AppUser> validate = binder.validate();
                 String errorText = validate.getFieldValidationStatuses()
@@ -148,6 +148,14 @@ public class RegistrationView extends VerticalLayout
             setValue(new AppUser());
             new Notification(e.getMessage(), 5000, Notification.Position.MIDDLE).open();
         }
+    }
+
+    public void registrationSuccessful(AppUser appUser) {
+        this.removeAll();
+        this.add(new H4(format(
+                "Thank You %s Follow the instructions sent to %s to " +
+                        "activate your SOULHub account.",
+                appUser.getUserName(), appUser.getEmail())));
     }
 
     @Override

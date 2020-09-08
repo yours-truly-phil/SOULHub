@@ -8,6 +8,7 @@ import io.horrorshow.soulhub.security.SecurityUtils;
 import io.horrorshow.soulhub.ui.UIConst;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,8 +34,9 @@ public class UserService {
     private final AppUserRepository appUserRepository;
     private final VerificationTokenRepository verificationTokenRepository;
     private final JavaMailSender mailSender;
-
     private final Validator validator;
+    @Value("${soulhub.url}")
+    private String url = "<protocol>://<soulhub-url>:<port>";
 
     public UserService(@Autowired AppRoleRepository appRoleRepository,
                        @Autowired AppUserRepository appUserRepository,
@@ -119,7 +121,7 @@ public class UserService {
     private SimpleMailMessage constructEmailRegistrationMessage(final AppUser user, final VerificationToken token) {
         final String recipientAddress = user.getEmail();
         final String subject = String.format("%s Registration Confirmation", UIConst.TITLE);
-        final String url = "localhost:8080"; // TODO setup environment config
+        final String url = this.url;
         final String confirmationUrl = String.format("%s/confirm?%s=%s", url, UIConst.PARAM_TOKEN, token.getToken());
         final String message = String.format("You registered successfully. To confirm your registration, please click on the below link.\r\n%s", confirmationUrl);
 

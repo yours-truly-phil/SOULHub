@@ -1,3 +1,5 @@
+soulhub:
+  url: http://localhost:8080
 spring:
   mail:
     host: host.host.com
