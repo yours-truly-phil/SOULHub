@@ -109,13 +109,26 @@ public class UserService {
         AppUser savedUser = appUserRepository.save(user);
         log.info("user registered {}", savedUser);
 
-        final String token = UUID.randomUUID().toString();
-        VerificationToken verificationToken = createVerificationToken(savedUser, token);
-        final SimpleMailMessage email = constructEmailRegistrationMessage(savedUser, verificationToken);
+        final SimpleMailMessage email = createTokenMailMessage(savedUser);
         mailSender.send(email);
         log.info("verification email sent to {}", savedUser);
 
         return savedUser;
+    }
+
+    private SimpleMailMessage createTokenMailMessage(AppUser savedUser) {
+        final String token = UUID.randomUUID().toString();
+        VerificationToken verificationToken = createVerificationToken(savedUser, token);
+        return constructEmailRegistrationMessage(savedUser, verificationToken);
+    }
+
+    public void resendConfirmationEmail(String email) {
+        if (emailExists(email) && loadAppUserByEmail(email).isPresent()) {
+            var user = loadAppUserByEmail(email).get();
+            if (user.getStatus() == AppUser.UserStatus.UNCONFIRMED) {
+                mailSender.send(createTokenMailMessage(user));
+            }
+        }
     }
 
     private SimpleMailMessage constructEmailRegistrationMessage(final AppUser user, final VerificationToken token) {
