@@ -1,6 +1,8 @@
 # verify that the with 'set this!' marked lines fit your environment
 soulhub:
   url: http://localhost:8080
+  http-port: 8080
+  redirect-https: false
 server:
   port: 8080
 spring:
