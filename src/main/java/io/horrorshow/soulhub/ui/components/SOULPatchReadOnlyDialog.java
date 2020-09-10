@@ -7,6 +7,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.shared.Registration;
@@ -26,6 +27,10 @@ public class SOULPatchReadOnlyDialog extends Dialog
     public SOULPatchReadOnlyDialog() {
 
         VerticalLayout content = new VerticalLayout();
+        Icon x = new Icon(VaadinIcon.CLOSE_SMALL);
+        x.getStyle().set("margin-left", "auto");
+        x.addClickListener(event -> close());
+        content.add(x);
 
         content.add(soulPatchReadOnly);
 
@@ -45,8 +50,8 @@ public class SOULPatchReadOnlyDialog extends Dialog
 
         add(content);
 
-        setResizable(true);
-        setDraggable(true);
+        setResizable(false);
+        setDraggable(false);
     }
 
     public Button getEditSOULPatchBtn() {
