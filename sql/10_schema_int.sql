@@ -144,3 +144,9 @@ create index soulpatch_ratings_soulpatch_index
 
 alter table soulpatch_ratings
     owner to soulhub;
+
+insert into app_role (id, role_name)
+values (nextval('hibernate_sequence'), 'ADMIN');
+
+insert into app_role (id, role_name)
+values (nextval('hibernate_sequence'), 'USER');
