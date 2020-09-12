@@ -72,7 +72,7 @@ public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
                 .setHeader(COL_FILES)
                 .setKey(SOULPatch_.SP_FILES)
                 .setResizable(true)
-                .setAutoWidth(true)
+                .setWidth("18em")
                 .setSortable(false);
 
         addColumn(new ComponentRenderer<>(this::getRatingCellLayout))
@@ -87,7 +87,7 @@ public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
                 .setHeader(COL_NO_DOWNLOADS)
                 .setKey(SOULPatch_.NO_VIEWS)
                 .setResizable(true)
-                .setAutoWidth(true)
+                .setWidth("4em")
                 .setSortable(true)
                 .setComparator(Comparator.comparingLong(SOULPatch::getNoViews));
 
@@ -102,17 +102,11 @@ public class SOULPatchesGrid extends PaginatedGrid<SOULPatch> {
     private Component getSpFilesCellLayout(SOULPatch sp) {
         VerticalLayout spFilesLayout = new VerticalLayout();
         if (!sp.getSpFiles().isEmpty()) {
-            sp.getSpFiles().forEach(spFile -> {
-                HorizontalLayout layout = new HorizontalLayout();
-                layout.add(
-                        new Button(
-                                format("%s [%s]", spFile.getName(),
-                                        (spFile.getFileType() != null) ? spFile.getFileType().toString() : ""),
-                                VaadinIcon.FILE_CODE.create(),
-                                event -> spFileButtonClicked(spFile)));
-
-                spFilesLayout.add(layout);
-            });
+            sp.getSpFiles().forEach(spFile ->
+                    spFilesLayout.add(
+                            new Button(format("%s", spFile.getName()),
+                                    VaadinIcon.FILE_CODE.create(),
+                                    event -> spFileButtonClicked(spFile))));
         } else {
             spFilesLayout.add(new Span("no files attached"));
         }
