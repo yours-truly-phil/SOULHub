@@ -33,10 +33,7 @@ import javax.validation.ValidationException;
 import javax.validation.constraints.NotNull;
 import java.io.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -285,8 +282,12 @@ public class SOULPatchService {
         try (final var baos = new ByteArrayOutputStream();
              final var zos = new ZipOutputStream(baos)) {
 
+            Map<String, Integer> filenames = new HashMap<>();
             for (SPFile spFile : soulPatch.getSpFiles()) {
-                ZipEntry entry = new ZipEntry(spFile.getName());
+
+                String filename = appendNoIfDuplicateFilename(filenames, spFile.getName());
+
+                ZipEntry entry = new ZipEntry(filename);
                 entry.setSize(spFile.getFileContent().getBytes().length);
                 zos.putNextEntry(entry);
                 zos.write(spFile.getFileContent().getBytes());
@@ -299,8 +300,22 @@ public class SOULPatchService {
             return baos.toByteArray();
         } catch (IOException e) {
             log.error("error zipping soulpatch {}", soulPatch, e);
-            return null;
+            return "ErrorZippingFiles".getBytes();
         }
+    }
+
+    @VisibleForTesting
+    String appendNoIfDuplicateFilename(Map<String, Integer> filenames, String filename) {
+        if(filenames.containsKey(filename)) {
+            filenames.put(filename, filenames.get(filename) + 1);
+        } else {
+            filenames.put(filename, 0);
+        }
+
+        if(filenames.get(filename) > 0) {
+            filename += "_(" + filenames.get(filename) + ")";
+        }
+        return filename;
     }
 
     private Sort.Order getFirstSortOrder(Pageable pageable) {

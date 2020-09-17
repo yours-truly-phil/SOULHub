@@ -244,6 +244,15 @@ public class SOULPatchServiceTest {
         evaluateUnzipResult(unzipped, soulPatch);
     }
 
+    @Test
+    void append_number_to_filename_when_zipping_duplicate_filenames() {
+        Map<String, Integer> filenames = new HashMap<>();
+        assertThat(service.appendNoIfDuplicateFilename(filenames, "common")).isEqualTo("common");
+        assertThat(service.appendNoIfDuplicateFilename(filenames, "common")).isEqualTo("common_(1)");
+        assertThat(service.appendNoIfDuplicateFilename(filenames, "unique")).isEqualTo("unique");
+        assertThat(service.appendNoIfDuplicateFilename(filenames, "common")).isEqualTo("common_(2)");
+    }
+
     private void evaluateUnzipResult(List<String[]> unzipped, SOULPatch soulPatch) {
         unzipped.forEach(strings -> {
             assertTrue(soulPatch.getSpFiles().stream()

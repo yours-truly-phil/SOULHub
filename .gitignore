@@ -66,3 +66,4 @@ build/
 #/io.horrorshow.soulswap.data.*
 /io.horrorshow.soulhub.data.*
 /src/main/resources/keystore/
+/ignore/

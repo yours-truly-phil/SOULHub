@@ -9,8 +9,7 @@ services:
       - database.env
     volumes:
       - database-data:/var/lib/postgresql/data'
-      - ./sql/10_schema.sql:/docker-entrypoint-initdb.d/10_schema.sql
-      - ./sql/20_data.sql:/docker-entrypoint-initdb.d/20_data.sql
+      - ./sql/DEV:/docker-entrypoint-initdb.d
   app:
     build: .
     ports:
