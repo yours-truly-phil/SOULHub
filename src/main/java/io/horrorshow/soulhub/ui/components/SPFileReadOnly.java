@@ -53,7 +53,7 @@ public class SPFileReadOnly extends Div
 
         setClassName("spfile-read-only");
 
-        setVisible(false); // set to true if spFile in setValue(spFile) != null
+        setVisible(false);
 
         addValueChangeListener(this::valueChanged);
 

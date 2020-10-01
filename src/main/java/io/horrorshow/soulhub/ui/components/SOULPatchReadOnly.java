@@ -36,7 +36,7 @@ public class SOULPatchReadOnly extends Div
     private final Label id = new Label("id");
     private final Label name = new Label("name");
     private final Paragraph description = new Paragraph("description");
-    private final Label author = new Label("author"); // TODO create insertable author component
+    private final Label author = new Label("author");
     private final Label downloads = new Label("downloads");
     private final Anchor downloadLink = new Anchor();
     private Function<SOULPatch, InputStream> soulPatchZipByteStreamSupplier;
