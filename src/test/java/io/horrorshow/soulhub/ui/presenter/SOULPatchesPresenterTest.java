@@ -67,12 +67,10 @@ class SOULPatchesPresenterTest {
     void onNavigation_filter_by_user() {
         view.getHeader().addValueChangeListener(event -> {
             var appUser = event.getValue().getAppUserFilter();
-            assertThat(appUser.size() == 1);
-            assertThat(
-                    appUser.stream()
-                            .map(AppUser::getUserName)
-                            .allMatch(
-                                    s -> s.equals("username returned by service")));
+            assertThat(appUser.size()).isOne();
+            assertThat(appUser.stream()
+                    .map(AppUser::getUserName))
+                    .allMatch(s -> s.equals("username from service"));
         });
         var map = Map.of("user", List.of("4711"));
         var userToReturn = new AppUser();
@@ -86,15 +84,13 @@ class SOULPatchesPresenterTest {
     void onNavigation_filter_by_multiple_users() {
         view.getHeader().addValueChangeListener(event -> {
             var appUser = event.getValue().getAppUserFilter();
-            assertThat(appUser.size() == 3);
+            assertThat(appUser.size()).isEqualTo(3);
             var usernames =
                     appUser
                             .stream()
                             .map(AppUser::getUserName)
                             .collect(Collectors.toSet());
-            assertThat(usernames.contains("aaa"));
-            assertThat(usernames.contains("bbb"));
-            assertThat(usernames.contains("ccc"));
+            assertThat(usernames).contains("aaa", "bbb", "ccc");
         });
         var map = Map.of("user", List.of("1", "2", "3"));
         var aaa = new AppUser();
@@ -132,8 +128,8 @@ class SOULPatchesPresenterTest {
 
         var resultFetchFilter
                 = fetchFilterArgumentCaptor.getValue();
-        assertThat(resultFetchFilter.getFullTextSearch().isPresent());
-        assertThat(resultFetchFilter.getFullTextSearch().get().equals(SEARCH_STRING));
+        assertThat(resultFetchFilter.getFullTextSearch()).isPresent();
+        assertThat(resultFetchFilter.getFullTextSearch()).get().isEqualTo(SEARCH_STRING);
     }
 
     @Test
@@ -159,9 +155,9 @@ class SOULPatchesPresenterTest {
         verify(dataProvider).setFilter(captor.capture());
 
         var res = captor.getValue();
-        assertThat(res.getNamesFilter().isPresent());
-        assertThat(res.getNamesFilter().get().equals("namesfilter"));
-        assertThat(res.getUsersFilter().containsAll(Set.of(cu, u1, u2)));
+        assertThat(res.getNamesFilter()).isPresent();
+        assertThat(res.getNamesFilter()).get().isEqualTo("namesfilter");
+        assertThat(res.getUsersFilter()).containsAll(Set.of(cu, u1, u2));
     }
 
     @Test
@@ -270,11 +266,11 @@ class SOULPatchesPresenterTest {
 
         presenter.onSOULPatchDialogChange(owned);
 
-        assertThat(editSOULPatchBtn.isVisible());
+        assertThat(editSOULPatchBtn.isVisible()).isTrue();
 
         presenter.onSOULPatchDialogChange(notOwned);
 
-        assertThat(!editSOULPatchBtn.isVisible());
+        assertThat(!editSOULPatchBtn.isVisible()).isTrue();
 
     }
 }
