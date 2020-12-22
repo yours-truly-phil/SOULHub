@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.3.3.RELEASE</version>
+    <version>2.3.7.RELEASE</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>io.horrorshow</groupId>
@@ -17,11 +17,11 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <java.version>14</java.version>
+    <java.version>11</java.version>
     <hibernate-validator.version>6.1.5.Final</hibernate-validator.version>
     <jaxb-impl.version>2.3.3</jaxb-impl.version>
     <jaxb-maven-plugin.version>2.5.0</jaxb-maven-plugin.version>
-    <vaadin.version>14.3.4</vaadin.version> <!-- TODO: up Vaadin version to 14.4.2 or higher -->
+    <vaadin.version>14.4.4</vaadin.version>
     <webdrivermanager.version>3.8.1</webdrivermanager.version>
     <hibernate-search.version>5.11.5.Final</hibernate-search.version>
     <acewidget.version>1.4-Beta</acewidget.version>
